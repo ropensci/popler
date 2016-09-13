@@ -1,0 +1,20 @@
+Package: poplerr
+Title: Poplerr package
+Version: 0.0.0.9000
+Authors@R: c(
+  person("Compagnoni", "Aldo", email = "aldo.compagnoni@aggiemail.usu.edu",
+  role = c("cre","aut")),
+  person("Bibian", "Andrew", email = "ajbibian@rice.edu", role= c("aut")),
+  person("Miller", "Tom", email = "tom.miller@rice.edu", role= c("aut")))
+Description: This package allows to browse and query the popler database.
+Depends:
+  R (>= 3.2.2),
+  dplyr,
+  RPostgreSQL,
+  testthat,
+  stringr
+License: MIT?
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 5.0.1.9000
+BinaryFiles: POPLER_plink.exe

@@ -1,0 +1,1 @@
+echo y|POPLER_plink.exe -ssh -L 63333:localhost:5432 lter@www.how-imodel-it.com -pw bigdata
