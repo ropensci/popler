@@ -8,7 +8,7 @@
 
 
 #Calculate tallies
-tall=function(subsetDat,tally_by,columnNames){
+tall=function(subsetDat,tally_by,columnNames,trim){
 
   dfList=list()
   for(i in 1:length(tally_by)){
@@ -41,7 +41,7 @@ tall=function(subsetDat,tally_by,columnNames){
     }
 
   }
-  out=trimDisplay(Reduce(function(...) merge(...),dfList))
+  out=trimDisplay(Reduce(function(...) merge(...),dfList),trim)
   return(out)
 
 }

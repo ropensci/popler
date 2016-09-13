@@ -7,8 +7,8 @@
 #' @export
 
 # Unique values for arguments
-uniqueValues=function(subsetDat,columnNames){
-  if(!is.null(columnNames)) out=trimDisplay(distinct(select(subsetDat,one_of(columnNames))))
-  if(is.null(columnNames) ) out=trimDisplay(distinct(subsetDat))
+uniqueValues=function(subsetDat,columnNames,trim){
+  if(!is.null(columnNames)) out=trimDisplay(distinct(select(subsetDat,one_of(columnNames))),trim)
+  if(is.null(columnNames) ) out=trimDisplay(distinct(subsetDat),trim)
   return(out)
 }

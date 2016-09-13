@@ -6,11 +6,16 @@
 #' @export
 
 # trim the display of character values. Mostly for project "titles"
-trimDisplay=function(x){
-  tmp=as.data.frame(x)
-  for(i in 1:ncol(tmp)){
-    if(is.character(tmp[,i])){ tmp[,i]=strtrim(tmp[,i],50) }
+trimDisplay=function(x,trim){
+
+  if(trim==T){
+    tmp=as.data.frame(x)
+    for(i in 1:ncol(tmp)){
+      if(is.character(tmp[,i])){ tmp[,i]=strtrim(tmp[,i],50) }
+    }
+    tmp=as.tbl(tmp)
+    return(tmp)
+  } else{
+    return(x)
   }
-  tmp=as.tbl(tmp)
-  return(tmp)
 }

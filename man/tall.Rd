@@ -4,7 +4,7 @@
 \alias{tall}
 \title{Tally records from the popler main table}
 \usage{
-tall(subsetDat, tally_by, columnNames)
+tall(subsetDat, tally_by, columnNames, trim)
 }
 \arguments{
 \item{The}{popler main table}

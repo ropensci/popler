@@ -4,7 +4,7 @@
 \alias{trimDisplay}
 \title{Trim the display of the popler() output}
 \usage{
-trimDisplay(x)
+trimDisplay(x, trim)
 }
 \arguments{
 \item{a}{data frame}

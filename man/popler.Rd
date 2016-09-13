@@ -4,15 +4,18 @@
 \alias{popler}
 \title{Browse the popler database}
 \usage{
-popler(group_factors = NULL, tally_by = NULL, criteria = NULL)
+popler(group_factors = NULL, tally_by = NULL, criteria = NULL,
+  trim = TRUE)
 }
 \arguments{
 \item{tally_by}{A vector of characters that specifies which fields to tally}
 
 \item{criteria}{A logical expression that specifies which records to keep.
-Synthax is the same as that used in the base function subset}
+Synthax is the same as that used in the base function subset.}
 
-\item{group_by}{A vector of characters that specifies the factors by which data should be grouped}
+\item{trim}{should strings be truncated at the 50th character? Default is TRUE.}
+
+\item{group_by}{A vector of characters that specifies the factors by which data should be grouped.}
 }
 \value{
 A data frame reporting groping factors and tallies, based on the subsetting criteria.

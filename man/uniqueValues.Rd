@@ -4,7 +4,7 @@
 \alias{uniqueValues}
 \title{Find unique values from the popler main table}
 \usage{
-uniqueValues(subsetDat, columnNames)
+uniqueValues(subsetDat, columnNames, trim)
 }
 \arguments{
 \item{A}{selection of, or the entire popler main table.}
