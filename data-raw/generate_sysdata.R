@@ -9,12 +9,11 @@ conn <- src_postgres(
 table_search <- tbl(conn, sql(
   paste("SELECT * ",
         "FROM taxa_table",
-        "JOIN main_table ON taxa_table.taxa_lter_proj_site =",
-        "main_table.lter_proj_site",
-        "JOIN site_table ON main_table.main_siteid = site_table.siteid")))
+        "JOIN study_table ON taxa_table.taxa_lter_proj_site =",
+        "study_table.lter_proj_site",
+        "JOIN site_in_study_table ON study_table.study_site = site_in_study_table.study_site_pk")))
 
-out=as.data.frame(table_search)
-
-write.csv(out,"mainTable.csv",row.names=F)
+dataPoplerFunction=as.data.frame(table_search)
 
 # store main data table--------------------------------------------
+devtools::use_data(dataPoplerFunction, popler, internal = T)

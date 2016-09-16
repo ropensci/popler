@@ -13,7 +13,7 @@ infoMessage=function(group_factors,tally_by,criteria,possibleargs){
 
   description=c("lter name","project_id","title of project","url to metadata","experimental or observational study?",
                 "does data set contain multiple taxa?","duration of project",
-                "type of data (count,biomass,cover,density,individual)",
+                "name of experimental sites","type of data (count,biomass,cover,density,individual)",
                 "is indidivual data structured?",
                 "genus and species","whole taxonomy of each species",
                 "kingdom","phylum","class","order","family","genus")

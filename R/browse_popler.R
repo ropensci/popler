@@ -13,16 +13,16 @@
 #' popler(group_by="species")
 #'
 #' #returns the number of species species for each study
-#' popler(group_by="title",tally_by="species")
+#' popler(group_by="study",tally_by="species")
 #'
 #' #returns the studies in which that contain the genus "Abietinaria"
-#' popler(group_by="title",criteria=genus=="Abietinaria")
+#' popler(group_by="study",criteria=genus=="Abietinaria")
 
 # The actual popler function=============================================================================
-popler <- function(group_factors=NULL,tally_by=NULL,criteria=NULL,trim=TRUE){
+browse_popler <- function(group_factors=NULL,tally_by=NULL,criteria=NULL,trim=TRUE){
 
   # Load main (temporary) main data table
-  x <- formatMainTable(poplerr:::dataPoplerFunction)
+  x <- formatMainTable(poplerTwin:::dataPoplerFunction)
 
   #"Format" data
   x <- mutate(x, duration_years = studyendyr - studystartyr) #calculate study durations
@@ -34,9 +34,9 @@ popler <- function(group_factors=NULL,tally_by=NULL,criteria=NULL,trim=TRUE){
   if(!is.null(tally_by))  tally_by=tolower(tally_by)
 
   # Initial group_factors
-  possibleargs <- tolower(c("lterid","metarecordid","title","metalink","studytype","community","duration_years",
-                         "samplingprotocol", "structured",
-                         "species","taxonomy","kingdom","phylum","clss","ordr","family","genus"))
+  possibleargs <- tolower(c("lterid","metarecordid","study","metalink","studytype","community","duration_years",
+                            "study_site","data_type", "structured",
+                            "species","taxonomy","kingdom","phylum","clss","ordr","family","genus"))
 
   # ERRORS/MESSAGES------------------------------------------------------------------------------
 
@@ -67,4 +67,3 @@ popler <- function(group_factors=NULL,tally_by=NULL,criteria=NULL,trim=TRUE){
   return(out) # return output
 
 }
-

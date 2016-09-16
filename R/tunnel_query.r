@@ -54,17 +54,16 @@ tunnel_query=function(...){
   #First TRUE search
   table_search <- tbl(conn, sql(
     paste("SELECT year, day, month, kingdom, phylum, clss, family, genus, species,",
-          "spt_rep1, spt_rep2, spt_rep3, spt_rep4,",
           "structure, individ, unitobs, samplingprotocol,",
-          "lterid, lat, lng",
+          "lterid, lat, lng, metarecordid",
           "FROM raw_table",
           "JOIN taxa_table ON raw_table.raw_taxaid = taxa_table.taxaid",
-          "JOIN main_table ON taxa_table.taxa_lter_proj_site =",
-          "main_table.lter_proj_site",
-          "JOIN site_table ON main_table.main_siteid = site_table.siteid",
+          "JOIN study_table ON taxa_table.taxa_lter_proj_site =",
+          "study_table.lter_proj_site",
+          "JOIN site_table ON study_table.study_siteid = site_table.siteid",
           "WHERE", search_arg)))
 
-  output_data <- as.data.frame(table_search,n=-1) #
+  output_data <- as.data.frame(table_search) #,n=-1
   rm(conn)
   #close_DB_connection(conn)                         # close the db connection
   #stop_SSH()                                        # stop SSH tunneling
