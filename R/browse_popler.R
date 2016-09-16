@@ -22,7 +22,7 @@
 browse_popler <- function(group_factors=NULL,tally_by=NULL,criteria=NULL,trim=TRUE){
 
   # Load main (temporary) main data table
-  x <- formatMainTable(poplerTwin:::dataPoplerFunction)
+  x <- formatMainTable(popler:::dataPoplerFunction)
 
   #"Format" data
   x <- mutate(x, duration_years = studyendyr - studystartyr) #calculate study durations
