@@ -1,10 +1,9 @@
 # NCO Metacommunity LTER Working Group
-# Test run of the browse_poplerr package
+# Test run of the popler package
 
 
 # Build R package on your machine==============================================
 # Three options:
-
 
 # 1. Build package directly on your machine------------------------------------
 
@@ -17,6 +16,7 @@ devtools::install_github("klutometis/roxygen")
 install.packages("dplyr")
 install.packages("RPostgreSQL")
 
+# hit the "build and repload" button in Rstudio
 
 #2. Install package from binary (.zip) file-----------------------------------
 #Path of the directory where the .zip file is stored.
@@ -92,44 +92,3 @@ dat21_22=tunnel_query(metarecordid==21 | metarecordid==22)
 
 # get all data from a particular genus
 dat_poa=tunnel_query(genus=="Poa")
-
-#Most abundant species
-sppAgg=dat %>% group_by(species) %>% summarise(counts=sum(unitobs))
-
-#use Aulocara_femoratum only
-dataAgg=dat %>%
-          group_by(year,spt_rep1) %>%
-                            summarise(counts=sum(unitobs))
-dataMat=as.matrix(spread(dat,spt_rep1,counts))
-matplot(as.matrix(dataMat[,-1]),type="l")
-
-#Arthropod
-dat2=tunnel_query(metarecordid==54)
-dat2=tidyr::unite_(dat2,"species",c("genus","species"))
-
-
-
-
-
-#ANDREW'S SUGGESTIONS=================================================================
-
-# Querying Database By lat/long
-dat2=tunnel_query(metarecordid==54)
-
-# Querying Database By specific site's within projects (without lat/long)
-# Querying Databse by data_type
-# Querying Database by interaction of any of the above (including taxa)
-# Querying Database by Community datasets
-# Querying Database by levels of spatial replication
-
-print(data.frame(browse_popler(group_factor=c("sp_rep1_label", 'lterid'))))
-head
-printhead(data.frame(browse_popler(group_factor=c("sp_rep2_label", 'main_siteid'))))
-
-#Unique site IDs for all lter sites
-print(data.frame(browse_popler(group_factor=c("main_siteid", 'lterid'))))
-
-#look up species by site:
-data.frame(browse_popler(group_factor=c("species", 'main_siteid',"lterid")))
-
-#add on by me:

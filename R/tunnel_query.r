@@ -51,16 +51,18 @@ tunnel_query=function(...){
   conn <- src_postgres(
     dbname="popler", host="www.how-imodel-it.com", port=5432, user="lter", password="bigdata")
 
+  main=as.data.frame(tbl(conn, "study_table"))
+  
   #First TRUE search
   table_search <- tbl(conn, sql(
     paste("SELECT year, day, month, kingdom, phylum, clss, family, genus, species,",
-          "structure, individ, unitobs, samplingprotocol,",
-          "lterid, lat, lng, metarecordid",
-          "FROM raw_table",
-          "JOIN taxa_table ON raw_table.raw_taxaid = taxa_table.taxaid",
+          "structure, individ, unitobs, data_type,",
+          "lterid, lat_site, lng_site, metarecordid",
+          "FROM population_data_table",
+          "JOIN taxa_table ON population_data_table.raw_taxaid = taxa_table.taxaid",
           "JOIN study_table ON taxa_table.taxa_lter_proj_site =",
           "study_table.lter_proj_site",
-          "JOIN site_table ON study_table.study_siteid = site_table.siteid",
+          "JOIN site_in_study_table ON study_table.study_site = site_in_study_table.study_site_pk",
           "WHERE", search_arg)))
 
   output_data <- as.data.frame(table_search) #,n=-1
