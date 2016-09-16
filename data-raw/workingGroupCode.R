@@ -12,6 +12,9 @@ install.packages("devtools")
 # Install roxygen if you don't have it
 devtools::install_github("klutometis/roxygen")
 
+devtools::install_github("AldoCompagnoni/popler",ref="workingGroupNCEAS")
+
+
 # Install browse_poplerr dependencies
 install.packages("dplyr")
 install.packages("RPostgreSQL")

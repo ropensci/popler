@@ -1,5 +1,5 @@
 #Data used to generate the main table
-setwd("C:/Users/ac79/MEGA/Projects/RICE/LTER/poplerr/data-raw")
+setwd("C:/Users/Aldo/Documents/popler")
 
 # generate main data table--------------------------------------------
 
@@ -16,4 +16,4 @@ table_search <- tbl(conn, sql(
 dataPoplerFunction=as.data.frame(table_search)
 
 # store main data table--------------------------------------------
-devtools::use_data(dataPoplerFunction, popler, internal = T)
+devtools::use_data(dataPoplerFunction, internal = T)
