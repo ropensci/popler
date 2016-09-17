@@ -4,7 +4,7 @@
 \alias{parse_to_sql_search}
 \title{Translate R logical statements into SQL}
 \usage{
-parse_to_sql_search(...)
+parse_to_sql_search(..., lazy = T)
 }
 \arguments{
 \item{A}{logical expression that specifies which records to keep.}

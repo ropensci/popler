@@ -13,7 +13,7 @@
 
 
 #Function that connects and gathers the information from the database
-tunnel_query=function(...){
+tunnel_query_=function(...){
 
   # Database columns that will be stored as an attribute in the popler Class
   searchable_columns = c(
