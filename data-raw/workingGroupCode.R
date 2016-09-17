@@ -1,6 +1,9 @@
 # NCO Metacommunity LTER Working Group
 # Test run of the popler package
 
+devtools::install_github("AldoCompagnoni/popler",
+                         ref="workingGroupNCEAS")
+
 
 # Build R package on your machine==============================================
 # Three options:
@@ -8,11 +11,9 @@
 # 1. Build package directly on your machine------------------------------------
 
 # Install devtools if you don't have it
-install.packages("devtools")
+#install.packages("devtools")
 # Install roxygen if you don't have it
-devtools::install_github("klutometis/roxygen")
-
-devtools::install_github("AldoCompagnoni/popler",ref="workingGroupNCEAS")
+#devtools::install_github("klutometis/roxygen")
 
 
 # Install browse_poplerr dependencies
@@ -61,6 +62,7 @@ poa_studies=browse_popler(criteria=genus=="Poa")
 # Tally by group
 # n. of species by study
 species_x_study=browse_popler(group_factors="study",tally_by="species")
+species_x_study=browse_popler(group_factors=c("study","metarecordid"),tally_by="species")
 # n. of sites per study
 sites_x_study=browse_popler(group_factors=c("study"),tally_by="study_site") #n. of sites by study
 
@@ -68,12 +70,17 @@ sites_x_study=browse_popler(group_factors=c("study"),tally_by="study_site") #n. 
 # Are they all 1?
 spp_x_study=browse_popler(group_factors=c("study","metarecordid"),
                      tally_by="species",
-                     criteria=community=="no")
+                     criteria=community=="yes")
+
+spp_x_study=browse_popler(group_factors=c("lterid","study"),tally_by="study_site",
+                          criteria=community=="yes" & duration_years > 10 & studytype=="obs")
+
+browseURL(browse_popler(group_factors = "metalink",criteria=metarecordid==21))
 
 # Tally species by study, subsetting by latitude------------------------------------------
 spp_x_study_lat=browse_popler(group_factors=c("study","metarecordid"),
                        tally_by="species",
-                       criteria=lat > 35)
+                       criteria=lat_site > 35)
 
 # Tally by study, subsetting by study duration--------------------------------------------
 spp_x_study_duration=browse_popler(group_factors=c("study","metarecordid","duration_years"),
@@ -82,7 +89,9 @@ spp_x_study_duration=browse_popler(group_factors=c("study","metarecordid","durat
 
 # How many community studies involving animals?--------------------------------------------
 animal_studies=browse_popler(tally_by="study",
-                      criteria=kingdom=="Animalia" & community=="yes" & studytype=="obs")
+                      criteria=kingdom=="Animalia" & community=="yes" & studytype=="exp")
+
+animal_studies=browse_popler(tally_by="study",criteria=kingdom=="Animalia")
 
 
 # Querying Database=======================================================================
