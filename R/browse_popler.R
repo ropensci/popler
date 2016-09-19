@@ -6,7 +6,7 @@
 #' @param criteria A logical expression that specifies which records to keep.
 #' Synthax is the same as that used in the base function subset.
 #' @param trim should strings be truncated at the 50th character? Default is TRUE.
-#' @return A data frame reporting groping factors and tallies, based on the subsetting criteria.
+#' @return A data frame reporting grouping factors and tallies, based on the subsetting criteria.
 #' @export
 #' @details
 #' The browse_popler() function searches the popler database based on user-specified terms. 
@@ -14,7 +14,7 @@
 #' Specified terms can be used to group the datasets (returning the unique values by group), tally the datasets (returning the number of datasets that match a combination of groups), or filter the database to only retain entries that match certain terms. 
 #' Potential terms that can be used with the group_factors, tally_by, or criteria arguments are:
 #' \itemize{
-#'  \item{lterid: }{The code of the LTER site from which the data were collected}
+#'  \item{lterid: }{The code of the LTER site from which the data were collected (for LTER datasets)}
 #'  \item{metarecordid: }{A unique numeric that corresponds with the study}
 #'  \item{study: }{The name of the study}
 #'  \item{metalink: }{A url that links to the study's metadata}
@@ -35,16 +35,25 @@
 #'  \item{family: }{The family of species in the database}
 #'  \item{genus: }{The genus of species in the database}
 #' }
+#' Terms can also be viewed by specifying browse_popler()
 #' @examples
-#' The group_factors us
-#' #returns all of the species included in the data set
-#' popler(group_by="species")
+#' The group_factors argument can be used to view all possible values for a specified term. For example, the following allows users to view all species represented in the database:
+#' browse_popler(group_factors="species")
+#' 
+#' Multiple terms can be specified for each argument. For example, the following returns the unique combinations of species by study:
+#' browse_popler(group_factors=c("study", "species"))
 #'
+#' The tally_by argument allows users see the number of datasets that correspond with each grouping factors. For example, the following allows users to view how many studies have data for each species:
 #' #returns the number of species species for each study
-#' popler(group_by="study",tally_by="species")
-#'
-#' #returns the studies in which that contain the genus "Abietinaria"
-#' popler(group_by="study",criteria=genus=="Abietinaria")
+#' browse_popler(group_factors="species",tally_by="study")
+#' 
+#' Similarly, the following indicates how many species are represented in the database for each genus:
+#' browse_popler(group_factors="genus",tally_by="species")
+#' 
+#' Using group_factors() and/or tally_by() allows users to see what values are included in each term (e.g., what species names are present).
+#' By first running group_factors() to identify relevant values, users can then select datasets that include those values.
+#' For example, the following returns the studies in which that contain the genus "Abietinaria"
+#' browse_popler(group_factors="study",criteria=genus=="Abietinaria")
 
 # The actual popler function=============================================================================
 browse_popler <- function(group_factors=NULL,tally_by=NULL,criteria=NULL,trim=TRUE){
