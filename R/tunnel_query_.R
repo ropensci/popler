@@ -1,7 +1,7 @@
 #' Browse the popler database, without lazy evaluation
 #'
 #' This function fetches LTER studies contained in the popler database without lazy evaluation. The user can group, tally, and subset the data sets based on a number of the factors (or columns) of the database. 
-#' @param A logical expression using R synthax.
+#' @param ... A logical expression using R synthax.
 #' @return A data frame of the selected data.
 #' @export
 #' @examples

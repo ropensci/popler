@@ -1,7 +1,8 @@
 #' Translate R logical statements into SQL
 #'
 #' USe dplyr translate_sql() to translate R logical statements into SQL
-#' @param A logical expression that specifies which records to keep.
+#' @param ... A logical expression that specifies which records to keep.
+#' @param lazy logical argument: lazy evaluation of logical expression or not? 
 #' @return A string with an SQL statement
 #' @export
 
