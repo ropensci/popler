@@ -12,7 +12,7 @@
 metadata_webpage <- function(study_id=NULL){
   
   x   <- popler:::dataPoplerFunction 
-  x   <- subset(x,metarecordid == study_id)
+  x   <- subset(x,proj_metadata_key == study_id)
   out <- as.character(unique(x$metalink))
   
   if(length(out)==1){

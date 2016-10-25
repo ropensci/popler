@@ -1,8 +1,8 @@
 # NCO Metacommunity LTER Working Group
 # Test run of the popler package
 
-devtools::install_github("AldoCompagnoni/popler",
-                         ref="workingGroupNCEAS")
+#devtools::install_github("AldoCompagnoni/popler",
+#                         ref="workingGroupNCEAS")
 
 
 # Build R package on your machine==============================================

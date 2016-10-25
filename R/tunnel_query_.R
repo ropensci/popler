@@ -62,6 +62,8 @@ tunnel_query_=function(...){
       # Count data
       "SELECT year, day, month, kingdom, phylum, clss, family, genus, species,",
       "structure, datatype, count_observation,",
+      "spatial_replication_level_1, spatial_replication_level_2", 
+      "spatial_replication_level_3, spatial_replication_level_4",
       "proj_metadata_key", # lterid, lat, lng, 
       "FROM count_table",
       "JOIN taxa_table ON count_table.taxa_count_fkey = taxa_table.taxa_table_key",
@@ -77,6 +79,8 @@ tunnel_query_=function(...){
       # Biomass data
       "SELECT year, day, month, kingdom, phylum, clss, family, genus, species,",
       "structure,  datatype, biomass_observation,",
+      "spatial_replication_level_1, spatial_replication_level_2", 
+      "spatial_replication_level_3, spatial_replication_level_4",
       "proj_metadata_key", #lterid, lat, lng, 
       "FROM biomass_table",
       "JOIN taxa_table ON biomass_table.taxa_biomass_fkey = taxa_table.taxa_table_key",
@@ -92,6 +96,8 @@ tunnel_query_=function(...){
       # percent cover data
       "SELECT year, day, month, kingdom, phylum, clss, family, genus, species,",
       "structure,  datatype, percent_cover_observation,",
+      "spatial_replication_level_1, spatial_replication_level_2", 
+      "spatial_replication_level_3, spatial_replication_level_4",
       "proj_metadata_key", #lterid, lat, lng, 
       "FROM percent_cover_table",
       "JOIN taxa_table ON percent_cover_table.taxa_percent_cover_fkey = taxa_table.taxa_table_key",
@@ -107,6 +113,8 @@ tunnel_query_=function(...){
       # individual data
       "SELECT year, day, month, kingdom, phylum, clss, family, genus, species,",
       "structure,  datatype, individual_observation,",
+      "spatial_replication_level_1, spatial_replication_level_2", 
+      "spatial_replication_level_3, spatial_replication_level_4",
       "proj_metadata_key", #lterid, lat, lng, 
       "FROM individual_table",
       "JOIN taxa_table ON individual_table.taxa_individual_fkey = taxa_table.taxa_table_key",
@@ -122,6 +130,8 @@ tunnel_query_=function(...){
       # density data
       "SELECT year, day, month, kingdom, phylum, clss, family, genus, species,",
       "structure,  datatype, density_observation,",
+      "spatial_replication_level_1, spatial_replication_level_2", 
+      "spatial_replication_level_3, spatial_replication_level_4",
       "proj_metadata_key", #lterid, lat, lng, 
       "FROM density_table",
       "JOIN taxa_table ON density_table.taxa_density_fkey = taxa_table.taxa_table_key",
@@ -133,11 +143,10 @@ tunnel_query_=function(...){
       "study_site_table.study_site_key",
       "WHERE", search_arg)))
   
-  
-  output_data <- as.data.frame(table_all) 
+  output_data <- as.data.frame(table_all)
   #close_DB_connection(conn)                         # close the db connection
   #stop_SSH()                                        # stop SSH tunneling
-  
+
   return(output_data)
   
 }
