@@ -71,8 +71,8 @@ browse_popler <- function(group_factors=NULL,tally_by=NULL,criteria=NULL,trim=TR
   if(!is.null(tally_by))  tally_by=tolower(tally_by)
 
   # Initial group_factors
-  possibleargs <- tolower(c("lterid","metarecordid","study","metalink","studytype","community","duration_years",
-                            "study_site","data_type", "structured",
+  possibleargs <- tolower(c("lterid","proj_metadata_key","title","metalink","studytype","community","duration_years",
+                            "study_site_key","datatype", "structured",
                             "species","taxonomy","kingdom","phylum","clss","ordr","family","genus"))
 
   # ERRORS/MESSAGES------------------------------------------------------------------------------

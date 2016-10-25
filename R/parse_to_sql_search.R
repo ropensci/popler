@@ -8,17 +8,20 @@
 
 #This function procudes a string with an sql statement
 #From an R statement that could be used on "
-parse_to_sql_search= function(...,lazy=T){
+parse_to_sql_search = function(...,lazy=T){
 
   #Use Hadley's translate_sql
   if(lazy == T){ # with lazy evaluation
     sqlTranslated=translate_sql(...)
+    
+    # Remove quotation marks
+    sqlPaste=gsub('"',"",sqlTranslated)
   } else { # without lazy evaluation
     sqlTranslated=translate_sql_(...)
+    
+    # Remove quotation marks
+    sqlPaste=gsub('"','',sqlTranslated)
   }
-
-  #Remove quotation marks
-  sqlPaste=gsub('"',"",sqlTranslated)
 
   #Substitute 'class' with 'clss'
   sqlPaste=gsub("class","clss",sqlPaste)

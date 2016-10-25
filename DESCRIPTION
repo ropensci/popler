@@ -8,10 +8,12 @@ Authors@R: c(
   person("Miller", "Tom", email = "tom.miller@rice.edu", role= c("aut")))
 Description: This package allows to browse and query the popler database.
 Depends:
-  R (>= 3.0.0),
-  dplyr,
-  RPostgreSQL,
+    R (>= 3.0.0),
+    dplyr,
+    RPostgreSQL,
 License: MIT
 Encoding: UTF-8
+Suggests:
+    testthat
 LazyData: true
-RoxygenNote: 5.0.1.9000
+RoxygenNote: 5.0.1

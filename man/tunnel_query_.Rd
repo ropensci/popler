@@ -7,7 +7,7 @@
 tunnel_query_(...)
 }
 \arguments{
-\item{A}{logical expression using R synthax.}
+\item{...}{A logical expression using R synthax.}
 }
 \value{
 A data frame of the selected data.

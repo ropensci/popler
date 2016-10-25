@@ -43,32 +43,101 @@ tunnel_query_=function(...){
   )
   
   search_arg=parse_to_sql_search(...,lazy=F)
-
+  
   #start_SSH()                                         # start SSH tunneling
-  #conn <- open_DB_connection()                           # open a db connection
+  #conn <- open_DB_connection()                        # open a db connection
   # Testing SQL syntax
   conn <- src_postgres(
-    dbname="popler", host="www.how-imodel-it.com", port=5432, user="lter", password="bigdata")
-
-  main=as.data.frame(tbl(conn, "study_table"))
+    dbname="popler_3", host="www.how-imodel-it.com", port=5432, user="lter", password="bigdata")
   
-  #First TRUE search
-  table_search <- tbl(conn, sql(
-    paste("SELECT year, day, month, kingdom, phylum, clss, family, genus, species,",
-          "structure, individ, unitobs, data_type,",
-          "lterid, lat_site, lng_site, metarecordid",
-          "FROM population_data_table",
-          "JOIN taxa_table ON population_data_table.raw_taxaid = taxa_table.taxaid",
-          "JOIN study_table ON taxa_table.taxa_lter_proj_site =",
-          "study_table.lter_proj_site",
-          "JOIN site_in_study_table ON study_table.study_site = site_in_study_table.study_site_pk",
-          "WHERE", search_arg)))
-
-  output_data <- as.data.frame(table_search) #,n=-1
-  rm(conn)
+  #taxa <- as.data.frame(tbl(conn, "taxa_table"))
+  #proj <- as.data.frame(tbl(conn, "project_table"))
+  #stud <- as.data.frame(tbl(conn, "study_site_table"))
+  #col names
+  #col_taxa <- as.data.frame(tbl(conn, sql( "SELECT column_name FROM information_schema.columns WHERE
+  #                                     table_name='taxa_table'")))[,1]
+  
+  table_all <- tbl(conn, sql(
+    paste(
+      # Count data
+      "SELECT year, day, month, kingdom, phylum, clss, family, genus, species,",
+      "structure, datatype, count_observation,",
+      "proj_metadata_key", # lterid, lat, lng, 
+      "FROM count_table",
+      "JOIN taxa_table ON count_table.taxa_count_fkey = taxa_table.taxa_table_key",
+      "JOIN site_in_project_table ON taxa_table.site_in_project_taxa_key =",
+      "site_in_project_table.site_in_project_key",
+      "JOIN project_table ON site_in_project_table.project_table_fkey =",
+      "project_table.proj_metadata_key",
+      "JOIN study_site_table ON site_in_project_table.study_site_table_fkey =",
+      "study_site_table.study_site_key",
+      "WHERE", search_arg,
+      
+      "UNION ALL",
+      # Biomass data
+      "SELECT year, day, month, kingdom, phylum, clss, family, genus, species,",
+      "structure,  datatype, biomass_observation,",
+      "proj_metadata_key", #lterid, lat, lng, 
+      "FROM biomass_table",
+      "JOIN taxa_table ON biomass_table.taxa_biomass_fkey = taxa_table.taxa_table_key",
+      "JOIN site_in_project_table ON taxa_table.site_in_project_taxa_key =",
+      "site_in_project_table.site_in_project_key",
+      "JOIN project_table ON site_in_project_table.project_table_fkey =",
+      "project_table.proj_metadata_key",
+      "JOIN study_site_table ON site_in_project_table.study_site_table_fkey =",
+      "study_site_table.study_site_key",
+      "WHERE", search_arg,
+      
+      "UNION ALL",
+      # percent cover data
+      "SELECT year, day, month, kingdom, phylum, clss, family, genus, species,",
+      "structure,  datatype, percent_cover_observation,",
+      "proj_metadata_key", #lterid, lat, lng, 
+      "FROM percent_cover_table",
+      "JOIN taxa_table ON percent_cover_table.taxa_percent_cover_fkey = taxa_table.taxa_table_key",
+      "JOIN site_in_project_table ON taxa_table.site_in_project_taxa_key =",
+      "site_in_project_table.site_in_project_key",
+      "JOIN project_table ON site_in_project_table.project_table_fkey =",
+      "project_table.proj_metadata_key",
+      "JOIN study_site_table ON site_in_project_table.study_site_table_fkey =",
+      "study_site_table.study_site_key",
+      "WHERE", search_arg,
+      
+      "UNION ALL",
+      # individual data
+      "SELECT year, day, month, kingdom, phylum, clss, family, genus, species,",
+      "structure,  datatype, individual_observation,",
+      "proj_metadata_key", #lterid, lat, lng, 
+      "FROM individual_table",
+      "JOIN taxa_table ON individual_table.taxa_individual_fkey = taxa_table.taxa_table_key",
+      "JOIN site_in_project_table ON taxa_table.site_in_project_taxa_key =",
+      "site_in_project_table.site_in_project_key",
+      "JOIN project_table ON site_in_project_table.project_table_fkey =",
+      "project_table.proj_metadata_key",
+      "JOIN study_site_table ON site_in_project_table.study_site_table_fkey =",
+      "study_site_table.study_site_key",
+      "WHERE", search_arg,
+      
+      "UNION ALL",
+      # density data
+      "SELECT year, day, month, kingdom, phylum, clss, family, genus, species,",
+      "structure,  datatype, density_observation,",
+      "proj_metadata_key", #lterid, lat, lng, 
+      "FROM density_table",
+      "JOIN taxa_table ON density_table.taxa_density_fkey = taxa_table.taxa_table_key",
+      "JOIN site_in_project_table ON taxa_table.site_in_project_taxa_key =",
+      "site_in_project_table.site_in_project_key",
+      "JOIN project_table ON site_in_project_table.project_table_fkey =",
+      "project_table.proj_metadata_key",
+      "JOIN study_site_table ON site_in_project_table.study_site_table_fkey =",
+      "study_site_table.study_site_key",
+      "WHERE", search_arg)))
+  
+  
+  output_data <- as.data.frame(table_all) 
   #close_DB_connection(conn)                         # close the db connection
   #stop_SSH()                                        # stop SSH tunneling
-
+  
   return(output_data)
-
+  
 }
