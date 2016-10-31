@@ -20,7 +20,7 @@ test_that("parse_to_sql_search()", {
                 parse_to_sql_search("kingdom == 'Animalia' & proj_metadata_key > 5", lazy = F)
   )
   
-}
+})
 
 # does this function actually return character columns? 
 test_that("tunnel_query function", {
@@ -34,6 +34,6 @@ test_that("tunnel_query function", {
                tunnel_query_("proj_metadata_key == 9")
                )
 
-}
+})
 
 
