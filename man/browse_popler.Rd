@@ -53,22 +53,22 @@ Potential terms that can be used with the group_factors, tally_by, or criteria a
 Terms can also be viewed by specifying browse_popler()
 }
 \examples{
-The group_factors argument can be used to view all possible values for a specified term. For example, the following allows users to view all species represented in the database:
+#The group_factors argument can be used to view all possible values for a specified term. For example, the following allows users to view all species represented in the database:
 browse_popler(group_factors="species")
 
-Multiple terms can be specified for each argument. For example, the following returns the unique combinations of species by study:
+#Multiple terms can be specified for each argument. For example, the following returns the unique combinations of species by study:
 browse_popler(group_factors=c("study", "species"))
 
-The tally_by argument allows users see the number of datasets that correspond with each grouping factors. For example, the following allows users to view how many studies have data for each species:
+#The tally_by argument allows users see the number of datasets that correspond with each grouping factors. For example, the following allows users to view how many studies have data for each species:
 #returns the number of species species for each study
 browse_popler(group_factors="species",tally_by="study")
 
-Similarly, the following indicates how many species are represented in the database for each genus:
+#Similarly, the following indicates how many species are represented in the database for each genus:
 browse_popler(group_factors="genus",tally_by="species")
 
-Using group_factors() and/or tally_by() allows users to see what values are included in each term (e.g., what species names are present).
-By first running group_factors() to identify relevant values, users can then select datasets that include those values.
-For example, the following returns the studies in which that contain the genus "Abietinaria"
+#Using group_factors and/or tally_by allows users to see what values are included in each term (e.g., what species names are present).
+#By first running group_factors() to identify relevant values, users can then select datasets that include those values.
+#For example, the following returns the studies in which that contain the genus "Abietinaria"
 browse_popler(group_factors="study",criteria=genus=="Abietinaria")
 }
 

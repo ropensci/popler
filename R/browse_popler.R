@@ -37,29 +37,29 @@
 #' }
 #' Terms can also be viewed by specifying browse_popler()
 #' @examples
-#' The group_factors argument can be used to view all possible values for a specified term. For example, the following allows users to view all species represented in the database:
+#' #The group_factors argument can be used to view all possible values for a specified term. For example, the following allows users to view all species represented in the database:
 #' browse_popler(group_factors="species")
 #' 
-#' Multiple terms can be specified for each argument. For example, the following returns the unique combinations of species by study:
+#' #Multiple terms can be specified for each argument. For example, the following returns the unique combinations of species by study:
 #' browse_popler(group_factors=c("study", "species"))
 #'
-#' The tally_by argument allows users see the number of datasets that correspond with each grouping factors. For example, the following allows users to view how many studies have data for each species:
+#' #The tally_by argument allows users see the number of datasets that correspond with each grouping factors. For example, the following allows users to view how many studies have data for each species:
 #' #returns the number of species species for each study
 #' browse_popler(group_factors="species",tally_by="study")
 #' 
-#' Similarly, the following indicates how many species are represented in the database for each genus:
+#' #Similarly, the following indicates how many species are represented in the database for each genus:
 #' browse_popler(group_factors="genus",tally_by="species")
 #' 
-#' Using group_factors() and/or tally_by() allows users to see what values are included in each term (e.g., what species names are present).
-#' By first running group_factors() to identify relevant values, users can then select datasets that include those values.
-#' For example, the following returns the studies in which that contain the genus "Abietinaria"
+#' #Using group_factors and/or tally_by allows users to see what values are included in each term (e.g., what species names are present).
+#' #By first running group_factors() to identify relevant values, users can then select datasets that include those values.
+#' #For example, the following returns the studies in which that contain the genus "Abietinaria"
 #' browse_popler(group_factors="study",criteria=genus=="Abietinaria")
 
 # The actual popler function=============================================================================
 browse_popler <- function(group_factors=NULL,tally_by=NULL,criteria=NULL,trim=TRUE){
 
   # Load main (temporary) main data table
-  x <- formatMainTable(popler:::dataPoplerFunction)
+  x <- popler:::formatMainTable(popler:::dataPoplerFunction)
 
   #"Format" data
   x <- mutate(x, duration_years = studyendyr - studystartyr) #calculate study durations
@@ -78,28 +78,28 @@ browse_popler <- function(group_factors=NULL,tally_by=NULL,criteria=NULL,trim=TR
   # ERRORS/MESSAGES------------------------------------------------------------------------------
 
   # group_factors: i) spelling mistakes or ii) information response after "?"
-  errorsGroup(group_factors,possibleargs)
+  popler:::errorsGroup(group_factors,possibleargs)
 
   # tally.b: spelling mistakes
-  errorsTally(tally_by,possibleargs)
+  popler:::errorsTally(tally_by,possibleargs)
 
   # print informational message (is all arguments are null)
-  infoMessage(group_factors,tally_by,substitute(criteria),possibleargs)
+  popler:::infoMessage(group_factors,tally_by,substitute(criteria),possibleargs)
 
   # SELECT and SUMMARIZE-------------------------------------------------------------------------
 
   # Identify which columns to work on
-  columnNames <- multipleColumns(group_factors)
+  columnNames <- popler:::multipleColumns(group_factors)
 
   # Filter based on criteria (if criteria provided)
   #subsetDat=selectByCriteria(x,criteria)
-  subsetDat <- selectByCriteria(x,substitute(criteria))
+  subsetDat <- popler:::selectByCriteria(x,substitute(criteria))
 
   # tally cases, if tally_by is not NULL
   if(!is.null(tally_by)){
-    out <- tall(subsetDat,tally_by,columnNames,trim)
+    out <- popler:::tall(subsetDat,tally_by,columnNames,trim)
   } else { # if is.null(tally_by), provide unique values for the argument(s)
-    out <- uniqueValues(subsetDat,columnNames,trim)
+    out <- popler:::uniqueValues(subsetDat,columnNames,trim)
   }
   return(out) # return output
 
