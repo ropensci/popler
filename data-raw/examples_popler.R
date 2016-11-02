@@ -1,4 +1,8 @@
 
+# Ways to install popler
+install.packages("C:/Users/ac79/Documents/CODE/popler_0.0.0.9000.zip",repos = NULL )
+install.packages("C:/Users/ac79/Documents/CODE/popler_0.0.0.9000.tar.gz",repos = NULL )
+devtools::install_github("AldoCompagnoni/popler",ref = "v3")
 
 # browse_popler function examples ----------------------------------------------
 browse_popler(group_factors="species")
