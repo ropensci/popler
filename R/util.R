@@ -122,7 +122,7 @@ tall=function(subsetDat,tally_by,columnNames,trim){
   for(i in 1:length(tally_by)){
     
     #does 'tally_by' refers to multiple columns
-    multiTally=multipleColumns(tally_by[i])
+    multiTally=popler:::multipleColumns(tally_by[i])
     
     #columns referring to both group_factors and tallies
     argTallyCol=c(columnNames,multiTally)
@@ -149,7 +149,7 @@ tall=function(subsetDat,tally_by,columnNames,trim){
     }
     
   }
-  out=trimDisplay(Reduce(function(...) merge(...),dfList),trim)
+  out=popler:::trimDisplay(Reduce(function(...) merge(...),dfList),trim)
   return(out)
   
 }
@@ -157,7 +157,7 @@ tall=function(subsetDat,tally_by,columnNames,trim){
 
 # Unique values for arguments
 uniqueValues=function(subsetDat,columnNames,trim){
-  if(!is.null(columnNames)) out=popler::trimDisplay(distinct(select(subsetDat,one_of(columnNames))),trim)
-  if(is.null(columnNames) ) out=popler::trimDisplay(distinct(subsetDat),trim)
+  if(!is.null(columnNames)) out=popler:::trimDisplay(distinct(select(subsetDat,one_of(columnNames))),trim)
+  if(is.null(columnNames) ) out=popler:::trimDisplay(distinct(subsetDat),trim)
   return(out)
 }
