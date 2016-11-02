@@ -4,10 +4,15 @@
 \alias{tunnel_query}
 \title{Browse the popler database}
 \usage{
-tunnel_query(...)
+tunnel_query(..., add_columns = NULL, subtract_columns = NULL,
+  metadata = T)
 }
 \arguments{
 \item{...}{A logical expression using R synthax.}
+
+\item{add_columns}{A string that to specify which columns to add in the default columns used in queries to the database. See Details for default columns.}
+
+\item{subtract_columns}{A string to specify which columns, among the default columsn, the user wishes to discard in queries to the database}
 }
 \value{
 A data frame of the selected data.
