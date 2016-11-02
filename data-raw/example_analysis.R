@@ -2,9 +2,20 @@
 
 # Data ---------------------------------------------------------------
 # Select grasshopper data set 
-grasshop <- tunnel_query(proj_metadata_key == 21)
+grasshop <- tunnel_query(proj_metadata_key == 21, 
+                         subtract_columns = c("month","day"))
+
+# Select all data on Poa
+poa <- tunnel_query(genus == "Poa")
+
+#
+
 # Open up metadata 
 metadata_webpage(21)
+
+
+tunnel_query(family == “Labiatae”)
+
 
 #FIRST, sum up all individuals BY DATE
 #This is actually an individual data set, so it should be treated as such
