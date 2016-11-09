@@ -4,7 +4,7 @@
 \alias{dictionary}
 \title{Dictionary of the popler main table}
 \usage{
-dictionary(select_columns = NULL)
+dictionary(select_columns = NULL, full.table = FALSE)
 }
 \arguments{
 \item{select_columns}{One character string specifying one column of popler's main table for which dictionary information is needed}
@@ -19,5 +19,7 @@ Provides information on the columns of the popler database, and the kind of data
 column_names <- dictionary(select_columns = NULL, full.table = FALSE)
 # Dictionary information
 dictionary_lter <- dictionary(select_columns = "lterid", full.table = FALSE)
+# multiple columns
+dictionary_lter_lat <- dictionary(select_columns = c("lterid","lat_lter"), full.table = FALSE)
 }
 
