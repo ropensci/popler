@@ -4,14 +4,14 @@
 \alias{browse}
 \title{Browse the popler database}
 \usage{
-browse(criteria = NULL, full.table = FALSE, select_columns = NULL)
+browse(criteria = NULL, full_table = FALSE, select_columns = NULL)
 }
 \arguments{
 \item{criteria}{A logical expression to subset popler's main table}
 
-\item{full.table}{Should the function return the standard columns, or the full main table?}
-
 \item{select_columns}{A vector of characters that specifies which columns of popler's main table should be selected.}
+
+\item{full.table}{Should the function return the standard columns, or the full main table?}
 }
 \value{
 A data frame of the main table, or a subset thereof
@@ -23,7 +23,7 @@ This function browses LTER studies contained in the popler database. The user ca
 # No arguments return the standard 16 columns of popler's main table
 standard_columns = browse()
 # full.table==T returns the full table
-full_table = browse(full.table = TRUE)
+full_table = browse(full_table = TRUE)
 # subset only data from the sevilleta LTER 
 sev_data = browse(lterid == "SEV")
 # consider only plant data sets 

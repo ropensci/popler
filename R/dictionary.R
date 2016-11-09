@@ -6,13 +6,13 @@
 #' @export
 #' @examples
 #' # Column names
-#' column_names <- dictionary(select_columns = NULL, full.table = FALSE)
+#' column_names <- dictionary(select_columns = NULL, full_table = FALSE)
 #' # Dictionary information
-#' dictionary_lter <- dictionary(select_columns = "lterid", full.table = FALSE)
+#' dictionary_lter <- dictionary(select_columns = "lterid", full_table = FALSE)
 #' # multiple columns
-#' dictionary_lter_lat <- dictionary(select_columns = c("lterid","lat_lter"), full.table = FALSE)
+#' dictionary_lter_lat <- dictionary(select_columns = c("lterid","lat_lter"), full_table = FALSE)
 
-dictionary <- function(select_columns = NULL, full.table = FALSE){ 
+dictionary <- function(select_columns = NULL, full_table = FALSE){ 
   
   # Load main data table and convert factors to characters
   x <- popler:::factor_to_character(popler:::dataPoplerFunction)
@@ -21,28 +21,14 @@ dictionary <- function(select_columns = NULL, full.table = FALSE){
   names(x) <- tolower( names(x) )
   
   # select data based on 
-  x <- popler:::full_table(x, full.table)
+  x <- popler:::table_select(x, full_table)
   
   # if no column specified, return ALL column names
-  if( is.null(select_columns) ) { 
-    out   <- names(x) 
+  if( is.null(select_columns) ) {
+    out   <- names(x)
   # if colums specified...
   } else {
-    tmp   <- x[,select_columns,drop = FALSE]
-    out   <- list()
-    for(i in 1:length(select_columns)){
-      
-      # if numeric
-      if( is.numeric(tmp[,i]) ) {
-        out[[i]]  <- paste("numeric field: from",min(tmp[,i],na.rm = TRUE),
-                           "to", max(tmp[,i],na.rm = TRUE))
-      # if not numeric, return unique values
-      } else {
-        out[[i]]  <- unique(tmp[,i])
-      }
-      
-    }
-    
+    out   <- popler:::dict_list(x, select_columns)
   } 
   
   return(out)

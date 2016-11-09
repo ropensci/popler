@@ -10,21 +10,6 @@ factor_to_character <- function(x){
 }
 
 
-# Error for misspelled columns in standard table 
-err_standard_tab <- function(select_columns,possibleargs){
-  
-  #Check for spelling mistakes
-  if( !all( is.element(select_columns,possibleargs) ) ) {
-    
-    opt <- options(error=NULL)
-    on.exit(opt)
-    stop(paste0("Error: the following 'argument' entry was mispelled: '",
-                setdiff(select_columns,possibleargs),"' "))
-  }
-
-}
-
-
 # Error for misspelled columns in full table
 err_full_tab <- function(select_columns,columns_full_tab){
   
@@ -51,8 +36,9 @@ select_by_criteria <- function(x,criteria){
   
 }
 
+
 # returns a full table or not
-full_table <- function(x, full.table = FALSE){
+table_select <- function(x, full_table = FALSE){
   
   # Initial group_factors
   possibleargs <- tolower(c("lterid","title",
@@ -61,7 +47,36 @@ full_table <- function(x, full.table = FALSE){
                             "lat_lter","lng_lter",
                             "species","kingdom","phylum","clss","ordr","family","genus"))
   
-  if(full.table == FALSE) return(x[,possibleargs])
-  if(full.table == TRUE)  return(x)
+  if(full_table == FALSE) return(x[,possibleargs])
+  if(full_table == TRUE)  return(x)
 
+}
+
+
+# produce a list of dictionary entries
+dict_list <- function(x, select_columns){
+    
+  # select columns
+  tmp   <- x[, select_columns, drop = FALSE]
+  # list to contain dictionary of selected columns 
+  out   <- list()
+  
+  # loop through selected columns
+  for(i in 1:length(select_columns)){
+    
+    # if numeric
+    if( is.numeric(tmp[,i]) ) {
+      out[[i]]  <- paste("numeric field: from",min(tmp[,i],na.rm = TRUE),
+                         "to", max(tmp[,i],na.rm = TRUE))
+      # if not numeric, return unique values
+    } else {
+      out[[i]]  <- unique(tmp[,i])
+    }
+    
+  }
+
+  # name list elements by the column they refer to
+  names(out)  <- select_columns
+  return(out)
+  
 }

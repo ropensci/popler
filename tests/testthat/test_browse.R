@@ -21,11 +21,6 @@ test_that("Informational messages", {
                             "study_site_key","datatype", "structured",
                             "species","taxonomy","kingdom","phylum","clss","ordr","family","genus"))
   
-  # errors standard table
-  expect_error(popler:::err_standard_tab("lter_id",possibleargs))
-  expect_error(popler:::err_standard_tab("titles_study",possibleargs))
-  expect_error(popler:::err_standard_tab("metadatalink",possibleargs))
-  
   # errors table
   expect_error(popler:::err_full_tab("pi",possibleargs))
   expect_error(popler:::err_full_tab("proj_metadata_fkey",possibleargs))
