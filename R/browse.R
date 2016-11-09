@@ -20,7 +20,7 @@
 
 
 # The actual popler function
-browse <- function(criteria = NULL, full.table = F, select_columns = NULL){
+browse <- function(criteria = NULL, full.table = FALSE, select_columns = NULL){
 
   # Load main data table and convert factors to characters
   x <- popler:::factor_to_character(popler:::dataPoplerFunction)

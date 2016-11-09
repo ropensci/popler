@@ -1,0 +1,40 @@
+#' Dictionary of the popler main table
+#'
+#' Provides information on the columns of the popler database, and the kind of data contained in those columns
+#' @param select_columns One character string specifying one column of popler's main table for which dictionary information is needed
+#' @param full.table Should the function return the standard columns, or the full main table?
+#' @export
+#' @examples
+#' # Column names
+#' column_names <- dictionary(select_columns = NULL, full.table = FALSE)
+#' # Dictionary information
+#' dictionary_lter <- dictionary(select_columns = "lterid", full.table = FALSE)
+
+dictionary <- function(select_columns = NULL){ #, full.table = FALSE
+  
+  # Load main data table and convert factors to characters
+  x <- popler:::factor_to_character(popler:::dataPoplerFunction)
+  
+  # Case insensitive matching ("lower" everything)
+  names(x) <- tolower( names(x) )
+  
+  # if no column specified, return ALL column names
+  if( is.null(select_columns) ) { 
+    out   <- names(x) 
+  # if colums specified...
+  } else {
+    tmp   <- x[,select_columns]
+    # if numeric, point that out  
+    if( is.numeric(tmp) ) {
+      out <- paste("numeric field: from",min(tmp,na.rm = TRUE),
+                   "to", max(tmp,na.rm = TRUE))
+    # if not numeric, return unique values
+    } else { 
+      out <- unique(tmp)
+    }
+    
+  } 
+  
+  return(out)
+  
+}
