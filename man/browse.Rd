@@ -4,12 +4,12 @@
 \alias{browse}
 \title{Browse the popler database}
 \usage{
-browse(select_columns = NULL, full.table = F)
+browse(criteria = NULL, full.table = F, select_columns = NULL)
 }
 \arguments{
-\item{select_columns}{A vector of characters that specifies which columns of popler's main table should be selected.}
-
 \item{full.table}{Should the function return the standard columns, or the full main table?}
+
+\item{select_columns}{A vector of characters that specifies which columns of popler's main table should be selected.}
 }
 \value{
 A data frame of the main table, or a subset thereof
@@ -19,10 +19,10 @@ This function browses LTER studies contained in the popler database. The user ca
 }
 \examples{
 # No arguments return the standard 16 columns of popler's main table
-browse()
+standard_columns = browse()
 # full.table==T returns the full table
-browse(full.table = T)
+full_table = browse(full.table = T)
 # Select only the data you need
-browse(c("title","genus","species"), full.table = T)
+three_columns = browse(full.table = T, c("title","genus","species"))
 }
 

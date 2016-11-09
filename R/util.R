@@ -39,3 +39,15 @@ err_full_tab=function(select_columns,columns_full_tab){
   
 }
 
+
+# Summarizing function
+select_by_criteria=function(x,criteria){
+  
+  if(!is.null(criteria)) {
+    r <- which(eval(criteria, x, parent.frame()))
+    subsetDat=tbl_df(x[r,,drop=F]) #tbl_df() to make object "work" with dplyr functions
+  } else { subsetDat=tbl_df(x) }
+  return(subsetDat)
+  
+}
+
