@@ -7,6 +7,8 @@
 browse(criteria = NULL, full.table = F, select_columns = NULL)
 }
 \arguments{
+\item{criteria}{A logical expression to subset popler's main table}
+
 \item{full.table}{Should the function return the standard columns, or the full main table?}
 
 \item{select_columns}{A vector of characters that specifies which columns of popler's main table should be selected.}
@@ -22,7 +24,11 @@ This function browses LTER studies contained in the popler database. The user ca
 standard_columns = browse()
 # full.table==T returns the full table
 full_table = browse(full.table = T)
+# subset only data from the sevilleta LTER 
+sev_data = browse(lterid == "SEV")
+# consider only plant data sets 
+plant_data = browse(kingdom == "Plantae")
 # Select only the data you need
-three_columns = browse(full.table = T, c("title","genus","species"))
+three_columns = browse(full.table = T, select_columns = c("title","genus","species"))
 }
 

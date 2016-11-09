@@ -10,13 +10,13 @@
 #' # No arguments return the standard 16 columns of popler's main table
 #' standard_columns = browse()
 #' # full.table==T returns the full table
-#' full_table = browse(full.table = T)
+#' full_table = browse(full.table = TRUE)
 #' # subset only data from the sevilleta LTER 
 #' sev_data = browse(lterid == "SEV")
 #' # consider only plant data sets 
 #' plant_data = browse(kingdom == "Plantae")
 #' # Select only the data you need
-#' three_columns = browse(full.table = T, select_columns = c("title","genus","species"))
+#' three_columns = browse(select_columns = c("title","genus","species"))
 
 
 # The actual popler function
