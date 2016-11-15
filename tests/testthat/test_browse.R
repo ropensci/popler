@@ -5,11 +5,11 @@ context("browse() function")
 # does this function actually return character columns? 
 test_that("Format Main Table", {
   
-  expect_equal(is.character(popler:::formatMainTable(popler:::dataPoplerFunction)[,2]),T)
-  expect_equal(is.character(popler:::formatMainTable(popler:::dataPoplerFunction)[,3]),T)
-  expect_equal(is.character(popler:::formatMainTable(popler:::dataPoplerFunction)[,4]),T)
-  expect_equal(is.character(popler:::formatMainTable(popler:::dataPoplerFunction)[,8]),T)
-  expect_equal(is.character(popler:::formatMainTable(popler:::dataPoplerFunction)[,9]),T)
+  expect_equal(is.character(popler:::factor_to_character(popler:::main_popler)[,2]),T)
+  expect_equal(is.character(popler:::factor_to_character(popler:::main_popler)[,3]),T)
+  expect_equal(is.character(popler:::factor_to_character(popler:::main_popler)[,4]),T)
+  expect_equal(is.character(popler:::factor_to_character(popler:::main_popler)[,8]),T)
+  expect_equal(is.character(popler:::factor_to_character(popler:::main_popler)[,9]),T)
   
 })
 
@@ -34,7 +34,7 @@ test_that("Informational messages", {
 test_that("Select by criteria", {
   
   # Data
-  x <- popler:::factor_to_character(popler:::dataPoplerFunction)
+  x <- popler:::factor_to_character(popler:::main_popler)
   
   # Test 1 
   subset_data <- popler:::select_by_criteria(x,substitute(kingdom == "Plantae"))

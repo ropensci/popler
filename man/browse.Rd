@@ -2,32 +2,40 @@
 % Please edit documentation in R/browse.R
 \name{browse}
 \alias{browse}
-\title{Browse the popler database}
+\title{Browse the project metadata contained in the popler database}
 \usage{
-browse(criteria = NULL, full_table = FALSE, select_columns = NULL)
+browse(criteria = NULL, full_table = FALSE, select_columns = NULL,
+  trim = TRUE)
 }
 \arguments{
 \item{criteria}{A logical expression to subset popler's main table}
 
+\item{full_table}{Should the function return the standard columns, or the full main table?}
+
 \item{select_columns}{A vector of characters that specifies which columns of popler's main table should be selected.}
 
-\item{full.table}{Should the function return the standard columns, or the full main table?}
+\item{trim}{if TRUE, strings are truncated at the 50th character. Default is TRUE.}
 }
 \value{
-A data frame of the main table, or a subset thereof
+A data frame combining the metadata of each project and the taxonomic units associated with each project.
 }
 \description{
-This function browses LTER studies contained in the popler database. The user can group, tally, and subset the data sets based on a number of factors (or columns) of that characterize datasets in the database.
+browse() reports the metadata of LTER studies contained in the popler database. 
+The user can subset what data and what columns to visualize.
 }
 \examples{
 # No arguments return the standard 16 columns of popler's main table
 standard_columns = browse()
+
 # full.table==T returns the full table
 full_table = browse(full_table = TRUE)
+
 # subset only data from the sevilleta LTER 
 sev_data = browse(lterid == "SEV")
+
 # consider only plant data sets 
 plant_data = browse(kingdom == "Plantae")
+
 # Select only the data you need
 three_columns = browse(select_columns = c("title","genus","species"))
 }

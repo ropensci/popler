@@ -3,6 +3,7 @@ setwd("C:/Users/ac79/Documents/CODE/popler")
 
 library(RPostgreSQL)
 library(dplyr)
+library(tidyr)
 
 # generate main data table--------------------------------------------
 
@@ -18,7 +19,7 @@ taxa_cols     <- as.data.frame(tbl(conn, sql( "SELECT column_name FROM informati
                                               table_name = 'taxa_table'")))[,1]
 seach_cols    <- paste( c(proj_cols,lter_cols,taxa_cols), collapse = ", ")
 
-
+# query result
 table_search <- tbl(conn, sql(
   paste("SELECT", seach_cols, 
         "FROM project_table",
@@ -31,9 +32,27 @@ table_search <- tbl(conn, sql(
         "JOIN lter_table ON study_site_table.lter_table_fkey =",
         "lter_table.lterid")))
 
+# Convert to data.frame and create 'duration_years'
 out                 <- as.data.frame(table_search, n=-1)
 out$duration_years  <- out$studyendyr - out$studystartyr
-dataPoplerFunction  <- out
+# Select project-specific information 
+proj_info           <- out[,c(proj_cols,"duration_years",lter_cols)]
+# Discard replicated information
+out_proj            <- unique(proj_info)
 
-# store main data table--------------------------------------------
-devtools::use_data(dataPoplerFunction, internal = T, overwrite = T)
+# Unique Taxonomic information 
+taxas     <- taxa_cols[-c(1:2)]
+out_taxa  <- unique(out[,c("proj_metadata_key",taxas)])
+
+
+# Nest species data --------------------------------------------------
+out_no_site <- merge(out_proj, out_taxa) 
+
+# Next taxonomic data 
+# out_nest  <- no_site %>% 
+#              group_by_(.dots = setdiff(names(no_site),taxas) ) %>%
+#                nest(.key = taxonomy)
+
+# store main data table--------------------------------------------------
+main_popler <- out_no_site
+devtools::use_data(main_popler, internal = T, overwrite = T)
