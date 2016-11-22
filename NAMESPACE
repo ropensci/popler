@@ -2,4 +2,6 @@
 
 export(browse)
 export(dictionary)
-export(tally_by)
+export(get_data)
+export(parse_to_sql_search)
+export(summary_popler)
