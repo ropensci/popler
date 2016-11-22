@@ -8,6 +8,7 @@
 #' @param trim If TRUE, strings are truncated at the 50th character. Default is TRUE.
 #' @param view If TRUE, opens up a spreadsheet-style data viewer. If view == "fix" it opens the data frame in a text editor rather than a spreadsheet-style viewer
 #' @return A data frame combining the metadata of each project and the taxonomic units associated with each project.
+#' @return This data frame is of class "popler", "data.frame", "tbl_df", and "tbl".  
 #' @export
 #' @examples
 #' # No arguments return the standard 16 columns of popler's main table
@@ -24,6 +25,9 @@
 #' 
 #' # Select only the data you need
 #' three_columns = browse(variables = c("title","proj_metadata_key","genus","species"))
+#' 
+#' # Select only the data you need
+#' study_21 = browse( proj_metadata_key == 21)
 
 
 # The browse popler function
@@ -61,7 +65,7 @@ browse <- function(..., full_table = FALSE, variables = NULL, trim = TRUE, view 
   
   # attribute class "popler"
   out            <- structure(out_form, 
-                              class = c(class(out_form), "popler"),
+                              class = c("popler", class(out_form)),
                               search_argument = substitute(...) )
   
   return(out)

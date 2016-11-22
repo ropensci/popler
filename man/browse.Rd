@@ -20,6 +20,8 @@ browse(..., full_table = FALSE, variables = NULL, trim = TRUE,
 }
 \value{
 A data frame combining the metadata of each project and the taxonomic units associated with each project.
+
+This data frame is of class "popler", "data.frame", "tbl_df", and "tbl".
 }
 \description{
 browse() reports the metadata of LTER studies contained in the popler database. 
