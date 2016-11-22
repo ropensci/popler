@@ -46,7 +46,7 @@ test_that("Select by criteria", {
   subset_data <- popler:::select_by_criteria(x,substitute(genus == "Poa"))
   expect_equal( unique(subset_data$genus), "Poa")
   
-  rm(list=c("x","subsetDat"))
+  rm(list=c("x","subset_data"))
   
 })
 
