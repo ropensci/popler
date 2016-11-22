@@ -4,17 +4,19 @@
 \alias{browse}
 \title{Browse the project metadata contained in the popler database}
 \usage{
-browse(criteria = NULL, full_table = FALSE, select_columns = NULL,
-  trim = TRUE)
+browse(..., full_table = FALSE, variables = NULL, trim = TRUE,
+  view = FALSE)
 }
 \arguments{
-\item{criteria}{A logical expression to subset popler's main table}
+\item{...}{A logical expression to subset popler's main table}
 
 \item{full_table}{Should the function return the standard columns, or the full main table?}
 
-\item{select_columns}{A vector of characters that specifies which columns of popler's main table should be selected.}
+\item{variables}{A vector of characters that specifies which columns of popler's main table should be selected.}
 
-\item{trim}{if TRUE, strings are truncated at the 50th character. Default is TRUE.}
+\item{trim}{If TRUE, strings are truncated at the 50th character. Default is TRUE.}
+
+\item{view}{If TRUE, opens up a spreadsheet-style data viewer. If view == "fix" it opens the data frame in a text editor rather than a spreadsheet-style viewer}
 }
 \value{
 A data frame combining the metadata of each project and the taxonomic units associated with each project.
@@ -37,6 +39,6 @@ sev_data = browse(lterid == "SEV")
 plant_data = browse(kingdom == "Plantae")
 
 # Select only the data you need
-three_columns = browse(select_columns = c("title","genus","species"))
+three_columns = browse(variables = c("title","genus","species"))
 }
 
