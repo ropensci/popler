@@ -17,6 +17,8 @@ elastic_tab <- function(x, shrink = TRUE, full_table){
     out  <- x %>% 
       group_by_(.dots = setdiff(names(x),taxas) ) %>%
         nest(.key = taxonomy)
+    # Names of taxonomic lists
+    names(out$taxonomy)  <- paste0("taxa_project_#_",out$proj_metadata_key)
   } else {
     out  <- x %>% 
       group_by_( .dots = setdiff(names(x), "taxonomy") ) %>%
@@ -70,11 +72,11 @@ select_by_criteria <- function(x,criteria){
 table_select <- function(x, full_table = FALSE){
   
   # Initial group_factors
-  possibleargs <- tolower(c("lterid","title",
+  possibleargs <- tolower(c("title","proj_metadata_key","lterid",
                             "datatype","studytype","duration_years",
                             "community","structured",
                             "lat_lter","lng_lter",
-                            "species","kingdom","phylum","clss","ordr","family","genus"))
+                            "species","kingdom","phylum","clss","ordr","family","genus") )
   
   if(full_table == FALSE) return(x[,possibleargs])
   if(full_table == TRUE)  return(x)
@@ -91,7 +93,7 @@ dict_list <- function(x, select_columns){
   out   <- list()
   
   # loop through selected columns
-  for(i in 1:length(select_columns)){
+  for(i in 1:length(select_columns) ){
     
     # if numeric
     if( is.numeric(tmp[,i]) ) {
@@ -100,6 +102,8 @@ dict_list <- function(x, select_columns){
       # if not numeric, return unique values
     } else {
       out[[i]]  <- unique(tmp[,i])
+      # remove NAs
+      out[[i]]  <- out[[i]][out[[i]] != "NA"]
     }
     
   }
@@ -117,7 +121,7 @@ trim_display=function(x, trim){
   if(trim==T){
     tmp=as.data.frame(x)
     for(i in 1:ncol(tmp)){
-      if(is.character(tmp[,i])){ tmp[,i]=strtrim(tmp[,i],50) }
+      if(is.character(tmp[,i])){ tmp[,i]=strtrim(tmp[,i],25) }
     }
     tmp=as.tbl(tmp)
     return(tmp)
@@ -184,4 +188,74 @@ multiple_columns=function(x) {
     columnNames=c(x[-oldIds],newArg)
     return(columnNames)
   } else(return(x))
+}
+
+
+# explain meaning of dictionary variables 
+dictionary_explain <- function(x){
+  
+  if( ncol(x) < 60){
+    out = data.frame(variable = names(x), 
+                     description=c("title of project","unique project id","lter name",
+                                   "type of abundance data (count,biomass,cover,density,individual)",
+                                   "experimental or observational study?","duration of project in years",
+                                   "does data set contain multiple taxa?","is indidivual data structured?",
+                                   "lter site latitude", "lter site longitude","specific epithet of a taxonomic unit",
+                                   "kingdom","phylum","class","order","family","genus") )
+  } else {
+    out = data.frame(variable = names(x), 
+                     description=c("project_id","title of project",
+                                   "unit by which abundance was measured",
+                                   "type of abundance data (count,biomass,cover,density,individual)",
+                                   "is indidivual data structured? (e.g. by size, age, or sex)",
+                                   "year of first observation","year of last observation",
+                                   "frequency of sampling (e.g. yearly, seasonal, monthly)",
+                                   "experimental or observational study?",
+                                   "does data set contain multiple taxa?",
+                                   
+                                   "extent (in area or volume) of replication level 1 (highest rep. level: site)",
+                                   "unit of measure by which extent of the replication level 1 was measured",
+                                   "label by which rep. level 1 is identified in the original data set",
+                                   "replication of replication level 1",
+                                   "extent (in area or volume) of replication level 2 (highest rep. level: site)",
+                                   "unit of measure by which extent of the replication level 2 was measured",
+                                   "label by which rep. level 2 is identified in the original data set",
+                                   "replication of replication level 2",
+                                   "extent (in area or volume) of replication level 3 (highest rep. level: site)",
+                                   "unit of measure by which extent of the replication level 3 was measured",
+                                   "label by which rep. level 3 is identified in the original data set",
+                                   "replication of replication level 3",
+                                   "extent (in area or volume) of replication level 4 (highest rep. level: site)",
+                                   "unit of measure by which extent of the replication level 4 was measured",
+                                   "label by which rep. level 4 is identified in the original data set",
+                                   "replication of replication level 4",
+                                   
+                                   "type of treatment, if project is experimental",
+                                   "is abundance a derived quantity?", # make 100% sure this is correct
+                                   "authors of the study",
+                                   "email contact of study's authors",
+                                   "web address of study's metadata",
+                                   "identifier of the knb Catalog System", 
+                                   
+                                   "duration of project in years",
+                                   "LTER site identification code",
+                                   "full name of LTER site",
+                                   "LTER site latitude", "LTER site longitude",
+                                   "is LTER site currently_funded? (1 is funded, 0 is not funded)",
+                                   "current principlal investigator of LTER",
+                                   "email of LTER's current principlal investigator",
+                                   "alternative email of LTER's current principlal investigator",
+                                   "LTER homepage web address",
+                                   
+                                   "species code (generally refers to a binomial name (genus, species)",
+                                   "kingdom","subkingdom","infrakingdom",
+                                   "superdivision","division", 
+                                   "subdivision","superphylum",
+                                   "phylum","subphylum","class","subclass","order","family","genus",
+                                   "specific epithet", "species' common name", 
+                                   "scholar who first published the species name") )
+  }
+  
+  return(out)
+  
 }
