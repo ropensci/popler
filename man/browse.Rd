@@ -39,6 +39,6 @@ sev_data = browse(lterid == "SEV")
 plant_data = browse(kingdom == "Plantae")
 
 # Select only the data you need
-three_columns = browse(variables = c("title","genus","species"))
+three_columns = browse(variables = c("title","proj_metadata_key","genus","species"))
 }
 

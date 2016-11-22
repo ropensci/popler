@@ -7,9 +7,9 @@
 parse_to_sql_search(..., lazy = F)
 }
 \arguments{
-\item{...}{A logical expression that specifies which records to keep.}
+\item{...}{A logical expression that specifies which fields to keep.}
 
-\item{lazy}{logical argument: lazy evaluation of logical expression or not?}
+\item{lazy}{should lazy evaluation of logical expression be used?}
 }
 \value{
 A string with an SQL statement

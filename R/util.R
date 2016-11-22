@@ -76,7 +76,7 @@ table_select <- function(x, full_table = FALSE){
                             "datatype","studytype","duration_years",
                             "community","structured",
                             "lat_lter","lng_lter",
-                            "species","kingdom","phylum","clss","ordr","family","genus") )
+                            "species","kingdom","phylum","class","order","family","genus") )
   
   if(full_table == FALSE) return(x[,possibleargs])
   if(full_table == TRUE)  return(x)
@@ -190,6 +190,14 @@ multiple_columns=function(x) {
   } else(return(x))
 }
 
+# changes clss to class and ordr to order
+class_order <- function(x){
+  
+  r           <- which(names(x) %in% c("clss","ordr") ) 
+  names(x)[r] <- c("class","order")
+  return(x)
+  
+}
 
 # explain meaning of dictionary variables 
 dictionary_explain <- function(x){
@@ -259,3 +267,4 @@ dictionary_explain <- function(x){
   return(out)
   
 }
+

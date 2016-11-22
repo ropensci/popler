@@ -23,7 +23,7 @@
 #' plant_data = browse(kingdom == "Plantae")
 #' 
 #' # Select only the data you need
-#' three_columns = browse(variables = c("title","genus","species"))
+#' three_columns = browse(variables = c("title","proj_metadata_key","genus","species"))
 
 
 # The browse popler function
@@ -31,13 +31,14 @@ browse <- function(..., full_table = FALSE, variables = NULL, trim = TRUE, view 
 
   # LOAD two object data types
   # Data table; convert factors to characters
-  x           <- popler:::factor_to_character(popler:::main_popler)
+  main_t        <- popler:::factor_to_character(popler:::main_popler)
   
   # Case insensitive matching ("lower" everything)
-  names(x)    <- tolower( names(x) )
-
+  names(main_t) <- tolower( names(main_t) )
+  main_t        <- popler:::class_order(main_t)
+  
   # Select by subset 
-  subset_data <- popler:::select_by_criteria(x, substitute(...) )
+  subset_data <- popler:::select_by_criteria(main_t, substitute(...) )
   
   # select data based on 
   subset_data <- popler:::table_select(subset_data, full_table)
@@ -47,7 +48,7 @@ browse <- function(..., full_table = FALSE, variables = NULL, trim = TRUE, view 
     out_cols <- subset_data
   } else{
     # Error message if column names are incorrect
-    popler:::err_full_tab( variables,names(x) )
+    popler:::err_full_tab( variables,names(orig) )
     # If not, select said columns
     out_cols <- subset_data[,variables]
   }
@@ -59,9 +60,8 @@ browse <- function(..., full_table = FALSE, variables = NULL, trim = TRUE, view 
   if(view == TRUE) View(out_form) ; if(view == "fix") fix(out_form) 
   
   # attribute class "popler"
-  #out      <- structure(list(out_form,search_arg), class = "popler") 
   out            <- structure(out_form, 
-                              class = c(class(out_form),"popler"),
+                              class = c(class(out_form), "popler"),
                               search_argument = substitute(...) )
   
   return(out)

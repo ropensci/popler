@@ -25,6 +25,7 @@ summary_popler <- function(group_variables = NULL, count_variables = "title", tr
   
   # read data
   browse_data <- popler:::factor_to_character(popler:::main_popler)
+  browse_data <- class_order(browse_data)
   
   # tally cases, if tally_by is not NULL
   out <- popler:::tallies(browse_data, count_variables, group_variables, trim = TRUE)
