@@ -4,10 +4,10 @@
 \alias{dictionary}
 \title{Dictionary of the popler metadata}
 \usage{
-dictionary(select_columns = NULL, full_table = FALSE)
+dictionary(variables = NULL, full_table = FALSE)
 }
 \arguments{
-\item{select_columns}{A character string specifying one column of popler's main table for which dictionary information is needed}
+\item{variables}{A character string specifying one column of popler's main table for which dictionary information is needed}
 
 \item{full_table}{Should the function return the standard columns, or the full main table?}
 }
@@ -16,12 +16,12 @@ Provides information on the columns of metadata contained in the popler database
 }
 \examples{
 # Column names
-column_names <- dictionary(select_columns = NULL, full_table = FALSE)
+column_names <- dictionary(variables = NULL, full_table = FALSE)
 
 # Dictionary information
-dictionary_lter <- dictionary(select_columns = "lterid", full_table = FALSE)
+dictionary_lter <- dictionary(variables = "lterid", full_table = FALSE)
 
 # multiple columns
-dictionary_lter_lat <- dictionary(select_columns = c("lterid","lat_lter"), full_table = FALSE)
+dictionary_lter_lat <- dictionary(variables = c("lterid","lat_lter"), full_table = FALSE)
 }
 
