@@ -46,12 +46,7 @@ out_taxa  <- unique(out[,c("proj_metadata_key",taxas)])
 
 
 # Nest species data --------------------------------------------------
-out_no_site <- merge(out_proj, out_taxa) 
-
-# Next taxonomic data 
-# out_nest  <- no_site %>% 
-#              group_by_(.dots = setdiff(names(no_site),taxas) ) %>%
-#                nest(.key = taxonomy)
+out_no_site <- merge(out_proj, out_taxa)
 
 # store main data table--------------------------------------------------
 main_popler <- out_no_site
