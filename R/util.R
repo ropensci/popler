@@ -86,30 +86,67 @@ table_select <- function(x, full_tbl = FALSE){
 
 # produce a list of dictionary entries
 dict_list <- function(x, select_columns){
-    
-  # select columns
-  tmp   <- x[, select_columns, drop = FALSE]
-  # list to contain dictionary of selected columns 
-  out   <- list()
   
-  # loop through selected columns
-  for(i in 1:length(select_columns) ){
+  # list to contain dictionary of selected columns 
+  out       <- list()
+  
+  if( any( "species" == select_columns) ){
     
-    # if numeric
-    if( is.numeric(tmp[,i]) ) {
-      out[[i]]  <- paste("numeric field: from",min(tmp[,i],na.rm = TRUE),
-                         "to", max(tmp[,i],na.rm = TRUE))
-      # if not numeric, return unique values
-    } else {
-      out[[i]]  <- unique(tmp[,i])
-      # remove NAs
-      out[[i]]  <- out[[i]][out[[i]] != "NA"]
+    select_columns = c(c("genus","species"),
+                       setdiff(select_columns,c("genus","species")))
+    
+    tmp       <- unique(x[,c("genus","species")], drop = FALSE)
+    out[[1]]  <- arrange_(tmp, .dots = c("genus","species") )
+    names(out)[1] <- "species"
+    
+    if( length(select_columns) > 2 ){
+      
+      # select columns
+      sub_cols  <- x[, select_columns, drop = FALSE]
+      
+      # loop through selected columns
+      for(i in 3:length(select_columns) ){
+        
+        # if numeric
+        if( is.numeric(sub_cols[,i]) ) {
+          out[[i-1]]        <- paste("numeric field: from",min(sub_cols[,i],na.rm = TRUE),
+                                      "to", max(sub_cols[,i],na.rm = TRUE))
+          names(out)[i-1]   <- select_columns[i]
+          
+          # if not numeric, return unique values
+        } else {
+          out[[i-1]]        <- unique(sub_cols[,i])[ order(unique(sub_cols[,i])) ]
+          names(out)[i-1]   <- select_columns[i]
+          # remove NAs
+          out[[i-1]]  <- out[[i-1]][out[[i-1]] != "NA"]
+        }
+      }
     }
     
+  } else{
+    
+    # select columns
+    sub_cols  <- x[, select_columns, drop = FALSE]
+    
+    # loop through selected columns
+    for(i in 1:length(select_columns) ){
+      # if numeric
+      if( is.numeric(sub_cols[,i]) ) {
+        out[[i]]        <- paste("numeric field: from",min(sub_cols[,i],na.rm = TRUE),
+                                  "to", max(sub_cols[,i],na.rm = TRUE))
+        names(out)[i]   <- select_columns[i]
+        # if not numeric, return unique values
+      } else {
+        out[[i]]        <- unique(sub_cols[,i])[ order(unique(sub_cols[,i])) ]
+        names(out)[i]   <- select_columns[i]
+        # remove NAs
+        out[[i]]  <- out[[i]][out[[i]] != "NA"]
+      }
+    }
+   
   }
-
+  
   # name list elements by the column they refer to
-  names(out)  <- select_columns
   return(out)
   
 }
