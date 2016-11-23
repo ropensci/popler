@@ -4,7 +4,7 @@
 #' The user can subset what data and what columns to visualize.  
 #' @param ... A logical expression to subset popler's main table
 #' @param full_tbl Should the function return the standard columns, or the full main table?
-#' @param variables A vector of characters that specifies which columns of popler's main table should be selected.
+#' @param vars A vector of characters that specifies which columns of popler's main table should be selected.
 #' @param trim If TRUE, strings are truncated at the 50th character. Default is TRUE.
 #' @param view If TRUE, opens up a spreadsheet-style data viewer. If view == "fix" it opens the data frame in a text editor rather than a spreadsheet-style viewer
 #' @return A data frame combining the metadata of each project and the taxonomic units associated with each project.
@@ -24,14 +24,14 @@
 #' plant_data = browse(kingdom == "Plantae")
 #' 
 #' # Select only the data you need
-#' three_columns = browse(variables = c("title","proj_metadata_key","genus","species"))
+#' three_columns = browse(vars = c("title","proj_metadata_key","genus","species"))
 #' 
 #' # Select only the data you need
 #' study_21 = browse( proj_metadata_key == 21)
 
 
 # The browse popler function
-browse <- function(..., full_tbl = FALSE, variables = NULL, trim = TRUE, view = FALSE){
+browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE){
 
   # LOAD two object data types
   # Data table; convert factors to characters
@@ -48,13 +48,13 @@ browse <- function(..., full_tbl = FALSE, variables = NULL, trim = TRUE, view = 
   subset_data <- popler:::table_select(subset_data, full_tbl)
   
   # If no column specified, return all columns
-  if( is.null(variables) ){
+  if( is.null(vars) ){
     out_cols <- subset_data
   } else{
     # Error message if column names are incorrect
-    popler:::err_full_tab( variables,names(orig) )
+    popler:::err_full_tab( vars,names(orig) )
     # If not, select said columns
-    out_cols <- subset_data[,variables]
+    out_cols <- subset_data[,vars]
   }
   
   out_form <- popler:::elastic_tab(out_cols, shrink = TRUE, full_tbl)
