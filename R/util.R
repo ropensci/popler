@@ -1,8 +1,8 @@
 # expand table (to nest/unnest taxonomic info) 
-elastic_tab <- function(x, shrink = TRUE, full_table){
+elastic_tab <- function(x, shrink = TRUE, full_tbl){
   
   # select taxonomic information (based on full_ or standard_table)
-  if( full_table == FALSE){
+  if( full_tbl == FALSE){
     taxas <- c("species","kingdom","phylum","class","order","family","genus")
   } else {
     taxas <- c('sppcode','kingdom','subkingdom','infrakingdom',
@@ -31,7 +31,7 @@ elastic_tab <- function(x, shrink = TRUE, full_table){
 
 
 # Converts factor columns into character format
-factor_to_character <- function(x, full_table = FALSE){
+factor_to_character <- function(x, full_tbl = FALSE){
   
   for(i in 1:ncol(x)){
     if(class(x[,i])=="factor") x[,i]=as.character(x[,i])
@@ -69,7 +69,7 @@ select_by_criteria <- function(x,criteria){
 
 
 # returns a full table or not
-table_select <- function(x, full_table = FALSE){
+table_select <- function(x, full_tbl = FALSE){
   
   # Initial group_factors
   possibleargs <- tolower(c("title","proj_metadata_key","lterid",
@@ -78,8 +78,8 @@ table_select <- function(x, full_table = FALSE){
                             "lat_lter","lng_lter",
                             "species","kingdom","phylum","class","order","family","genus") )
   
-  if(full_table == FALSE) return(x[,possibleargs])
-  if(full_table == TRUE)  return(x)
+  if(full_tbl == FALSE) return(x[,possibleargs])
+  if(full_tbl == TRUE)  return(x)
 
 }
 

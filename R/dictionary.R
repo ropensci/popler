@@ -2,19 +2,19 @@
 #'
 #' Provides information on the columns of metadata contained in the popler database, and the kind of data contained in those columns.
 #' @param variables A character string specifying one column of popler's main table for which dictionary information is needed
-#' @param full_table Should the function return the standard columns, or the full main table?
+#' @param full_tbl Should the function return the standard columns, or the full main table?
 #' @export
 #' @examples
 #' # Column names
-#' column_names <- dictionary(variables = NULL, full_table = FALSE)
+#' column_names <- dictionary(variables = NULL, full_tbl = FALSE)
 #' 
 #' # Dictionary information
-#' dictionary_lter <- dictionary(variables = "lterid", full_table = FALSE)
+#' dictionary_lter <- dictionary(variables = "lterid", full_tbl = FALSE)
 #' 
 #' # multiple columns
-#' dictionary_lter_lat <- dictionary(variables = c("lterid","lat_lter"), full_table = FALSE)
+#' dictionary_lter_lat <- dictionary(variables = c("lterid","lat_lter"), full_tbl = FALSE)
 
-dictionary <- function(variables = NULL, full_table = FALSE){
+dictionary <- function(variables = NULL, full_tbl = FALSE){
   
   # Load main data table and convert factors to characters
   main_t        <- popler:::factor_to_character(popler:::main_popler)
@@ -26,7 +26,7 @@ dictionary <- function(variables = NULL, full_table = FALSE){
   # if no column specified, return ALL column names
   if( is.null(variables) ){
     # select data based on 
-    tmp   <- popler:::table_select(main_t, full_table)
+    tmp   <- popler:::table_select(main_t, full_tbl)
     out   <- popler:::dictionary_explain(tmp)
   # if colums specified.
   } else {

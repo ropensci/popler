@@ -3,7 +3,7 @@
 #' browse() reports the metadata of LTER studies contained in the popler database. 
 #' The user can subset what data and what columns to visualize.  
 #' @param ... A logical expression to subset popler's main table
-#' @param full_table Should the function return the standard columns, or the full main table?
+#' @param full_tbl Should the function return the standard columns, or the full main table?
 #' @param variables A vector of characters that specifies which columns of popler's main table should be selected.
 #' @param trim If TRUE, strings are truncated at the 50th character. Default is TRUE.
 #' @param view If TRUE, opens up a spreadsheet-style data viewer. If view == "fix" it opens the data frame in a text editor rather than a spreadsheet-style viewer
@@ -15,7 +15,7 @@
 #' standard_columns = browse()
 #' 
 #' # full.table==T returns the full table
-#' full_table = browse(full_table = TRUE)
+#' full_tbl = browse(full_tbl = TRUE)
 #' 
 #' # subset only data from the sevilleta LTER 
 #' sev_data = browse(lterid == "SEV")
@@ -31,7 +31,7 @@
 
 
 # The browse popler function
-browse <- function(..., full_table = FALSE, variables = NULL, trim = TRUE, view = FALSE){
+browse <- function(..., full_tbl = FALSE, variables = NULL, trim = TRUE, view = FALSE){
 
   # LOAD two object data types
   # Data table; convert factors to characters
@@ -45,7 +45,7 @@ browse <- function(..., full_table = FALSE, variables = NULL, trim = TRUE, view 
   subset_data <- popler:::select_by_criteria(main_t, substitute(...) )
   
   # select data based on 
-  subset_data <- popler:::table_select(subset_data, full_table)
+  subset_data <- popler:::table_select(subset_data, full_tbl)
   
   # If no column specified, return all columns
   if( is.null(variables) ){
@@ -57,7 +57,7 @@ browse <- function(..., full_table = FALSE, variables = NULL, trim = TRUE, view 
     out_cols <- subset_data[,variables]
   }
   
-  out_form <- popler:::elastic_tab(out_cols, shrink = TRUE, full_table)
+  out_form <- popler:::elastic_tab(out_cols, shrink = TRUE, full_tbl)
   out_form <- popler:::trim_display(out_form, trim)
   
   # write output
