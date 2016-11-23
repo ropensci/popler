@@ -3,12 +3,12 @@ elastic_tab <- function(x, shrink = TRUE, full_table){
   
   # select taxonomic information (based on full_ or standard_table)
   if( full_table == FALSE){
-    taxas <- c("species","kingdom","phylum","clss","ordr","family","genus")
+    taxas <- c("species","kingdom","phylum","class","order","family","genus")
   } else {
     taxas <- c('sppcode','kingdom','subkingdom','infrakingdom',
                'superdivision','division','subdivision',
-               'superphylum','phylum','subphylum','clss',
-               'subclass','ordr','family','genus','species',
+               'superphylum','phylum','subphylum','class',
+               'subclass','order','family','genus','species',
                'common_name','authority')
   }
   
