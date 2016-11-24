@@ -4,15 +4,14 @@
 \alias{browse}
 \title{Browse the project metadata contained in the popler database}
 \usage{
-browse(..., full_table = FALSE, variables = NULL, trim = TRUE,
-  view = FALSE)
+browse(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE)
 }
 \arguments{
 \item{...}{A logical expression to subset popler's main table}
 
-\item{full_table}{Should the function return the standard columns, or the full main table?}
+\item{full_tbl}{Should the function return the standard columns, or the full main table?}
 
-\item{variables}{A vector of characters that specifies which columns of popler's main table should be selected.}
+\item{vars}{A vector of characters that specifies which columns of popler's main table should be selected.}
 
 \item{trim}{If TRUE, strings are truncated at the 50th character. Default is TRUE.}
 
@@ -32,7 +31,7 @@ The user can subset what data and what columns to visualize.
 standard_columns = browse()
 
 # full.table==T returns the full table
-full_table = browse(full_table = TRUE)
+full_tbl = browse(full_tbl = TRUE)
 
 # subset only data from the sevilleta LTER 
 sev_data = browse(lterid == "SEV")
@@ -41,6 +40,9 @@ sev_data = browse(lterid == "SEV")
 plant_data = browse(kingdom == "Plantae")
 
 # Select only the data you need
-three_columns = browse(variables = c("title","proj_metadata_key","genus","species"))
+three_columns = browse(vars = c("title","proj_metadata_key","genus","species"))
+
+# Select only the data you need
+study_21 = browse( proj_metadata_key == 21)
 }
 

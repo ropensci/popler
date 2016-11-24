@@ -21,16 +21,21 @@
 get_data <- function(browsed_data = NULL, subset = NULL,
                      add_columns = NULL, subtract_columns = NULL, metadata = FALSE){
   
-  default_columns <- c(
-    "year","day","month",                      
-    "genus","species",                    
-    "structure","datatype",         
-    "spatial_replication_level_1","spatial_replication_level_2","spatial_replication_level_3",
-    "spatial_replication_level_4",
-    "proj_metadata_key"
-  )
+  # define possible columns ------------------------------------------------------------
   
-  # Add or subtract, or define columns
+  # possible columns 
+  #potential_vars  <- query_cols()
+  
+  #all_columns     <- potential_vars$all_cols
+  #default_columns <- potential_vars$default_cols
+  
+  # Add/subtract, or define columns ----------------------------------------------------
+  #if( !is.null(browsed_data) ){
+  #  inherit_elem <- attributes(browsed_data)$search_elements
+  #  inherit_vars <- intersect(all_columns, inherit_elem) 
+  #} else { 
+  #  inherit_vars <- NULL 
+  #}
   default_columns <- c(default_columns, add_columns)
   select_columns  <- paste( setdiff(default_columns, subtract_columns), collapse = ", ")
   
@@ -41,7 +46,7 @@ get_data <- function(browsed_data = NULL, subset = NULL,
 
   # combine search
   if( !is.null(substitute(subset)) & !is.null(browsed_data) ){
-    search_arg = paste(search_arg_1,search_arg_2, sep = " AND ")
+    search_arg = paste(search_arg_1, search_arg_2, sep = " AND ")
   } else{
     search_arg = paste0(search_arg_1, search_arg_2)
   }
@@ -136,7 +141,11 @@ get_data <- function(browsed_data = NULL, subset = NULL,
     }
   }
   
-  # names(output_data)[grep("count_observation",names(output_data))] <- "abundance"
+  # assign class
+  output_data <- structure(output_data, 
+                           class = c("popler", class(output_data)) 
+                           )
+  
   return(output_data)
   
 }

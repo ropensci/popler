@@ -305,3 +305,33 @@ dictionary_explain <- function(x){
   
 }
 
+# query columsn 
+query_cols <- function(){
+ 
+  conn <- src_postgres(
+    dbname="popler_3", host="www.how-imodel-it.com", port=5432, user="lter", password="bigdata")
+  
+  #list columns
+  proj_cols     <- as.data.frame(tbl(conn, sql( "SELECT column_name FROM information_schema.columns WHERE
+                                                table_name = 'project_table'")))[,1]
+  lter_cols     <- as.data.frame(tbl(conn, sql( "SELECT column_name FROM information_schema.columns WHERE
+                                                table_name = 'lter_table'")))[,1]
+  site_cols     <- as.data.frame(tbl(conn, sql( "SELECT column_name FROM information_schema.columns WHERE
+                                                table_name = 'study_site_table'")))[,1]
+  s_i_p_cols    <- as.data.frame(tbl(conn, sql( "SELECT column_name FROM information_schema.columns WHERE
+                                                table_name = 'site_in_project_table'")))[,1]
+  taxa_cols     <- as.data.frame(tbl(conn, sql( "SELECT column_name FROM information_schema.columns WHERE
+                                                table_name = 'taxa_table'")))[,1]
+  abund_cols    <- as.data.frame(tbl(conn, sql( "SELECT column_name FROM information_schema.columns WHERE
+                                                table_name = 'taxa_table'")))[,1]
+  
+  all_cols      <- c(proj_cols,lter_cols,site_cols, s_i_p_cols, taxa_cols, abund_cols) 
+  default_cols  <- c("year","day","month","genus","species","structure","datatype",         
+                     "spatial_replication_level_1","spatial_replication_level_2",
+                     "spatial_replication_level_3","spatial_replication_level_4",
+                     "proj_metadata_key"
+                     )
+
+  return( list(all_cols = all_cols, default_cols = default_cols) )
+
+}
