@@ -24,28 +24,40 @@ get_data <- function(browsed_data = NULL, subset = NULL,
   # define possible columns ------------------------------------------------------------
   
   # possible columns 
-  #potential_vars  <- query_cols()
-  
-  #all_columns     <- potential_vars$all_cols
-  #default_columns <- potential_vars$default_cols
+  potential_vars  <- popler:::query_cols()
+  all_columns     <- potential_vars$all_cols
+  default_columns <- potential_vars$default_cols
   
   # Add/subtract, or define columns ----------------------------------------------------
-  #if( !is.null(browsed_data) ){
-  #  inherit_elem <- attributes(browsed_data)$search_elements
-  #  inherit_vars <- intersect(all_columns, inherit_elem) 
-  #} else { 
-  #  inherit_vars <- NULL 
-  #}
+  inherit_vars  <- NULL
+  if( !is.null(browsed_data) ){
+    inherit_elem    <- as.character( attributes(browsed_data)$search_argument )
+    inherit_elem    <- gsub("order", "ordr", inherit_elem)
+    inherit_elem    <- gsub("class", "clss", inherit_elem)
+    inherit_vars    <- popler:::inherit_search(all_columns, inherit_elem) 
+    inherit_browse  <- unique(inherit_vars)
+  } 
+  if( !is.null(subset) ){
+    inherit_elem    <- as.character( substitute(subset) )
+    inherit_elem    <- gsub("order", "ordr", inherit_elem)
+    inherit_elem    <- gsub("class", "clss", inherit_elem)
+    inherit_vars    <- popler:::inherit_search(all_columns, inherit_elem) 
+    inherit_subset  <- unique(inherit_vars)
+  } 
+  default_columns   <- unique( c(inherit_browse, inherit_subset) )
+  
   default_columns <- c(default_columns, add_columns)
   select_columns  <- paste( setdiff(default_columns, subtract_columns), collapse = ", ")
-  
-  # subset argument
+  default_columns <- unique(default_columns)
+    
+  # subset argument ------------------------------------------------------------------
   search_arg_1 = search_arg_2 = NULL 
   if( !is.null(substitute(subset)) ) search_arg_1 <- parse_to_sql_search( substitute(subset) )
   if( !is.null(browsed_data) )       search_arg_2 <- parse_to_sql_search( attributes(browsed_data)$search_argument )
 
   # combine search
   if( !is.null(substitute(subset)) & !is.null(browsed_data) ){
+    
     search_arg = paste(search_arg_1, search_arg_2, sep = " AND ")
   } else{
     search_arg = paste0(search_arg_1, search_arg_2)
@@ -55,12 +67,6 @@ get_data <- function(browsed_data = NULL, subset = NULL,
   conn <- src_postgres(
     dbname="popler_3", host="www.how-imodel-it.com", port=5432, user="lter", password="bigdata")
   
-  #taxa <- as.data.frame(tbl(conn, "taxa_table"))
-  #proj <- as.data.frame(tbl(conn, "project_table"))
-  #stud <- as.data.frame(tbl(conn, "study_site_table"))
-  # col names
-  #col_nam <- as.data.frame(tbl(conn, sql( "SELECT column_name FROM information_schema.columns WHERE
-  #                                         table_name='count_table'")))[,1]
   
   table_all <- tbl(conn, sql(
     paste(
@@ -74,6 +80,8 @@ get_data <- function(browsed_data = NULL, subset = NULL,
       "project_table.proj_metadata_key",
       "JOIN study_site_table ON site_in_project_table.study_site_table_fkey =",
       "study_site_table.study_site_key",
+      "JOIN lter_table ON study_site_table.lter_table_fkey =",
+      "lter_table.lterid",
       "WHERE", search_arg,
       
       "UNION ALL",
@@ -87,6 +95,8 @@ get_data <- function(browsed_data = NULL, subset = NULL,
       "project_table.proj_metadata_key",
       "JOIN study_site_table ON site_in_project_table.study_site_table_fkey =",
       "study_site_table.study_site_key",
+      "JOIN lter_table ON study_site_table.lter_table_fkey =",
+      "lter_table.lterid",
       "WHERE", search_arg,
       
       "UNION ALL",
@@ -100,6 +110,8 @@ get_data <- function(browsed_data = NULL, subset = NULL,
       "project_table.proj_metadata_key",
       "JOIN study_site_table ON site_in_project_table.study_site_table_fkey =",
       "study_site_table.study_site_key",
+      "JOIN lter_table ON study_site_table.lter_table_fkey =",
+      "lter_table.lterid",
       "WHERE", search_arg,
       
       "UNION ALL",
@@ -113,6 +125,8 @@ get_data <- function(browsed_data = NULL, subset = NULL,
       "project_table.proj_metadata_key",
       "JOIN study_site_table ON site_in_project_table.study_site_table_fkey =",
       "study_site_table.study_site_key",
+      "JOIN lter_table ON study_site_table.lter_table_fkey =",
+      "lter_table.lterid",
       "WHERE", search_arg,
       
       "UNION ALL",
@@ -126,6 +140,8 @@ get_data <- function(browsed_data = NULL, subset = NULL,
       "project_table.proj_metadata_key",
       "JOIN study_site_table ON site_in_project_table.study_site_table_fkey =",
       "study_site_table.study_site_key",
+      "JOIN lter_table ON study_site_table.lter_table_fkey =",
+      "lter_table.lterid",
       "WHERE", search_arg
     )
   ))

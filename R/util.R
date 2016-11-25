@@ -227,6 +227,7 @@ multiple_columns=function(x) {
   } else(return(x))
 }
 
+
 # changes clss to class and ordr to order
 class_order <- function(x){
   
@@ -235,6 +236,7 @@ class_order <- function(x){
   return(x)
   
 }
+
 
 # explain meaning of dictionary variables 
 dictionary_explain <- function(x){
@@ -305,7 +307,8 @@ dictionary_explain <- function(x){
   
 }
 
-# query columsn 
+
+# query columns 
 query_cols <- function(){
  
   conn <- src_postgres(
@@ -334,4 +337,19 @@ query_cols <- function(){
 
   return( list(all_cols = all_cols, default_cols = default_cols) )
 
+}
+
+
+# Identify which "search_arguments" belong to "all_columns"
+inherit_search <- function(all_cols,inherit_logical){
+  
+  inherit_elem <- as.character(inherit_logical)
+  
+  inds = NULL
+  for(i in 1:length(all_cols)){
+    if( any( grepl(all_cols[i], inherit_elem) ) ){
+      inds = c(inds,i)  
+    }
+  }
+  return(all_cols[inds])
 }
