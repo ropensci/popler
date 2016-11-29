@@ -39,7 +39,7 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
   
   # Case insensitive matching ("lower" everything)
   names(main_t) <- tolower( names(main_t) )
-  main_t        <- popler:::class_order(main_t)
+  main_t        <- popler:::class_order_names(main_t)
   
   # Select by subset 
   subset_data <- popler:::select_by_criteria(main_t, substitute(...) )

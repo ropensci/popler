@@ -229,14 +229,14 @@ multiple_columns=function(x) {
 
 
 # changes clss to class and ordr to order
-class_order <- function(x){
+class_order_names <- function(x){
   
-  r           <- which(names(x) %in% c("clss","ordr") ) 
-  names(x)[r] <- c("class","order")
+  names(x)   <- gsub("clss","class",names(x))
+  names(x)   <- gsub("ordr","order",names(x))
+  
   return(x)
   
 }
-
 
 # explain meaning of dictionary variables 
 dictionary_explain <- function(x){
@@ -308,48 +308,3 @@ dictionary_explain <- function(x){
 }
 
 
-# query columns 
-query_cols <- function(){
- 
-  conn <- src_postgres(
-    dbname="popler_3", host="www.how-imodel-it.com", port=5432, user="lter", password="bigdata")
-  
-  #list columns
-  proj_cols     <- as.data.frame(tbl(conn, sql( "SELECT column_name FROM information_schema.columns WHERE
-                                                table_name = 'project_table'")))[,1]
-  lter_cols     <- as.data.frame(tbl(conn, sql( "SELECT column_name FROM information_schema.columns WHERE
-                                                table_name = 'lter_table'")))[,1]
-  site_cols     <- as.data.frame(tbl(conn, sql( "SELECT column_name FROM information_schema.columns WHERE
-                                                table_name = 'study_site_table'")))[,1]
-  s_i_p_cols    <- as.data.frame(tbl(conn, sql( "SELECT column_name FROM information_schema.columns WHERE
-                                                table_name = 'site_in_project_table'")))[,1]
-  taxa_cols     <- as.data.frame(tbl(conn, sql( "SELECT column_name FROM information_schema.columns WHERE
-                                                table_name = 'taxa_table'")))[,1]
-  abund_cols    <- as.data.frame(tbl(conn, sql( "SELECT column_name FROM information_schema.columns WHERE
-                                                table_name = 'taxa_table'")))[,1]
-  
-  all_cols      <- c(proj_cols,lter_cols,site_cols, s_i_p_cols, taxa_cols, abund_cols) 
-  default_cols  <- c("year","day","month","genus","species","structure","datatype",         
-                     "spatial_replication_level_1","spatial_replication_level_2",
-                     "spatial_replication_level_3","spatial_replication_level_4",
-                     "proj_metadata_key"
-                     )
-
-  return( list(all_cols = all_cols, default_cols = default_cols) )
-
-}
-
-
-# Identify which "search_arguments" belong to "all_columns"
-inherit_search <- function(all_cols,inherit_logical){
-  
-  inherit_elem <- as.character(inherit_logical)
-  
-  inds = NULL
-  for(i in 1:length(all_cols)){
-    if( any( grepl(all_cols[i], inherit_elem) ) ){
-      inds = c(inds,i)  
-    }
-  }
-  return(all_cols[inds])
-}

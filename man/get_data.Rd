@@ -29,7 +29,14 @@ This function browses LTER studies contained in the popler database. The user ca
 # browse a study, then get the data associated with it
 grasshop = browse(proj_metadata_key == 21)
 gh_data = get_data(grasshop)
+
 # further subset this data set, based on year
 gh_data_96_99 = get_data(grasshop, year > 1995 & year < 2000)
+
+# insect data sets from the SEV lter site
+insect_sev = browse(class == "Insecta" & lterid == "SEV")
+insect_21_yrs96_99 = get_data(insect_sev, year > 1995 & year < 2000 & proj_metadata_key == 21)
+
+insect_21_25 = get_data(subset = (proj_metadata_key == 21 | proj_metadata_key == 25) & year > 1995)
 }
 

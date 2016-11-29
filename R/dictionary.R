@@ -21,7 +21,7 @@ dictionary <- function(vars = NULL, full_tbl = FALSE){
   
   # Case insensitive matching ("lower" everything)
   names(main_t) <- tolower( names(main_t) )
-  main_t        <- popler:::class_order(main_t)
+  main_t        <- popler:::class_order_names(main_t)
   
   # if no column specified, return ALL column names
   if( is.null(vars) ){
