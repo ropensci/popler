@@ -18,6 +18,9 @@ test_that("query_cols", {
 # Does inherit_search() accurately identify the variables mentioned in a "browse" logical statement?   
 test_that("inherit_search", {
   
+  # possible columns 
+  potential_vars  <- popler:::query_cols()
+  
   # testing objects
   sev       <- as.character( attributes(browse(lterid == "SEV"))$search_argument )
   author    <- as.character( attributes(browse(authors == "Scott Collins"))$search_argument )
