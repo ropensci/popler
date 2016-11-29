@@ -9,51 +9,50 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-popler is an interface to browse and query population data collected at `Long Term Ecological Research (LTER) network` sites located across the United States of America. Nearly 
-all of the population data from the LTER network is now contained in an online database called popler. The popler R package allows the user to:
+popler allows browsing and querying population data collected at `Long Term Ecological Research (LTER) network` sites located across the United States of America. A subset of the population data from the LTER network is now contained in an online database called popler. The popler R package is an interface with this online database, allowing users to:
 
-- know *what type* and *how much* population data is contained in the popler database
+- explore *what type* and *how much* population data is contained in the popler database
 - download data contained in the popler database
 
 
 ## Installation
 
-The popler database is currently in the development phase, and it should be downloaded directly from its [GitHub page](https://github.com/AldoCompagnoni/popler). Note that this requires installing the devtools R package.
+The popler R package is currently in the development phase, and it should be downloaded directly from its [GitHub page](https://github.com/AldoCompagnoni/popler). Before doing this, make sure to install the [Devtools R package](https://cran.r-project.org/web/packages/devtools/README.html). Once devtools is installed on your machine, install and load popler:
 
 ```r
-devtools::install_github("AldoCompagnoni/popler",ref = "0.0.9001")
+devtools::install_github("AldoCompagnoni/popler",ref = "0.0.9001",
+                          build_vignettes = TRUE)
 library("popler")
 ```
 
 ## Metadata: what type of data is contained in the popler database?
 
-The LTER network provides data from thousands of research projects. Three functions use the metadata information of these projects to allow understanding *what* and *how much* 
-population data is provided by each project. 
+The LTER network provides data from thousands of research projects. The metadata of these projects allow understanding *what* and *how much* population data is provided by each project. The popler R package provides three functions to explore these metadata.
 
 ### dictionary()
 
-First, `dictionary()` explains what the variables are associated 
+`dictionary()` explains what variables are contained in the metadata of each project.  
 
 ```r
 dictionary()
 ```
 
-Specify one or more of these variables to obtain their content across all projects:
+Specify one or more of these variables to know what their content is, across all projects:
 
 ```r
 dictionary("species")
-dictionary("lterid", "durationyr")
+dictionary(vars = c("lterid", "duration_years") )
 ```
 
 ### summary_popler()
 
-`summary_popler()` counts the number of unique data records in each of popler metadata variables. The default counts the number of projects contained in popler:
+`summary_popler()` counts the number of unique records in metadata variables. The default counts the number of projects contained in popler:
 
 ```r
 summary_popler()
 ```
 
-`summary_popler()` also allows grouping counts. For example, it is interesting to know the number of species observed in each project:
+`summary_popler()` also allows grouping counts. For example, it counts the number of species observed in each project:
 
 ```r
 summary_popler(group_variables = "title", count_variables = "species", trim = TRUE)
@@ -61,27 +60,40 @@ summary_popler(group_variables = "title", count_variables = "species", trim = TR
 
 ### browse()
 
-browse() directly accesses the popler metadata table, and allows subsetting it. Calling the function returns the metadata table:
+browse() accesses the popler metadata table directly, and allows subsetting it. Calling the function returns the entire metadata table:
 
 ```r
-metadata_table <- browse() 
+metadata_table <- browse()
 ```
 
-Providing `browse()` with a logical statement subsets this metadata table. The logical statement must refer to one of the variables contained in popler's metadata. This is useful to focus on datasets of interest.
+This metadata table can be subset by specifying a logical statement. This is useful to focus on datasets of interest.
 
 ```r
 sevilleta      <- browse(lterid == "SEV")
+poa_projects   <- browse(genus == "Poa")
 ```
 
-## Get the data
+## Download the data
 
-Once you identified one or more datasets that you are interested in, get them using `get_data()`. You can obtain the data by refining a search carried out through `browse()`, or providing a logical statement to `get_data()` directly. First, using an object created through `browse()`:
+Once you identified one or more datasets that you are interested in, download their raw data using `get_data()`. You can obtain the data in three ways:
+
+1. by providing an object created subsetting the metadata table using `browse()` 
+1. by further subsetting an object created through `browse()`
+1. by providing a logical statement to `get_data()`
+
+First, providing an object created through `browse()`:
 
 ```r
-grasshopper_data      <- get_data(sevilleta, proj_metadata_key == 21)
+poa_data      <- get_data(poa_projects)
 ```
 
-Second, providing a logical statement directly to `get_data()`:
+Second, further subsetting an object created through `browse()`:
+
+```r
+poa_data_13   <- get_data(poa_projects, duration_years > 13)
+```
+
+Third, providing a logical statement directly to `get_data()`:
 
 ```r
 parasite_data         <- get_data(subset = proj_metadata_key == 25)
