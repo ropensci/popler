@@ -192,7 +192,7 @@ tallies=function(browsed_data,tally_columns,group_factors,trim){
     tally_data=distinct(tally_data)
     
     #store tallies
-    tally_name=paste0(tally_columns[i],"_tally") #name of column containing tallies
+    tally_name=paste0(tally_columns[i],"_count") #name of column containing tallies
     #grouping factor present
     if(!is.null(group_factors)){ 
       df_list[[i]] <- tally_data %>%
