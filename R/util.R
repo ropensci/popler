@@ -61,8 +61,17 @@ select_by_criteria <- function(x,criteria){
   
   if(!is.null(criteria)) {
     r <- which(eval(criteria, x, parent.frame()))
-    subsetDat=tbl_df(x[r,,drop=F]) #tbl_df() to make object "work" with dplyr functions
-  } else { subsetDat=tbl_df(x) }
+    if( length(r) != 0 ) {
+      subsetDat <- tbl_df(x[r,,drop=F]) #tbl_df() to make object "work" with dplyr functions
+    } 
+    if( length(r) == 0 ) {
+      stop( "No matches found. Either: 
+             1. the name of variable(s) you specified is/are incorrect or 
+             2. the values you are looking for are not contained in the variable(s) you specified")
+    }
+  } else { 
+    subsetDat <- tbl_df(x) 
+  }
   return(subsetDat)
   
 }
