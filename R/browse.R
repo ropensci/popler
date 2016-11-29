@@ -52,7 +52,7 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
     out_cols <- subset_data
   } else{
     # Error message if column names are incorrect
-    popler:::err_full_tab( vars,names(orig) )
+    popler:::err_full_tab( vars, names(main_t) )
     # If not, select said columns
     out_cols <- subset_data[,vars]
   }
