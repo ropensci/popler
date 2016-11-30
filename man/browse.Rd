@@ -44,5 +44,11 @@ three_columns = browse(vars = c("title","proj_metadata_key","genus","species"))
 
 # Select only the data you need
 study_21 = browse( proj_metadata_key == 21)
+
+# Select based on key words
+dictionary("structured")
+size_studies = browse( grepl("size",structured) )
+# This is useful to identify key words in study titles 
+paraiste_studies = browse( grepl("parasit",title,ignore.case=T) , trim = F)
 }
 

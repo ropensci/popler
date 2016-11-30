@@ -29,9 +29,11 @@
 #' # Select only the data you need
 #' study_21 = browse( proj_metadata_key == 21)
 #' 
-#' # Select only the data you need
+#' # Select based on key words
 #' dictionary("structured")
 #' size_studies = browse( grepl("size",structured) )
+#' # This is useful to identify key words in study titles 
+#' paraiste_studies = browse( grepl("parasit",title,ignore.case=T) , trim = F)
 
 
 # The browse popler function
