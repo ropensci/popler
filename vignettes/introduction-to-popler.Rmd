@@ -1,4 +1,4 @@
----
+
 title: "Introduction to popler"
 author: "Aldo Compagnoni"
 date: "`r Sys.Date()`"
@@ -96,7 +96,7 @@ poa_data      <- get_data(poa_metadata)
 Second, you can further subset objects created through `browse()`. In the code below, popler downloads data concerning the genus *Poa* collected after the year 2008.
 
 ```r
-poa_data_09   <- get_data(poa_projects, year > 2008)
+poa_data_09   <- get_data(poa_metadata, year > 2008)
 ```
 
 Third, you can directly provide a logical statement to `get_data()`:

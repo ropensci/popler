@@ -20,5 +20,5 @@ Suggests:
     knitr,
     rmarkdown
 LazyData: true
-RoxygenNote: 5.0.1.9000
+RoxygenNote: 5.0.1
 VignetteBuilder: knitr
