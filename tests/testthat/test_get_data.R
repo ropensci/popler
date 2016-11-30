@@ -47,6 +47,9 @@ test_that("inherit_search", {
 # Does inherit_variables() accurately identify the variables mentioned in MULTIPLE logical statement?   
 test_that("inherit_variables", {
   
+  # possible columns 
+  potential_vars  <- popler:::query_cols()
+  
   # testing objects
   aut_lter      <- popler:::inherit_variables(browse(authors == "Scott Collins"),
                                               substitute(lterid == "SEV"), 
