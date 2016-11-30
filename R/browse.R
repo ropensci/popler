@@ -28,6 +28,10 @@
 #' 
 #' # Select only the data you need
 #' study_21 = browse( proj_metadata_key == 21)
+#' 
+#' # Select only the data you need
+#' dictionary("structured")
+#' size_studies = browse( grepl("size",structured) )
 
 
 # The browse popler function
