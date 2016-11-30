@@ -106,6 +106,8 @@ subset_arguments <- function(browsed_data = NULL, subset = NULL){
 # query popler
 query_popler <- function(connection, select_vars, search_arg){
   
+  if(length(search_arg) == 0) stop( "No logical argument specified. Please specify what data you wish to download from popler" )
+  
   table_all <- tbl(connection, sql(
     paste(
       # Count data
