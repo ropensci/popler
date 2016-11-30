@@ -69,6 +69,9 @@ get_data <- function(browsed_data = NULL, subset = NULL,
                            class = c("popler", class(output_data)) 
                            )
   
+  # Informational message
+  popler:::data_message(output_data)
+  
   return(output_data)
   
 }

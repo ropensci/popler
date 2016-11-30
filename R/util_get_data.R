@@ -23,7 +23,7 @@ query_cols <- function(){
   default_cols  <- c("year","day","month","genus","species","structure","datatype",         
                      "spatial_replication_level_1","spatial_replication_level_2",
                      "spatial_replication_level_3","spatial_replication_level_4",
-                     "proj_metadata_key"
+                     "authors","authors_contact","proj_metadata_key"
   )
   
   return( list(all_cols = all_cols, default_cols = default_cols) )
@@ -202,6 +202,18 @@ open_metadata <- function(metadata){
       
     }
   }
+  
+}
+
+# informational message at every download
+data_message <- function(x){
+  
+  mess_df <- unique(select(x,proj_metadata_key,authors,authors_contact))
+  names(mess_df) <- c("project_id","authors","contacts")
+  
+  # Messages
+  cat("These are the authors connected to the data you downloaded. \nPlease contact these individuals if you wish to carry out research using this data.\n\n")
+  print(mess_df, row.names = FALSE)
   
 }
 
