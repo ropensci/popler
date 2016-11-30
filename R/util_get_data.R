@@ -212,7 +212,7 @@ data_message <- function(x){
   names(mess_df) <- c("project_id","authors","contacts")
   
   # Messages
-  cat("These are the authors connected to the data you downloaded. \nPlease contact these individuals if you wish to carry out research using this data.\n\n")
+  cat("\nBelow are the authors connected to the data you downloaded. \nPlease contact these individuals if you wish to carry out research using this data.\n\n")
   print(mess_df, row.names = FALSE)
   
 }
