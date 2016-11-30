@@ -176,7 +176,7 @@ poa_metadata   &lt;- browse(genus == &quot;Poa&quot;)</code></pre>
 <p>First, you can download data by providing an object created through <code>browse()</code>. In the example below, the code returns all population data concerning species of the genus <em>Poa</em>:</p>
 <pre class="r"><code>poa_data      &lt;- get_data(poa_metadata)</code></pre>
 <p>Second, you can further subset objects created through <code>browse()</code>. In the code below, popler downloads data concerning the genus <em>Poa</em> collected after the year 2008.</p>
-<pre class="r"><code>poa_data_09   &lt;- get_data(poa_projects, year &gt; 2008)</code></pre>
+<pre class="r"><code>poa_data_09   &lt;- get_data(poa_metadata, year &gt; 2008)</code></pre>
 <p>Third, you can directly provide a logical statement to <code>get_data()</code>:</p>
 <pre class="r"><code>parasite_data         &lt;- get_data(subset = proj_metadata_key == 25)</code></pre>
 </div>
