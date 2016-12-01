@@ -4,7 +4,7 @@
 \alias{\%=\%}
 \title{keyword binary operator}
 \usage{
-var \%=\% pattern
+var \%=\% keyword
 }
 \arguments{
 \item{var}{The name of a vector object.}

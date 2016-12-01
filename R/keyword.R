@@ -16,16 +16,16 @@
 #' letters %=% c("A","c","d")
 
 # define the binary operator
-`%=%` <- function(var, pattern) {
+`%=%` <- function(var, keyword) {
   
-  if( length(pattern) == 1) {
+  if( length(keyword) == 1) {
     
-    l_out <- grepl(pattern, var, ignore.case = T)
+    l_out   <- grepl(keyword, var, ignore.case = T)
 
   } else {
     
-    pattern <- paste(pattern, collapse = "|")
-    l_out <- grepl(pattern, var, ignore.case = T)
+    keyword <- paste(keyword, collapse = "|")
+    l_out   <- grepl(keyword, var, ignore.case = T)
     
   }
   
