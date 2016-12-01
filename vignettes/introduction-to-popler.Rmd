@@ -1,4 +1,4 @@
-
+---
 title: "Introduction to popler"
 author: "Aldo Compagnoni"
 date: "`r Sys.Date()`"
@@ -79,9 +79,18 @@ sevilleta      <- browse(lterid == "SEV")
 poa_metadata   <- browse(genus == "Poa")
 ```
 
+#### The keyword binary operator, `%=%`
+
+The projects carried out within the LTER network tackle a striking variety of research topics. Therefore, searching projects based on keywords can provide decisive advantages. The keyword binary operator `%=%` facilitates subsetting the metadata table by matching one or more keywords. In particular, `%=%` matches one or more character strings to one of the character variables shown by `dictionary()`. It is especially useful to match keywords with the title of projects:
+
+```r
+parasites       <- browse(title %=% "parasit")
+parasite_npp    <- browse(title %=% c("parasit","npp"), trim = FALSE)
+```
+
 ## Download data
 
-Once you identified one or more datasets that you are interested in, download their raw data using `get_data()`. You can download data in three ways:
+Once you identified one or more datasets of interest, download their raw data using `get_data()`. You can download data in three ways:
 
 1. By providing an object created subsetting the metadata table using `browse()` 
 1. By further subsetting an object created through `browse()`
