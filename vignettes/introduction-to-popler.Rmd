@@ -48,22 +48,6 @@ dictionary("phylum")
 dictionary(vars = c("lterid", "duration_years") )
 ```
 
-### summary_popler()
-
-`summary_popler()` counts the number of unique records contained by the metadata variables showed by `dictionary()`. The default counts the number of projects contained in popler, but one can extend the counts to any of the metadata variables:
-
-```r
-summary_popler() # number of projects contained in popler
-summary_popler(count_vars = "lterid")
-summary_popler(count_vars = "species")
-```
-
-`summary_popler()` also allows to group counts. For example, it can count the number of species observed in each project:
-
-```r
-summary_popler(group_vars = "title", count_vars = "species", trim = TRUE)
-```
-
 ### browse()
 
 `browse()` accesses and subsets the popler metadata table directly. Calling the function returns the raw metadata table:
