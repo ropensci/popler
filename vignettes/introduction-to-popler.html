@@ -83,15 +83,6 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dictionary</span>(<span class="st">&quot;phylum&quot;</span>)
 <span class="kw">dictionary</span>(<span class="dt">vars =</span> <span class="kw">c</span>(<span class="st">&quot;lterid&quot;</span>, <span class="st">&quot;duration_years&quot;</span>) )</code></pre>
 </div>
-<div id="summary_popler" class="section level3">
-<h3>summary_popler()</h3>
-<p><code>summary_popler()</code> counts the number of unique records contained by the metadata variables showed by <code>dictionary()</code>. The default counts the number of projects contained in popler, but one can extend the counts to any of the metadata variables:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary_popler</span>() <span class="co"># number of projects contained in popler</span>
-<span class="kw">summary_popler</span>(<span class="dt">count_vars =</span> <span class="st">&quot;lterid&quot;</span>)
-<span class="kw">summary_popler</span>(<span class="dt">count_vars =</span> <span class="st">&quot;species&quot;</span>)</code></pre>
-<p><code>summary_popler()</code> also allows to group counts. For example, it can count the number of species observed in each project:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary_popler</span>(<span class="dt">group_vars =</span> <span class="st">&quot;title&quot;</span>, <span class="dt">count_vars =</span> <span class="st">&quot;species&quot;</span>, <span class="dt">trim =</span> <span class="ot">TRUE</span>)</code></pre>
-</div>
 <div id="browse" class="section level3">
 <h3>browse()</h3>
 <p><code>browse()</code> accesses and subsets the popler metadata table directly. Calling the function returns the raw metadata table:</p>
@@ -99,11 +90,17 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <p>This metadata table can be subset by specifying a logical statement. This is useful to focus on datasets of interest.</p>
 <pre class="sourceCode r"><code class="sourceCode r">sevilleta      &lt;-<span class="st"> </span><span class="kw">browse</span>(lterid ==<span class="st"> &quot;SEV&quot;</span>)
 poa_metadata   &lt;-<span class="st"> </span><span class="kw">browse</span>(genus ==<span class="st"> &quot;Poa&quot;</span>)</code></pre>
+<div id="the-keyword-binary-operator" class="section level4">
+<h4>The keyword binary operator, <code>%=%</code></h4>
+<p>The projects carried out within the LTER network tackle a striking variety of research topics. Therefore, searching projects based on keywords can provide decisive advantages. The keyword binary operator <code>%=%</code> facilitates subsetting the metadata table by matching one or more keywords. In particular, <code>%=%</code> matches one or more character strings to one of the character variables shown by <code>dictionary()</code>. It is especially useful to match keywords with the title of projects:</p>
+<pre class="sourceCode r"><code class="sourceCode r">parasites       &lt;-<span class="st"> </span><span class="kw">browse</span>(title %=%<span class="st"> &quot;parasit&quot;</span>)
+parasite_npp    &lt;-<span class="st"> </span><span class="kw">browse</span>(title %=%<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;parasit&quot;</span>,<span class="st">&quot;npp&quot;</span>), <span class="dt">trim =</span> <span class="ot">FALSE</span>)</code></pre>
+</div>
 </div>
 </div>
 <div id="download-data" class="section level2">
 <h2>Download data</h2>
-<p>Once you identified one or more datasets that you are interested in, download their raw data using <code>get_data()</code>. You can download data in three ways:</p>
+<p>Once you identified one or more datasets of interest, download their raw data using <code>get_data()</code>. You can download data in three ways:</p>
 <ol style="list-style-type: decimal">
 <li>By providing an object created subsetting the metadata table using <code>browse()</code></li>
 <li>By further subsetting an object created through <code>browse()</code></li>
