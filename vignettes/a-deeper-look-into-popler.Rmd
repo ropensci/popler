@@ -1,0 +1,21 @@
+---
+title: "Exploiting the full schema of popler"
+author: "Aldo Compagnoni"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Introduction
+
+This vignette shows how to work with the full 93 variables contained in the popler database. However, to acquaint new users with popler, the default settings of this R package (in particular, `full_tbl = F`) consider 26 rather than 93 variables. 
+
+ - Considering all 93 variables can be confusing, especially at first.  
+
+## The `schema()` function
+
+`schema()` returns a description of all the variables contained in popler. It returns a list where each element refers to a specific table of the data base. Each element is a data frame with two columns: the names of the variables contained in the table, and its description.
+`schema()` can also open a figure of the graphical representation of the schema of popler.
