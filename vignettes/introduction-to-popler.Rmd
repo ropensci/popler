@@ -19,10 +19,12 @@ The popler R package allows browsing and querying population data collected at `
 
 The popler R package is currently in the development phase, and it should be downloaded directly from its [GitHub page](https://github.com/AldoCompagnoni/popler). Before doing this, make sure to install the [Devtools R package](https://cran.r-project.org/web/packages/devtools/README.html). Once devtools is installed on your machine, install and load popler:
 
-```r
-devtools::install_github("AldoCompagnoni/popler",ref = "0.0.9001", build_vignettes = TRUE)
-library("popler")
+```{r, message = FALSE, warning = FALSE}
+#devtools::install_github("AldoCompagnoni/popler",ref = "0.0.9001", #build_vignettes = TRUE)
+library(popler)
 ```
+
+library("popler")
 
 ## Metadata: *what* type of data and *how much* data is contained in the popler database?
 
@@ -37,13 +39,13 @@ The LTER network provides data from thousands of research projects. The metadata
 
 To see metadata variables and their meaning:  
 
-```r
+```{r}
 dictionary()
 ```
 
 To show what data each variable actually contains, specify one or more variable:
 
-```r
+```{r}
 dictionary("phylum")
 dictionary(vars = c("lterid", "duration_years") )
 ```
@@ -52,15 +54,16 @@ dictionary(vars = c("lterid", "duration_years") )
 
 `browse()` accesses and subsets the popler metadata table directly. Calling the function returns the raw metadata table:
 
-```r
-metadata_table <- browse()
+```{r}
+browse()
 ```
 
 This metadata table can be subset by specifying a logical statement. This is useful to focus on datasets of interest.
 
-```r
-sevilleta      <- browse(lterid == "SEV")
+```{r}
+browse(lterid == "SEV")
 poa_metadata   <- browse(genus == "Poa")
+poa_metadata
 ```
 
 #### The keyword binary operator, `%=%`
@@ -82,18 +85,18 @@ Once you identified one or more datasets of interest, download their raw data us
 
 First, you can download data by providing an object created through `browse()`. In the example below, the code returns all population data concerning species of the genus *Poa*: 
 
-```r
-poa_data      <- get_data(poa_metadata)
+```{r, message = FALSE}
+as.tbl(get_data(poa_metadata))
 ```
 
 Second, you can further subset objects created through `browse()`. In the code below, popler downloads data concerning the genus *Poa* collected after the year 2008.
 
-```r
-poa_data_09   <- get_data(poa_metadata, year > 2008)
+```{r, message = FALSE}
+as.tbl( get_data(poa_metadata, year > 2008) )
 ```
 
 Third, you can directly provide a logical statement to `get_data()`:
 
-```r
-parasite_data         <- get_data(subset = proj_metadata_key == 25)
+```{r, message = FALSE}
+as.tbl( get_data(subset = proj_metadata_key == 25) )
 ```

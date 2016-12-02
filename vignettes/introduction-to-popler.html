@@ -12,7 +12,7 @@
 
 <meta name="author" content="Aldo Compagnoni" />
 
-<meta name="date" content="2016-12-01" />
+<meta name="date" content="2016-12-02" />
 
 <title>Introduction to popler</title>
 
@@ -52,7 +52,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
 
 <h1 class="title toc-ignore">Introduction to popler</h1>
 <h4 class="author"><em>Aldo Compagnoni</em></h4>
-<h4 class="date"><em>2016-12-01</em></h4>
+<h4 class="date"><em>2016-12-02</em></h4>
 
 
 
@@ -65,7 +65,8 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <h2>Installation</h2>
 <p>The popler R package is currently in the development phase, and it should be downloaded directly from its <a href="https://github.com/AldoCompagnoni/popler">GitHub page</a>. Before doing this, make sure to install the <a href="https://cran.r-project.org/web/packages/devtools/README.html">Devtools R package</a>. Once devtools is installed on your machine, install and load popler:</p>
 <pre class="sourceCode r"><code class="sourceCode r">devtools::<span class="kw">install_github</span>(<span class="st">&quot;AldoCompagnoni/popler&quot;</span>,<span class="dt">ref =</span> <span class="st">&quot;0.0.9001&quot;</span>, <span class="dt">build_vignettes =</span> <span class="ot">TRUE</span>)
-<span class="kw">library</span>(<span class="st">&quot;popler&quot;</span>)</code></pre>
+<span class="kw">library</span>(popler)</code></pre>
+<p>library(“popler”)</p>
 </div>
 <div id="metadata-what-type-of-data-and-how-much-data-is-contained-in-the-popler-database" class="section level2">
 <h2>Metadata: <em>what</em> type of data and <em>how much</em> data is contained in the popler database?</h2>
@@ -79,9 +80,45 @@ code > span.er { color: #ff0000; font-weight: bold; }
 </ul>
 <p>To see metadata variables and their meaning:</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dictionary</span>()</code></pre>
+<pre><code>##             variable                                 description
+## 1              title                            title of project
+## 2  proj_metadata_key                           unique project id
+## 3             lterid                                   lter name
+## 4           datatype type of abundance data (e.g. count,biomass)
+## 5          studytype        experimental or observational study?
+## 6     duration_years                duration of project in years
+## 7          community        does data set contain multiple taxa?
+## 8         structured              is indidivual data structured?
+## 9           lat_lter                          lter site latitude
+## 10          lng_lter                         lter site longitude
+## 11           species        specific epithet of a taxonomic unit
+## 12           kingdom                                     kingdom
+## 13            phylum                                      phylum
+## 14             class                                       class
+## 15             order                                       order
+## 16            family                                      family
+## 17             genus                                       genus</code></pre>
 <p>To show what data each variable actually contains, specify one or more variable:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dictionary</span>(<span class="st">&quot;phylum&quot;</span>)
-<span class="kw">dictionary</span>(<span class="dt">vars =</span> <span class="kw">c</span>(<span class="st">&quot;lterid&quot;</span>, <span class="st">&quot;duration_years&quot;</span>) )</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dictionary</span>(<span class="st">&quot;phylum&quot;</span>)</code></pre>
+<pre><code>## $phylum
+##  [1] &quot;Acanthocephala&quot;                  &quot;Annelida&quot;                       
+##  [3] &quot;Apicomplexa&quot;                     &quot;Arthropoda&quot;                     
+##  [5] &quot;Bryozoa&quot;                         &quot;Chlorophyta&quot;                    
+##  [7] &quot;Chordata&quot;                        &quot;Chromista&quot;                      
+##  [9] &quot;Cnidaria&quot;                        &quot;Dinoflagellata&quot;                 
+## [11] &quot;Echinodermata&quot;                   &quot;Ectoprocta&quot;                     
+## [13] &quot;Entoprocta&quot;                      &quot;Magnoliophyta&quot;                  
+## [15] &quot;Mollusca&quot;                        &quot;Nematoda&quot;                       
+## [17] &quot;Phaeophyta&quot;                      &quot;Phoronida&quot;                      
+## [19] &quot;Platyhelminthes&quot;                 &quot;Platyhelminthes (eggs negative)&quot;
+## [21] &quot;Platyhelminthes (eggs positive)&quot; &quot;Porifera&quot;                       
+## [23] &quot;Rhodophyta&quot;</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dictionary</span>(<span class="dt">vars =</span> <span class="kw">c</span>(<span class="st">&quot;lterid&quot;</span>, <span class="st">&quot;duration_years&quot;</span>) )</code></pre>
+<pre><code>## $lterid
+## [1] &quot;BNZ&quot; &quot;SBC&quot; &quot;SEV&quot; &quot;SGS&quot; &quot;VCR&quot;
+## 
+## $duration_years
+## [1] &quot;numeric field: from 1 to 50&quot;</code></pre>
 </div>
 <div id="browse" class="section level3">
 <h3>browse()</h3>
