@@ -1,6 +1,6 @@
 # test the browse_popler function 
 library(testthat)
-context("browse() function")
+context("browse() utility functions")
 
 # does this function actually return character columns? 
 test_that("Format Main Table", {
@@ -50,3 +50,22 @@ test_that("Select by criteria", {
   
 })
 
+
+
+# Select By Criteria function
+test_that("Keyword", {
+  
+  # Data
+  x <- popler:::factor_to_character(popler:::main_popler)
+  
+  # Tests 
+  expect_equal( x$title %=% c("ParAsiTe", "Npp", "hErb"),
+                grepl(c("ParAsiTe|Npp|herb"), x$title, ignore.case = T))
+  expect_equal( x$title %=% toupper(c("ParAsiTe", "Npp", "hErb")),
+                grepl( toupper(c("ParAsiTe|Npp|herb")), x$title, ignore.case = T))
+  expect_equal( x$authors %=% c("collins", "Lightfoot"),
+                grepl( c("COLLINS|LIGHTfoot"), x$authors, ignore.case = T))
+  
+  rm(x)
+  
+})

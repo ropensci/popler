@@ -1,6 +1,6 @@
 # test the get_data function, and associated utility functions
 library(testthat)
-context("get_data() function")
+context("get_data() utility functions")
 
 
 # Does query_cols() return the expected number of columns?
@@ -10,7 +10,7 @@ test_that("query_cols", {
   potential_vars  <- popler:::query_cols()
   # tests
   expect_equal( length(potential_vars$all_cols), 93)
-  expect_equal( length(potential_vars$default_cols), 12)
+  expect_equal( length(potential_vars$default_cols), 14)
 
 })
 
