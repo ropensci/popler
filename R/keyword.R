@@ -19,16 +19,11 @@
 `%=%` <- function(var, keyword) {
   
   if( length(keyword) == 1) {
-    
     l_out   <- grepl(keyword, var, ignore.case = T)
-
   } else {
-    
     keyword <- paste(keyword, collapse = "|")
     l_out   <- grepl(keyword, var, ignore.case = T)
-    
   }
-  
   return(l_out)
   
 }
