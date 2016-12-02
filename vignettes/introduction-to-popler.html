@@ -64,7 +64,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <div id="installation" class="section level2">
 <h2>Installation</h2>
 <p>The popler R package is currently in the development phase, and it should be downloaded directly from its <a href="https://github.com/AldoCompagnoni/popler">GitHub page</a>. Before doing this, make sure to install the <a href="https://cran.r-project.org/web/packages/devtools/README.html">Devtools R package</a>. Once devtools is installed on your machine, install and load popler:</p>
-<pre class="sourceCode r"><code class="sourceCode r">devtools::<span class="kw">install_github</span>(<span class="st">&quot;AldoCompagnoni/popler&quot;</span>,<span class="dt">ref =</span> <span class="st">&quot;0.0.9001&quot;</span>, <span class="dt">build_vignettes =</span> <span class="ot">TRUE</span>)
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#devtools::install_github(&quot;AldoCompagnoni/popler&quot;,ref = &quot;0.0.9001&quot;, #build_vignettes = TRUE)</span>
 <span class="kw">library</span>(popler)</code></pre>
 <p>library(“popler”)</p>
 </div>
@@ -123,10 +123,54 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <div id="browse" class="section level3">
 <h3>browse()</h3>
 <p><code>browse()</code> accesses and subsets the popler metadata table directly. Calling the function returns the raw metadata table:</p>
-<pre class="sourceCode r"><code class="sourceCode r">metadata_table &lt;-<span class="st"> </span><span class="kw">browse</span>()</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">browse</span>()</code></pre>
+<pre><code>## Source: local data frame [59 x 11]
+## 
+##                        title proj_metadata_key lterid   datatype studytype
+##                        &lt;chr&gt;             &lt;int&gt;  &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt;
+## 1  SBC LTER: Reef: Kelp Fore                 1    SBC individual        NA
+## 2  SBC LTER: Reef: Kelp Fore                 2    SBC      count        NA
+## 3  SBC LTER: Reef: Kelp Fore                 3    SBC      count        NA
+## 4  SBC LTER: Reef: Kelp Fore                 4    SBC  per_cover        NA
+## 5  SBC LTER: Reef: Long-term                 5    SBC individual        NA
+## 6  SBC LTER: Reef: Long-term                 6    SBC      count        NA
+## 7  SBC LTER: Reef: Long-term                 7    SBC      count        NA
+## 8  SBC LTER: Reef: Long-term                 8    SBC  per_cover        NA
+## 9  SBC LTER: Reef: Long-term                 9    SBC    biomass        NA
+## 10 SBC LTER: Reef: Abundance                11    SBC      count        NA
+## ..                       ...               ...    ...        ...       ...
+## Variables not shown: duration_years &lt;dbl&gt;, community &lt;chr&gt;, structured
+##   &lt;chr&gt;, lat_lter &lt;dbl&gt;, lng_lter &lt;dbl&gt;, taxonomy &lt;list&gt;.</code></pre>
 <p>This metadata table can be subset by specifying a logical statement. This is useful to focus on datasets of interest.</p>
-<pre class="sourceCode r"><code class="sourceCode r">sevilleta      &lt;-<span class="st"> </span><span class="kw">browse</span>(lterid ==<span class="st"> &quot;SEV&quot;</span>)
-poa_metadata   &lt;-<span class="st"> </span><span class="kw">browse</span>(genus ==<span class="st"> &quot;Poa&quot;</span>)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">browse</span>(lterid ==<span class="st"> &quot;SEV&quot;</span>)</code></pre>
+<pre><code>## Source: local data frame [35 x 11]
+## 
+##                        title proj_metadata_key lterid     datatype
+##                        &lt;chr&gt;             &lt;int&gt;  &lt;chr&gt;        &lt;chr&gt;
+## 1   Long-Term Core Site Gras                21    SEV        count
+## 2   Rodent Parasite Data for                25    SEV        count
+## 3   Rainfall Manipulation St                26    SEV    per_cover
+## 4   2003 Prescribed Burn Eff                27    SEV    per_cover
+## 5   Burn Exclosure Rodent Po                28    SEV   individual
+## 6   Nitrogen Fertilization E                29    SEV    per_cover
+## 7   Burn Study Sites Quadrat                30    SEV    per_cover
+## 8   Plant Removal Study: Rec                31    SEV    per_cover
+## 9   Bird Community Assessmen                32    SEV presence-abs
+## 10  Pino Gate Prairie Dog St                33    SEV        count
+## ..                       ...               ...    ...          ...
+## Variables not shown: studytype &lt;chr&gt;, duration_years &lt;dbl&gt;, community
+##   &lt;chr&gt;, structured &lt;chr&gt;, lat_lter &lt;dbl&gt;, lng_lter &lt;dbl&gt;, taxonomy &lt;list&gt;.</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">poa_metadata   &lt;-<span class="st"> </span><span class="kw">browse</span>(genus ==<span class="st"> &quot;Poa&quot;</span>)
+poa_metadata</code></pre>
+<pre><code>## Source: local data frame [3 x 11]
+## 
+##                       title proj_metadata_key lterid  datatype studytype
+##                       &lt;chr&gt;             &lt;int&gt;  &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;
+## 1  Livestock Exclosure Stud                35    SEV per_cover        NA
+## 2  Pinon Juniper Net Primar                36    SEV per_cover        NA
+## 3  Pinon-Juniper (Core Site                53    SEV per_cover        NA
+## Variables not shown: duration_years &lt;dbl&gt;, community &lt;chr&gt;, structured
+##   &lt;chr&gt;, lat_lter &lt;dbl&gt;, lng_lter &lt;dbl&gt;, taxonomy &lt;list&gt;.</code></pre>
 <div id="the-keyword-binary-operator" class="section level4">
 <h4>The keyword binary operator, <code>%=%</code></h4>
 <p>The projects carried out within the LTER network tackle a striking variety of research topics. Therefore, searching projects based on keywords can provide decisive advantages. The keyword binary operator <code>%=%</code> facilitates subsetting the metadata table by matching one or more keywords. In particular, <code>%=%</code> matches one or more character strings to one of the character variables shown by <code>dictionary()</code>. It is especially useful to match keywords with the title of projects:</p>
@@ -144,11 +188,67 @@ parasite_npp    &lt;-<span class="st"> </span><span class="kw">browse</span>(tit
 <li>By subsetting the popler database directly through <code>get_data()</code></li>
 </ol>
 <p>First, you can download data by providing an object created through <code>browse()</code>. In the example below, the code returns all population data concerning species of the genus <em>Poa</em>:</p>
-<pre class="sourceCode r"><code class="sourceCode r">poa_data      &lt;-<span class="st"> </span><span class="kw">get_data</span>(poa_metadata)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">as.tbl</span>(<span class="kw">get_data</span>(poa_metadata))</code></pre>
 <p>Second, you can further subset objects created through <code>browse()</code>. In the code below, popler downloads data concerning the genus <em>Poa</em> collected after the year 2008.</p>
-<pre class="sourceCode r"><code class="sourceCode r">poa_data_09   &lt;-<span class="st"> </span><span class="kw">get_data</span>(poa_metadata, year &gt;<span class="st"> </span><span class="dv">2008</span>)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">as.tbl</span>( <span class="kw">get_data</span>(poa_metadata, year &gt;<span class="st"> </span><span class="dv">2008</span>) )</code></pre>
+<pre><code>## You have downloaded data from 1 project. 
+## This project has the follwing identification number: 53. 
+## 
+## IMPORTANT NOTICE: 
+## If you are about to use this data in a formal publication, as courtesy, please:
+## 1) Contact the investigators of each project. 
+##    Do this by using function authors() on the object you just downloaded. 
+## 2) Acknowledge funding sources, if these are provided in the metadata.   
+##    Access metadata by using function metadata_url() on the object you just downloaded.</code></pre>
+<pre><code>## Source: local data frame [117 x 15]
+## 
+##     year   day month genus     species structure  datatype
+##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;       &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;
+## 1   2009    13     5   Poa fendleriana        16 per_cover
+## 2   2009    13     5   Poa fendleriana         6 per_cover
+## 3   2009    13     5   Poa fendleriana         5 per_cover
+## 4   2009    13     5   Poa fendleriana         7 per_cover
+## 5   2009    13     5   Poa fendleriana         6 per_cover
+## 6   2009    13     5   Poa fendleriana        13 per_cover
+## 7   2010    27     9   Poa fendleriana        24 per_cover
+## 8   2010    27     9   Poa fendleriana        15 per_cover
+## 9   2010    27     9   Poa fendleriana        14 per_cover
+## 10  2010    27     9   Poa fendleriana        13 per_cover
+## ..   ...   ...   ...   ...         ...       ...       ...
+## Variables not shown: spatial_replication_level_1 &lt;chr&gt;,
+##   spatial_replication_level_2 &lt;chr&gt;, spatial_replication_level_3 &lt;chr&gt;,
+##   spatial_replication_level_4 &lt;chr&gt;, authors &lt;chr&gt;, authors_contact &lt;chr&gt;,
+##   proj_metadata_key &lt;int&gt;, count_observation &lt;dbl&gt;.</code></pre>
 <p>Third, you can directly provide a logical statement to <code>get_data()</code>:</p>
-<pre class="sourceCode r"><code class="sourceCode r">parasite_data         &lt;-<span class="st"> </span><span class="kw">get_data</span>(<span class="dt">subset =</span> proj_metadata_key ==<span class="st"> </span><span class="dv">25</span>)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">as.tbl</span>( <span class="kw">get_data</span>(<span class="dt">subset =</span> proj_metadata_key ==<span class="st"> </span><span class="dv">25</span>) )</code></pre>
+<pre><code>## You have downloaded data from 1 project. 
+## This project has the follwing identification number: 25. 
+## 
+## IMPORTANT NOTICE: 
+## If you are about to use this data in a formal publication, as courtesy, please:
+## 1) Contact the investigators of each project. 
+##    Do this by using function authors() on the object you just downloaded. 
+## 2) Acknowledge funding sources, if these are provided in the metadata.   
+##    Access metadata by using function metadata_url() on the object you just downloaded.</code></pre>
+<pre><code>## Source: local data frame [9,099 x 15]
+## 
+##     year   day month              genus    species structure datatype
+##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;              &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;
+## 1   1990     0     0       Physaloptera    massino         f    count
+## 2   1990     0     0  Pterygodermatites  dipodomis         f    count
+## 3   1990     0     0    Heteromyoxyuris    deserti         f    count
+## 4   1990     0     0    Heteromyoxyuris    deserti         m    count
+## 5   1990     0     0  Pterygodermatites  dipodomis         m    count
+## 6   1990     0     0  Pterygodermatites  dipodomis         f    count
+## 7   1990     0     0          Trichuris  dipodomis         m    count
+## 8   1990     0     0          Trichuris  dipodomis         f    count
+## 9   1990     0     0                 NA         NA        na    count
+## 10  1990     0     0    Heteromyoxyuris    deserti         m    count
+## ..   ...   ...   ...                ...        ...       ...      ...
+## Variables not shown: spatial_replication_level_1 &lt;chr&gt;,
+##   spatial_replication_level_2 &lt;chr&gt;, spatial_replication_level_3 &lt;chr&gt;,
+##   spatial_replication_level_4 &lt;chr&gt;, authors &lt;chr&gt;, authors_contact &lt;chr&gt;,
+##   proj_metadata_key &lt;int&gt;, count_observation &lt;dbl&gt;.</code></pre>
 </div>
 
 

@@ -209,23 +209,25 @@ open_metadata <- function(metadata){
 data_message <- function(x){
   
   if( length(unique(x$proj_metadata_key)) == 1)
-    cat(paste0("You have downloaded data from ",length(unique(x$proj_metadata_key))," project. \nThis project has the follwing identification number: ",
+    message(paste0("You have downloaded data from ",length(unique(x$proj_metadata_key))," project. \nThis project has the follwing identification number: ",
            paste0(unique(x$proj_metadata_key),collapse=", "),"."),"\n
 IMPORTANT NOTICE: 
 If you are about to use this data in a formal publication, as courtesy, please:
 1) Contact the investigators of each project. 
-   Do this by using function authors() on the object you just downloaded. 
+   Do this by using function authors() on this object. 
 2) Acknowledge funding sources, if these are provided in the metadata.   
-   Access metadata by using function metadata_url() on the object you just downloaded.")
+   Access metadata by using function metadata_url() on this object. \n")
+
   else {
-    cat(paste0("You have downloaded data from ",length(unique(x$proj_metadata_key))," project(s). \nThese projects have the follwing identification numbers: ",
+    message("\n",paste0("You have downloaded data from ",length(unique(x$proj_metadata_key))," project(s). \nThese projects have the follwing identification numbers: ",
                paste0(unique(x$proj_metadata_key),collapse=", "),"."),"\n
 IMPORTANT NOTICE: 
 If you are about to use this data in a formal publication, as courtesy, please:
 1) Contact the investigators of each project. 
-   Obtain contact information by using function authors() on the object you just downloaded. 
+   Obtain contact information by using function authors() on this object. 
 2) Acknowledge funding sources, if these are provided in the metadata.   
-   Access project metadata by using function metadata_url() on the object you just downloaded.")
+   Access project metadata by using function metadata_url() on this object. \n")
+      
   }
   
 }
