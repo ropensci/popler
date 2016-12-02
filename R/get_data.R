@@ -60,9 +60,6 @@ get_data <- function(browsed_data = NULL, subset = NULL,
   
   # outputs -------------------------------------------------------------------------------
   
-  # open up metadata webpage for queried projects
-  #popler:::open_metadata(metadata)
-
   # assign class
   output_data <- structure(output_data, 
                            unique_projects = unique(output_data$proj_metadata_key),
