@@ -5,7 +5,6 @@
 #' @param subset A logical argument A string that to specify which columns to add in the default columns used in queries to the database. See Details for default columns.
 #' @param add_columns A string to specify which columns the user wants to add in queries to the database 
 #' @param subtract_columns A string to specify which, among the default columns, the user wishes to discard in queries to the database 
-#' @param metadata Should the function open the webpage containing the metadata for each one of the projects downloaded? 
 #' @return A data frame of the selected data.
 #' @export
 #' @examples
@@ -26,7 +25,7 @@
 
 # Function that connects and gathers the information from the database
 get_data <- function(browsed_data = NULL, subset = NULL,
-                     add_columns = NULL, subtract_columns = NULL, metadata = FALSE){
+                     add_columns = NULL, subtract_columns = NULL){
   
   
   # define possible columns ---------------------------------------------------------------
@@ -62,10 +61,14 @@ get_data <- function(browsed_data = NULL, subset = NULL,
   # outputs -------------------------------------------------------------------------------
   
   # open up metadata webpage for queried projects
-  popler:::open_metadata(metadata)
+  #popler:::open_metadata(metadata)
 
   # assign class
   output_data <- structure(output_data, 
+                           unique_projects = unique(output_data$proj_metadata_key),
+                           unique_authors  = unique(output_data[,c("proj_metadata_key",
+                                                                   "authors",
+                                                                   "authors_contact")]),
                            class = c("popler", class(output_data)) 
                            )
   

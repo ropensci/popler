@@ -5,7 +5,7 @@
 \title{Browse the popler database}
 \usage{
 get_data(browsed_data = NULL, subset = NULL, add_columns = NULL,
-  subtract_columns = NULL, metadata = FALSE)
+  subtract_columns = NULL)
 }
 \arguments{
 \item{browsed_data}{A on object produced by the function browse()}
@@ -15,8 +15,6 @@ get_data(browsed_data = NULL, subset = NULL, add_columns = NULL,
 \item{add_columns}{A string to specify which columns the user wants to add in queries to the database}
 
 \item{subtract_columns}{A string to specify which, among the default columns, the user wishes to discard in queries to the database}
-
-\item{metadata}{Should the function open the webpage containing the metadata for each one of the projects downloaded?}
 }
 \value{
 A data frame of the selected data.

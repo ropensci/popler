@@ -15,7 +15,20 @@ This vignette shows how to work with the full 93 variables contained in the popl
 
  - Considering all 93 variables can be confusing, especially at first.  
 
+
 ## The `schema()` function
 
 `schema()` returns a description of all the variables contained in popler. It returns a list where each element refers to a specific table of the data base. Each element is a data frame with two columns: the names of the variables contained in the table, and its description.
-`schema()` can also open a figure of the graphical representation of the schema of popler.
+Differences in both 
+
+1. metadata info (`dictionary()`).
+2. metadata info (`dictionary()`).
+
+ - `schema()` can also open a figure of the graphical representation of the schema of popler.
+ - Or should we just save the schema as data using devtools::use_data?
+
+## Using the full metadata information
+
+Metadata information 
+browse()
+browse(full_tbl=T)

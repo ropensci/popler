@@ -17,7 +17,7 @@ query_cols <- function(){
   taxa_cols     <- as.data.frame(tbl(conn, sql( "SELECT column_name FROM information_schema.columns WHERE
                                                 table_name = 'taxa_table'")))[,1]
   abund_cols    <- as.data.frame(tbl(conn, sql( "SELECT column_name FROM information_schema.columns WHERE
-                                                table_name = 'taxa_table'")))[,1]
+                                                table_name = 'count_table'")))[,1]
   
   all_cols      <- c(proj_cols,lter_cols,site_cols, s_i_p_cols, taxa_cols, abund_cols) 
   default_cols  <- c("year","day","month","genus","species","structure","datatype",         
@@ -190,20 +190,6 @@ query_popler <- function(connection, select_vars, search_arg){
   
 }
 
-
-# Function to open metadata webpage for each project whose data was downloaded
-open_metadata <- function(metadata){
-  
-  if(metadata == T) {
-    unique_projects = unique(output_data$proj_metadata_key)
-    for(i in 1:length(unique_projects) ){
-      
-      metadata_webpage(unique_projects[i])
-      
-    }
-  }
-  
-}
 
 # informational message at every download
 data_message <- function(x){

@@ -189,17 +189,47 @@ parasite_npp    &lt;-<span class="st"> </span><span class="kw">browse</span>(tit
 </ol>
 <p>First, you can download data by providing an object created through <code>browse()</code>. In the example below, the code returns all population data concerning species of the genus <em>Poa</em>:</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">as.tbl</span>(<span class="kw">get_data</span>(poa_metadata))</code></pre>
-<p>Second, you can further subset objects created through <code>browse()</code>. In the code below, popler downloads data concerning the genus <em>Poa</em> collected after the year 2008.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">as.tbl</span>( <span class="kw">get_data</span>(poa_metadata, year &gt;<span class="st"> </span><span class="dv">2008</span>) )</code></pre>
-<pre><code>## You have downloaded data from 1 project. 
-## This project has the follwing identification number: 53. 
+<pre><code>## 
+## You have downloaded data from 3 project(s). 
+## These projects have the follwing identification numbers: 35, 36, 53.
 ## 
 ## IMPORTANT NOTICE: 
 ## If you are about to use this data in a formal publication, as courtesy, please:
 ## 1) Contact the investigators of each project. 
-##    Do this by using function authors() on the object you just downloaded. 
+##    Obtain contact information by using function authors() on this object. 
 ## 2) Acknowledge funding sources, if these are provided in the metadata.   
-##    Access metadata by using function metadata_url() on the object you just downloaded.</code></pre>
+##    Access project metadata by using function metadata_url() on this object.</code></pre>
+<pre><code>## Source: local data frame [298 x 15]</code></pre>
+<pre><code>## Auto-disconnecting postgres connection (10384, 1)</code></pre>
+<pre><code>## Auto-disconnecting postgres connection (10384, 0)</code></pre>
+<pre><code>##     year   day month genus     species structure  datatype
+##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;       &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;
+## 1   2006     0     9   Poa fendleriana        NA per_cover
+## 2   2001     0     0   Poa   bigelovii         2 per_cover
+## 3   2001     0     0   Poa   bigelovii         2 per_cover
+## 4   2001     0     0   Poa   bigelovii         3 per_cover
+## 5   2001     0     0   Poa   bigelovii         3 per_cover
+## 6   2001     0     0   Poa   bigelovii         4 per_cover
+## 7   2001     0     0   Poa   bigelovii         2 per_cover
+## 8   2001     0     0   Poa   bigelovii         2 per_cover
+## 9   2001     0     0   Poa   bigelovii         2 per_cover
+## 10  2001     0     0   Poa   bigelovii         1 per_cover
+## ..   ...   ...   ...   ...         ...       ...       ...
+## Variables not shown: spatial_replication_level_1 &lt;chr&gt;,
+##   spatial_replication_level_2 &lt;chr&gt;, spatial_replication_level_3 &lt;chr&gt;,
+##   spatial_replication_level_4 &lt;chr&gt;, authors &lt;chr&gt;, authors_contact &lt;chr&gt;,
+##   proj_metadata_key &lt;int&gt;, count_observation &lt;dbl&gt;.</code></pre>
+<p>Second, you can further subset objects created through <code>browse()</code>. In the code below, popler downloads data concerning the genus <em>Poa</em> collected after the year 2008.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">as.tbl</span>( <span class="kw">get_data</span>(poa_metadata, year &gt;<span class="st"> </span><span class="dv">2008</span>) )</code></pre>
+<pre><code>## You have downloaded data from 1 project. 
+## This project has the follwing identification number: 53.
+## 
+## IMPORTANT NOTICE: 
+## If you are about to use this data in a formal publication, as courtesy, please:
+## 1) Contact the investigators of each project. 
+##    Do this by using function authors() on this object. 
+## 2) Acknowledge funding sources, if these are provided in the metadata.   
+##    Access metadata by using function metadata_url() on this object.</code></pre>
 <pre><code>## Source: local data frame [117 x 15]
 ## 
 ##     year   day month genus     species structure  datatype
@@ -221,15 +251,17 @@ parasite_npp    &lt;-<span class="st"> </span><span class="kw">browse</span>(tit
 ##   proj_metadata_key &lt;int&gt;, count_observation &lt;dbl&gt;.</code></pre>
 <p>Third, you can directly provide a logical statement to <code>get_data()</code>:</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">as.tbl</span>( <span class="kw">get_data</span>(<span class="dt">subset =</span> proj_metadata_key ==<span class="st"> </span><span class="dv">25</span>) )</code></pre>
+<pre><code>## Auto-disconnecting postgres connection (10384, 3)</code></pre>
+<pre><code>## Auto-disconnecting postgres connection (10384, 2)</code></pre>
 <pre><code>## You have downloaded data from 1 project. 
-## This project has the follwing identification number: 25. 
+## This project has the follwing identification number: 25.
 ## 
 ## IMPORTANT NOTICE: 
 ## If you are about to use this data in a formal publication, as courtesy, please:
 ## 1) Contact the investigators of each project. 
-##    Do this by using function authors() on the object you just downloaded. 
+##    Do this by using function authors() on this object. 
 ## 2) Acknowledge funding sources, if these are provided in the metadata.   
-##    Access metadata by using function metadata_url() on the object you just downloaded.</code></pre>
+##    Access metadata by using function metadata_url() on this object.</code></pre>
 <pre><code>## Source: local data frame [9,099 x 15]
 ## 
 ##     year   day month              genus    species structure datatype
