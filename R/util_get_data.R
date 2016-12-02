@@ -208,12 +208,25 @@ open_metadata <- function(metadata){
 # informational message at every download
 data_message <- function(x){
   
-  mess_df <- unique(select(x,proj_metadata_key,authors,authors_contact))
-  names(mess_df) <- c("project_id","authors","contacts")
-  
-  # Messages
-  cat("\nBelow are the authors connected to the data you downloaded. \nPlease contact these individuals if you wish to carry out research using this data.\n\n")
-  print(mess_df, row.names = FALSE)
+  if( length(unique(x$proj_metadata_key)) == 1)
+    cat(paste0("You have downloaded data from ",length(unique(x$proj_metadata_key))," project. \nThis project has the follwing identification number: ",
+           paste0(unique(x$proj_metadata_key),collapse=", "),"."),"\n
+IMPORTANT NOTICE: 
+If you are about to use this data in a formal publication, as courtesy, please:
+1) Contact the investigators of each project. 
+   Do this by using function authors() on the object you just downloaded. 
+2) Acknowledge funding sources, if these are provided in the metadata.   
+   Access metadata by using function metadata_url() on the object you just downloaded.")
+  else {
+    cat(paste0("You have downloaded data from ",length(unique(x$proj_metadata_key))," project(s). \nThese projects have the follwing identification numbers: ",
+               paste0(unique(x$proj_metadata_key),collapse=", "),"."),"\n
+IMPORTANT NOTICE: 
+If you are about to use this data in a formal publication, as courtesy, please:
+1) Contact the investigators of each project. 
+   Obtain contact information by using function authors() on the object you just downloaded. 
+2) Acknowledge funding sources, if these are provided in the metadata.   
+   Access project metadata by using function metadata_url() on the object you just downloaded.")
+  }
   
 }
 
