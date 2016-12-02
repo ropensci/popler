@@ -253,7 +253,7 @@ dictionary_explain <- function(x){
   if( ncol(x) < 60){
     out = data.frame(variable = names(x), 
                      description=c("title of project","unique project id","lter name",
-                                   "type of abundance data (count,biomass,cover,density,individual)",
+                                   "type of abundance data (e.g. count,biomass)",
                                    "experimental or observational study?","duration of project in years",
                                    "does data set contain multiple taxa?","is indidivual data structured?",
                                    "lter site latitude", "lter site longitude","specific epithet of a taxonomic unit",
