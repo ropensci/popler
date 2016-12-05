@@ -2,8 +2,11 @@
 # query columns 
 query_cols <- function(){
   
-  conn <- src_postgres(
-    dbname="popler_3", host="www.how-imodel-it.com", port=5432, user="lter", password="bigdata")
+  #conn <- src_postgres(
+  #  dbname="popler_3", host="www.how-imodel-it.com", port=5432, user="lter", password="bigdata")
+  conn <- src_postgres(dbname="popler_3", 
+                       host="ec2-54-212-204-87.us-west-2.compute.amazonaws.com", 
+                       port=5432, user="lter")
   
   #list columns
   proj_cols     <- as.data.frame(tbl(conn, sql( "SELECT column_name FROM information_schema.columns WHERE
@@ -19,14 +22,16 @@ query_cols <- function(){
   abund_cols    <- as.data.frame(tbl(conn, sql( "SELECT column_name FROM information_schema.columns WHERE
                                                 table_name = 'count_table'")))[,1]
   
-  all_cols      <- c(proj_cols,lter_cols,site_cols, s_i_p_cols, taxa_cols, abund_cols) 
-  default_cols  <- c("year","day","month","genus","species","structure","datatype",         
+  all_cols      <- c(proj_cols,lter_cols,site_cols, s_i_p_cols, taxa_cols, abund_cols)
+  default_cols  <- c("year","day","month","genus","species","datatype",         
                      "spatial_replication_level_1","spatial_replication_level_2",
                      "spatial_replication_level_3","spatial_replication_level_4",
                      "authors","authors_contact","proj_metadata_key",
-                     "trt_label"
-  )
+                     "structure_type_1","structure_type_2","structure_type_3",
+                     "treatment_type_1","treatment_type_2","treatment_type_3"
+                     )
   
+  rm(conn)
   return( list(all_cols = all_cols, default_cols = default_cols) )
   
 }
@@ -109,10 +114,18 @@ query_popler <- function(connection, select_vars, search_arg){
   
   if(length(search_arg) == 0) stop( "No logical argument specified. Please specify what data you wish to download from popler" )
   
+  # table specific variables
+  vars                     <- list()
+  vars$count_table         <- gsub("treatment_type_","count_table.treatment_type_",select_vars)
+  vars$biomass_table       <- gsub("treatment_type_","biomass_table.treatment_type_",select_vars)
+  vars$percent_cover_table <- gsub("treatment_type_","percent_cover_table.treatment_type_",select_vars)
+  vars$density_table       <- gsub("treatment_type_","density_table.treatment_type_",select_vars)
+  vars$individual_table    <- gsub("treatment_type_","individual_table.treatment_type_",select_vars)
+  
   table_all <- tbl(connection, sql(
     paste(
       # Count data
-      "SELECT",select_vars,", count_observation",
+      "SELECT",vars$count_table,", count_observation",
       "FROM count_table",
       "JOIN taxa_table ON count_table.taxa_count_fkey = taxa_table.taxa_table_key",
       "JOIN site_in_project_table ON taxa_table.site_in_project_taxa_key =",
@@ -127,7 +140,7 @@ query_popler <- function(connection, select_vars, search_arg){
       
       "UNION ALL",
       # Biomass data
-      "SELECT",select_vars,", biomass_observation",
+      "SELECT",vars$biomass_table,", biomass_observation",
       "FROM biomass_table",
       "JOIN taxa_table ON biomass_table.taxa_biomass_fkey = taxa_table.taxa_table_key",
       "JOIN site_in_project_table ON taxa_table.site_in_project_taxa_key =",
@@ -142,7 +155,7 @@ query_popler <- function(connection, select_vars, search_arg){
       
       "UNION ALL",
       # percent cover data
-      "SELECT",select_vars,", percent_cover_observation",
+      "SELECT",vars$percent_cover_table,", percent_cover_observation",
       "FROM percent_cover_table",
       "JOIN taxa_table ON percent_cover_table.taxa_percent_cover_fkey = taxa_table.taxa_table_key",
       "JOIN site_in_project_table ON taxa_table.site_in_project_taxa_key =",
@@ -157,7 +170,7 @@ query_popler <- function(connection, select_vars, search_arg){
       
       "UNION ALL",
       # individual data
-      "SELECT",select_vars,", individual_observation",
+      "SELECT",vars$individual_table,", individual_observation",
       "FROM individual_table",
       "JOIN taxa_table ON individual_table.taxa_individual_fkey = taxa_table.taxa_table_key",
       "JOIN site_in_project_table ON taxa_table.site_in_project_taxa_key =",
@@ -172,7 +185,7 @@ query_popler <- function(connection, select_vars, search_arg){
       
       "UNION ALL",
       # density data
-      "SELECT",select_vars,", density_observation",
+      "SELECT",vars$density_table,", density_observation",
       "FROM density_table",
       "JOIN taxa_table ON density_table.taxa_density_fkey = taxa_table.taxa_table_key",
       "JOIN site_in_project_table ON taxa_table.site_in_project_taxa_key =",
