@@ -24,7 +24,7 @@ query_cols <- function(){
                      "spatial_replication_level_1","spatial_replication_level_2",
                      "spatial_replication_level_3","spatial_replication_level_4",
                      "authors","authors_contact","proj_metadata_key",
-                     "trt_label","count_observation"
+                     "trt_label"
   )
   
   return( list(all_cols = all_cols, default_cols = default_cols) )
