@@ -18,6 +18,26 @@
 
 
 
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+</style>
 
 
 
@@ -36,12 +56,149 @@
 
 
 
-<div id="introduction" class="section level2">
-<h2>Introduction</h2>
-<p>This vignette shows how to exploit the full potential of popler. with the full 93 variables contained in the popler database. However, to acquaint new users with popler, the default settings of this R package (in particular, <code>full_tbl = F</code>) consider 26 rather than 93 variables.</p>
+<div id="introduction-identifying-groups-of-data-sets" class="section level2">
+<h2>Introduction: identifying groups of data sets</h2>
+<p>The popler R package was built to foster scientific synthesis using LTER long-term data. The premise of such synthesis is using data from many research projects that share characteristics of scientific interest. To identify projects sharing salient attributes, popler uses the metadata information associated with each LTER project. In particular, it is farily easy to select projects based on one or more of the following features:</p>
+<ol style="list-style-type: decimal">
+<li>Replication, temporal or spatial.</li>
+<li>Taxonomic group.</li>
+<li>Study characteristics.</li>
+<li>Geographic location.</li>
+</ol>
+<p>Vetting the database based on these criteria is very intuitive. Moreover, popler also facilitates identifying data sets in many other, more flexible ways. Below we provide several examples on how to select LTER data based on the four criteria data base according to both the features described above, and on examples on how to carry out</p>
+<div id="replication" class="section level3">
+<h3>1. Replication</h3>
+<div id="temporal-replication" class="section level4">
+<h4>Temporal replication</h4>
+<p>If you are interested in long-term data, you will likely want to select projects based on how long the data was collected for. This is very straightforward using the</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(popler)
+<span class="kw">browse</span>(duration_years &gt;<span class="st"> </span><span class="dv">10</span>)</code></pre>
+<pre><code>## Source: local data frame [24 x 11]
+## 
+##                        title proj_metadata_key lterid   datatype studytype
+##                        &lt;chr&gt;             &lt;int&gt;  &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt;
+## 1  SBC LTER: Reef: Kelp Fore                 1    SBC individual        NA
+## 2  SBC LTER: Reef: Kelp Fore                 2    SBC      count        NA
+## 3  SBC LTER: Reef: Kelp Fore                 3    SBC      count        NA
+## 4  SBC LTER: Reef: Kelp Fore                 4    SBC  per_cover        NA
+## 5  SBC LTER: Time series of                 12    SBC    density        NA
+## 6  SBC LTER: Santa Cruz Isla                13    SBC      count        NA
+## 7  SBC LTER: Santa Cruz Isla                14    SBC  per_cover        NA
+## 8  SBC LTER: Santa Cruz Isla                15    SBC    biomass        NA
+## 9  SBC LTER: Reef: Historica                17    SBC    biomass        NA
+## 10  Long-Term Core Site Gras                21    SEV      count        NA
+## ..                       ...               ...    ...        ...       ...
+## Variables not shown: duration_years &lt;dbl&gt;, community &lt;chr&gt;, structured
+##   &lt;chr&gt;, lat_lter &lt;dbl&gt;, lng_lter &lt;dbl&gt;, taxonomy &lt;list&gt;.</code></pre>
+<p>Note that most LTER projects contemplate sampling at a yearly or sub-yearly frequency. Thus, studies longer than 10 years generally guarantee a longitudinal series of 10 or more observations. In this scanario, knowing what sample frequency characterizes each study is farily simple [COMMENT: “samplefreq” is not browse() and dictionary() default settings. Still debating whether I should describe <em>full_tbl</em> right away or below]:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dictionary</span>(<span class="st">&quot;samplefreq&quot;</span>)</code></pre>
+<pre><code>## $samplefreq
+## [1] &quot;bimonthly&quot; &quot;biweekly&quot;  &quot;irregular&quot; &quot;month&quot;     &quot;monthly&quot;   &quot;season:yr&quot;
+## [7] &quot;summer:yr&quot; &quot;yr&quot;</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">browse</span>(samplefreq ==<span class="st"> &quot;monthly&quot;</span>)</code></pre>
+<pre><code>## Source: local data frame [3 x 11]
+## 
+##                       title proj_metadata_key lterid   datatype studytype
+##                       &lt;chr&gt;             &lt;int&gt;  &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt;
+## 1 SBC LTER: Reef: Sightings                18    SBC      count        NA
+## 2 SBC LTER: Cross-shelf Stu                20    SBC      count        NA
+## 3  Population Ecology of Ba                44    SEV individual        NA
+## Variables not shown: duration_years &lt;dbl&gt;, community &lt;chr&gt;, structured
+##   &lt;chr&gt;, lat_lter &lt;dbl&gt;, lng_lter &lt;dbl&gt;, taxonomy &lt;list&gt;.</code></pre>
+</div>
+<div id="spatial-replication" class="section level4">
+<h4>Spatial replication</h4>
+<p>[COMMENT: Need to create derived variables <code>tot_spatial_rep</code>, <code>n_spatial_levels</code> in <code>project_table</code>]</p>
+</div>
+</div>
+<div id="taxonomic-group" class="section level3">
+<h3>2. Taxonomic group</h3>
+<p>Selecting information based on taxonomica groups is straightforward. The default settings of popler provide seven taxonomic groups: kingdom, phylum, class, order, family, genus, and species. Selecting</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dictionary</span>(<span class="st">&quot;kingdom&quot;</span>)</code></pre>
+<pre><code>## $kingdom
+## [1] &quot; Animalia&quot;      &quot;Animaila&quot;       &quot;Animalia&quot;       &quot;Chromalveolata&quot;
+## [5] &quot;Plantae&quot;</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">browse</span>(kingdom ==<span class="st"> &quot;Plantae&quot;</span>)</code></pre>
+<pre><code>## Source: local data frame [30 x 11]
+## 
+##                        title proj_metadata_key lterid   datatype studytype
+##                        &lt;chr&gt;             &lt;int&gt;  &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt;
+## 1  SBC LTER: Reef: Kelp Fore                 1    SBC individual        NA
+## 2  SBC LTER: Reef: Kelp Fore                 3    SBC      count        NA
+## 3  SBC LTER: Reef: Long-term                 5    SBC individual        NA
+## 4  SBC LTER: Reef: Long-term                 7    SBC      count        NA
+## 5  SBC LTER: Reef: Long-term                 8    SBC  per_cover        NA
+## 6  SBC LTER: Reef: Long-term                 9    SBC    biomass        NA
+## 7  SBC LTER: Santa Cruz Isla                15    SBC    biomass        NA
+## 8  SBC LTER: Reef: Historica                17    SBC    biomass        NA
+## 9   Rainfall Manipulation St                26    SEV  per_cover        NA
+## 10  2003 Prescribed Burn Eff                27    SEV  per_cover        NA
+## ..                       ...               ...    ...        ...       ...
+## Variables not shown: duration_years &lt;dbl&gt;, community &lt;chr&gt;, structured
+##   &lt;chr&gt;, lat_lter &lt;dbl&gt;, lng_lter &lt;dbl&gt;, taxonomy &lt;list&gt;.</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">browse</span>(class ==<span class="st"> &quot;Insect&quot;</span>)</code></pre>
+<pre><code>## Source: local data frame [1 x 11]
+## 
+##                       title proj_metadata_key lterid datatype studytype
+##                       &lt;chr&gt;             &lt;int&gt;  &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;
+## 1  Rodent Parasite Data for                25    SEV    count        NA
+## Variables not shown: duration_years &lt;dbl&gt;, community &lt;chr&gt;, structured
+##   &lt;chr&gt;, lat_lter &lt;dbl&gt;, lng_lter &lt;dbl&gt;, taxonomy &lt;list&gt;.</code></pre>
+</div>
+<div id="study-characteristics" class="section level3">
+<h3>3. Study characteristics</h3>
+<p>Metadata information provides a few variables to select studies in a straightforward way. In particular:</p>
 <ul>
-<li>Considering all 93 variables can be confusing, especially at first.</li>
+<li><code>studytype</code>: is the study observational or experimental?</li>
+<li><code>treatment_type</code>: if the study is experimental, what type of treatments are used?</li>
+<li><code>community</code>: does project provide data on multiple species?</li>
 </ul>
+<p>Below we provie several three examples on how to use these three respective fields.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dictionary</span>(<span class="st">&quot;community&quot;</span>)</code></pre>
+<pre><code>## $community
+## [1] &quot;no&quot;   &quot;yes&quot;  &quot;yes &quot;</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">browse</span>(community ==<span class="st"> &quot;no&quot;</span>) <span class="co"># single-species studies</span></code></pre>
+<pre><code>## Source: local data frame [10 x 11]
+## 
+##                        title proj_metadata_key lterid   datatype studytype
+##                        &lt;chr&gt;             &lt;int&gt;  &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt;
+## 1  SBC LTER: Reef: Kelp Fore                 1    SBC individual        NA
+## 2  SBC LTER: Reef: Long-term                 5    SBC individual        NA
+## 3  SBC LTER: Reef: Abundance                11    SBC      count        NA
+## 4  SBC LTER: Santa Cruz Isla                16    SBC      count        NA
+## 5  SBC LTER: Reef: Historica                17    SBC    biomass        NA
+## 6  SBC LTER: Reef: Sightings                18    SBC      count        NA
+## 7   Population Ecology of Ba                44    SEV individual        NA
+## 8   Gunnison's Prairie Dog R                47    SEV individual        NA
+## 9   Coyote Scat Survey in th                57    SEV      count        NA
+## 10 Snowshoe hare physical da               198    BNZ      count        NA
+## Variables not shown: duration_years &lt;dbl&gt;, community &lt;chr&gt;, structured
+##   &lt;chr&gt;, lat_lter &lt;dbl&gt;, lng_lter &lt;dbl&gt;, taxonomy &lt;list&gt;.</code></pre>
+</div>
+<div id="geographic-location." class="section level3">
+<h3>4. Geographic location.</h3>
+<p>It is easy to select studies based on the latitude and longitude of the LTER headquarters they are located at. For example:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dictionary</span>(<span class="st">&quot;community&quot;</span>)</code></pre>
+<pre><code>## $community
+## [1] &quot;no&quot;   &quot;yes&quot;  &quot;yes &quot;</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">browse</span>(community ==<span class="st"> &quot;no&quot;</span>) <span class="co"># single-species studies</span></code></pre>
+<pre><code>## Source: local data frame [10 x 11]
+## 
+##                        title proj_metadata_key lterid   datatype studytype
+##                        &lt;chr&gt;             &lt;int&gt;  &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt;
+## 1  SBC LTER: Reef: Kelp Fore                 1    SBC individual        NA
+## 2  SBC LTER: Reef: Long-term                 5    SBC individual        NA
+## 3  SBC LTER: Reef: Abundance                11    SBC      count        NA
+## 4  SBC LTER: Santa Cruz Isla                16    SBC      count        NA
+## 5  SBC LTER: Reef: Historica                17    SBC    biomass        NA
+## 6  SBC LTER: Reef: Sightings                18    SBC      count        NA
+## 7   Population Ecology of Ba                44    SEV individual        NA
+## 8   Gunnison's Prairie Dog R                47    SEV individual        NA
+## 9   Coyote Scat Survey in th                57    SEV      count        NA
+## 10 Snowshoe hare physical da               198    BNZ      count        NA
+## Variables not shown: duration_years &lt;dbl&gt;, community &lt;chr&gt;, structured
+##   &lt;chr&gt;, lat_lter &lt;dbl&gt;, lng_lter &lt;dbl&gt;, taxonomy &lt;list&gt;.</code></pre>
+</div>
 </div>
 <div id="the-schema-function" class="section level2">
 <h2>The <code>schema()</code> function</h2>
@@ -51,8 +208,8 @@
 <li>Or should we just save the schema as data using devtools::use_data?</li>
 </ul>
 </div>
-<div id="using-metadata-information" class="section level2">
-<h2>Using metadata information</h2>
+<div id="seaching-studies-in-popler" class="section level2">
+<h2>Seaching studies in popler</h2>
 <p>Metadata information in popler consists of 60 variables. The default settings in <code>dictionary()</code> only show 17 variables. Setting the arugment <code>full_tbl=T</code> shows a description for each of the 60 variables.</p>
 <ol style="list-style-type: decimal">
 <li>metadata info (<code>dictionary()</code>).</li>

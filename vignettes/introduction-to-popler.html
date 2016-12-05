@@ -12,7 +12,7 @@
 
 <meta name="author" content="Aldo Compagnoni" />
 
-<meta name="date" content="2016-12-02" />
+<meta name="date" content="2016-12-04" />
 
 <title>Introduction to popler</title>
 
@@ -52,7 +52,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
 
 <h1 class="title toc-ignore">Introduction to popler</h1>
 <h4 class="author"><em>Aldo Compagnoni</em></h4>
-<h4 class="date"><em>2016-12-02</em></h4>
+<h4 class="date"><em>2016-12-04</em></h4>
 
 
 
@@ -199,9 +199,9 @@ parasite_npp    &lt;-<span class="st"> </span><span class="kw">browse</span>(tit
 ##    Obtain contact information by using function authors() on this object. 
 ## 2) Acknowledge funding sources, if these are provided in the metadata.   
 ##    Access project metadata by using function metadata_url() on this object.</code></pre>
-<pre><code>## Source: local data frame [298 x 15]</code></pre>
-<pre><code>## Auto-disconnecting postgres connection (10384, 1)</code></pre>
-<pre><code>## Auto-disconnecting postgres connection (10384, 0)</code></pre>
+<pre><code>## Source: local data frame [298 x 16]</code></pre>
+<pre><code>## Auto-disconnecting postgres connection (8048, 1)</code></pre>
+<pre><code>## Auto-disconnecting postgres connection (8048, 0)</code></pre>
 <pre><code>##     year   day month genus     species structure  datatype
 ##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;       &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;
 ## 1   2006     0     9   Poa fendleriana        NA per_cover
@@ -218,7 +218,7 @@ parasite_npp    &lt;-<span class="st"> </span><span class="kw">browse</span>(tit
 ## Variables not shown: spatial_replication_level_1 &lt;chr&gt;,
 ##   spatial_replication_level_2 &lt;chr&gt;, spatial_replication_level_3 &lt;chr&gt;,
 ##   spatial_replication_level_4 &lt;chr&gt;, authors &lt;chr&gt;, authors_contact &lt;chr&gt;,
-##   proj_metadata_key &lt;int&gt;, count_observation &lt;dbl&gt;.</code></pre>
+##   proj_metadata_key &lt;int&gt;, trt_label &lt;chr&gt;, count_observation &lt;dbl&gt;.</code></pre>
 <p>Second, you can further subset objects created through <code>browse()</code>. In the code below, popler downloads data concerning the genus <em>Poa</em> collected after the year 2008.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">as.tbl</span>( <span class="kw">get_data</span>(poa_metadata, year &gt;<span class="st"> </span><span class="dv">2008</span>) )</code></pre>
 <pre><code>## You have downloaded data from 1 project. 
@@ -230,7 +230,7 @@ parasite_npp    &lt;-<span class="st"> </span><span class="kw">browse</span>(tit
 ##    Do this by using function authors() on this object. 
 ## 2) Acknowledge funding sources, if these are provided in the metadata.   
 ##    Access metadata by using function metadata_url() on this object.</code></pre>
-<pre><code>## Source: local data frame [117 x 15]
+<pre><code>## Source: local data frame [117 x 16]
 ## 
 ##     year   day month genus     species structure  datatype
 ##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;       &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;
@@ -248,11 +248,11 @@ parasite_npp    &lt;-<span class="st"> </span><span class="kw">browse</span>(tit
 ## Variables not shown: spatial_replication_level_1 &lt;chr&gt;,
 ##   spatial_replication_level_2 &lt;chr&gt;, spatial_replication_level_3 &lt;chr&gt;,
 ##   spatial_replication_level_4 &lt;chr&gt;, authors &lt;chr&gt;, authors_contact &lt;chr&gt;,
-##   proj_metadata_key &lt;int&gt;, count_observation &lt;dbl&gt;.</code></pre>
+##   proj_metadata_key &lt;int&gt;, trt_label &lt;chr&gt;, count_observation &lt;dbl&gt;.</code></pre>
 <p>Third, you can directly provide a logical statement to <code>get_data()</code>:</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">as.tbl</span>( <span class="kw">get_data</span>(<span class="dt">subset =</span> proj_metadata_key ==<span class="st"> </span><span class="dv">25</span>) )</code></pre>
-<pre><code>## Auto-disconnecting postgres connection (10384, 3)</code></pre>
-<pre><code>## Auto-disconnecting postgres connection (10384, 2)</code></pre>
+<pre><code>## Auto-disconnecting postgres connection (8048, 3)</code></pre>
+<pre><code>## Auto-disconnecting postgres connection (8048, 2)</code></pre>
 <pre><code>## You have downloaded data from 1 project. 
 ## This project has the follwing identification number: 25.
 ## 
@@ -262,7 +262,7 @@ parasite_npp    &lt;-<span class="st"> </span><span class="kw">browse</span>(tit
 ##    Do this by using function authors() on this object. 
 ## 2) Acknowledge funding sources, if these are provided in the metadata.   
 ##    Access metadata by using function metadata_url() on this object.</code></pre>
-<pre><code>## Source: local data frame [9,099 x 15]
+<pre><code>## Source: local data frame [9,099 x 16]
 ## 
 ##     year   day month              genus    species structure datatype
 ##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;              &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;
@@ -280,7 +280,7 @@ parasite_npp    &lt;-<span class="st"> </span><span class="kw">browse</span>(tit
 ## Variables not shown: spatial_replication_level_1 &lt;chr&gt;,
 ##   spatial_replication_level_2 &lt;chr&gt;, spatial_replication_level_3 &lt;chr&gt;,
 ##   spatial_replication_level_4 &lt;chr&gt;, authors &lt;chr&gt;, authors_contact &lt;chr&gt;,
-##   proj_metadata_key &lt;int&gt;, count_observation &lt;dbl&gt;.</code></pre>
+##   proj_metadata_key &lt;int&gt;, trt_label &lt;chr&gt;, count_observation &lt;dbl&gt;.</code></pre>
 </div>
 
 

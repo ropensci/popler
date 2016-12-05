@@ -9,11 +9,86 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-## Introduction
+## Introduction: identifying groups of data sets
 
-This vignette shows how to exploit the full potential of popler. with the full 93 variables contained in the popler database. However, to acquaint new users with popler, the default settings of this R package (in particular, `full_tbl = F`) consider 26 rather than 93 variables. 
+The popler R package was built to foster scientific synthesis using LTER long-term data. The premise of such synthesis is using data from many research projects that share characteristics of scientific interest. To identify projects sharing salient attributes, popler uses the metadata information associated with each LTER project. In particular, it is farily easy to select projects based on one or more of the following features:
 
- - Considering all 93 variables can be confusing, especially at first.  
+ 1. Replication, temporal or spatial.
+ 2. Taxonomic group.
+ 3. Study characteristics. 
+ 4. Geographic location.
+
+Vetting the database based on these criteria is very intuitive. However, popler also facilitates identifying data sets in many other, more flexible ways. Below we provide several examples on how to select LTER data based on the four types of features described above. Moreover, in the final section we also show how to carry out more complicated types of searches.
+
+### 1. Replication
+#### Temporal replication
+
+If you are interested in long-term data, you will likely want to select projects based on how long the data was collected for. This is very straightforward using the 
+
+```{r, warning = FALSE, message = FALSE}
+library(popler)
+browse(duration_years > 10)
+```
+
+Note that most LTER projects contemplate sampling at a yearly or sub-yearly frequency. Thus, studies longer than 10 years generally guarantee a longitudinal series of 10 or more observations. In this scanario, knowing what sample frequency characterizes each study is farily simple [COMMENT: "samplefreq" is not browse() and dictionary() default settings. Still debating whether I should describe *full_tbl* right away or below]: 
+
+```{r, warning = FALSE, message = FALSE}
+dictionary("samplefreq")
+browse(samplefreq == "monthly")
+```
+
+#### Spatial replication
+
+[COMMENT: Need to create derived variables `tot_spatial_rep`, `n_spatial_levels` in `project_table`]
+
+
+###2. Taxonomic group
+
+Selecting information based on taxonomica groups is straightforward. The default settings of popler provide seven taxonomic groups: kingdom, phylum, class, order, family, genus, and species. Selecting 
+
+```{r, warning = FALSE, message = FALSE}
+dictionary("kingdom")
+browse(kingdom == "Plantae")
+browse(class == "Insect")
+```
+
+###3. Study characteristics
+
+Metadata information provides a few variables to select studies in a straightforward way. In particular:
+
+ - `studytype`: is the study observational or experimental? 
+ - `treatment_type `: if the study is experimental, what type of treatments are used?
+ - `community`: does project provide data on multiple species?
+
+Below we provie several three examples on how to use these three respective fields. 
+
+```{r, warning = FALSE, message = FALSE}
+dictionary("community")
+browse(community == "no") # single-species studies
+```
+
+### 4. Geographic location.
+
+It is easy to select studies based on the latitude and longitude of the LTER headquarters they are located at. For example: 
+
+```{r, warning = FALSE, message = FALSE}
+dictionary( c("lat_lter","lng_lter") )
+browse(lat_lter > 40 & lng_lter < -100) # single-species studies
+```
+
+### 5. More complicated searches
+
+Popler allows somewhat complicated searches.  
+
+ - combine several types of metadata information.
+ - use keywords.
+ 
+## The argument `full_tbl`
+
+Metadata information in popler consists of 60 variables. The default settings in `dictionary()` only show 17 variables. Setting the arugment `full_tbl=T` shows a description for each of the 60 variables. 
+
+1. metadata info (`dictionary()`).
+1. metadata info (`dictionary(full_tbl=T)`).
 
 
 ## The `schema()` function
@@ -25,10 +100,4 @@ Differences in both
  - Or should we just save the schema as data using devtools::use_data?
 
 
-## Using metadata information
-
-Metadata information in popler consists of 60 variables. The default settings in `dictionary()` only show 17 variables. Setting the arugment `full_tbl=T` shows a description for each of the 60 variables. 
-
-1. metadata info (`dictionary()`).
-1. metadata info (`dictionary(full_tbl=T)`).
 
