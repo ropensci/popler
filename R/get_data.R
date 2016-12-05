@@ -27,7 +27,6 @@
 get_data <- function(browsed_data = NULL, subset = NULL,
                      add_columns = NULL, subtract_columns = NULL){
   
-  
   # define possible columns ---------------------------------------------------------------
   
   # possible columns 
@@ -50,8 +49,11 @@ get_data <- function(browsed_data = NULL, subset = NULL,
   
   
   # query ---------------------------------------------------------------------------------
-  conn <- src_postgres(
-    dbname="popler_3", host="www.how-imodel-it.com", port=5432, user="lter", password="bigdata")
+  #conn <- src_postgres(
+  #  dbname="popler_3", host="www.how-imodel-it.com", port=5432, user="lter", password="bigdata")
+  conn <- src_postgres(dbname="popler_3", 
+                       host="ec2-54-212-204-87.us-west-2.compute.amazonaws.com", 
+                       port=5432, user="lter")
   
   output_data <- popler:::query_popler(conn, select_vars, search_arg)
   
