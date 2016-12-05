@@ -12,9 +12,9 @@
 
 <meta name="author" content="Aldo Compagnoni" />
 
-<meta name="date" content="2016-12-02" />
+<meta name="date" content="2016-12-04" />
 
-<title>Exploiting the full schema of popler</title>
+<title>Vetting popler</title>
 
 
 
@@ -30,15 +30,15 @@
 
 
 
-<h1 class="title toc-ignore">Exploiting the full schema of popler</h1>
+<h1 class="title toc-ignore">Vetting popler</h1>
 <h4 class="author"><em>Aldo Compagnoni</em></h4>
-<h4 class="date"><em>2016-12-02</em></h4>
+<h4 class="date"><em>2016-12-04</em></h4>
 
 
 
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p>This vignette shows how to work with the full 93 variables contained in the popler database. However, to acquaint new users with popler, the default settings of this R package (in particular, <code>full_tbl = F</code>) consider 26 rather than 93 variables.</p>
+<p>This vignette shows how to exploit the full potential of popler. with the full 93 variables contained in the popler database. However, to acquaint new users with popler, the default settings of this R package (in particular, <code>full_tbl = F</code>) consider 26 rather than 93 variables.</p>
 <ul>
 <li>Considering all 93 variables can be confusing, especially at first.</li>
 </ul>
@@ -46,18 +46,18 @@
 <div id="the-schema-function" class="section level2">
 <h2>The <code>schema()</code> function</h2>
 <p><code>schema()</code> returns a description of all the variables contained in popler. It returns a list where each element refers to a specific table of the data base. Each element is a data frame with two columns: the names of the variables contained in the table, and its description. Differences in both</p>
-<ol style="list-style-type: decimal">
-<li>metadata info (<code>dictionary()</code>).</li>
-<li>metadata info (<code>dictionary()</code>).</li>
-</ol>
 <ul>
 <li><code>schema()</code> can also open a figure of the graphical representation of the schema of popler.</li>
 <li>Or should we just save the schema as data using devtools::use_data?</li>
 </ul>
 </div>
-<div id="using-the-full-metadata-information" class="section level2">
-<h2>Using the full metadata information</h2>
-<p>Metadata information browse() browse(full_tbl=T)</p>
+<div id="using-metadata-information" class="section level2">
+<h2>Using metadata information</h2>
+<p>Metadata information in popler consists of 60 variables. The default settings in <code>dictionary()</code> only show 17 variables. Setting the arugment <code>full_tbl=T</code> shows a description for each of the 60 variables.</p>
+<ol style="list-style-type: decimal">
+<li>metadata info (<code>dictionary()</code>).</li>
+<li>metadata info (<code>dictionary(full_tbl=T)</code>).</li>
+</ol>
 </div>
 
 

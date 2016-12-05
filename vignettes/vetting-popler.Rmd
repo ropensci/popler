@@ -1,5 +1,5 @@
 ---
-title: "Suggestions on vetting popler"
+title: "Vetting popler"
 author: "Aldo Compagnoni"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -11,7 +11,7 @@ vignette: >
 
 ## Introduction
 
-This vignette shows how to work with the full 93 variables contained in the popler database. However, to acquaint new users with popler, the default settings of this R package (in particular, `full_tbl = F`) consider 26 rather than 93 variables. 
+This vignette shows how to exploit the full potential of popler. with the full 93 variables contained in the popler database. However, to acquaint new users with popler, the default settings of this R package (in particular, `full_tbl = F`) consider 26 rather than 93 variables. 
 
  - Considering all 93 variables can be confusing, especially at first.  
 
