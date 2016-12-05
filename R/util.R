@@ -261,7 +261,7 @@ dictionary_explain <- function(x){
   } else {
     out = data.frame(variable = names(x), 
                      description=c("project_id","title of project",
-                                   "unit by which abundance was measured",
+                                   "unit of measure for abundance",
                                    "type of abundance data (e.g. count,biomass)",
                                    "is indidivual data structured? (e.g. by size, age, or sex)",
                                    "year of first observation","year of last observation",
