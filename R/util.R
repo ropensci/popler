@@ -83,7 +83,9 @@ table_select <- function(x, full_tbl = FALSE){
   # Initial group_factors
   possibleargs <- tolower(c("title","proj_metadata_key","lterid",
                             "datatype","studytype","duration_years",
-                            "community","structured",
+                            "community",
+                            "structured_type_1","structured_type_2","structured_type_3",
+                            "treatment_type_1","treatment_type_2","treatment_type_3",
                             "lat_lter","lng_lter",
                             "species","kingdom","phylum","class","order","family","genus") )
   
