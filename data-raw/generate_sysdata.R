@@ -7,8 +7,11 @@ library(tidyr)
 
 # generate main data table--------------------------------------------
 
-conn <- src_postgres(
-  dbname="popler_3", host="www.how-imodel-it.com", port=5432, user="lter", password="bigdata")
+#conn <- src_postgres(
+#  dbname="popler_3", host="www.how-imodel-it.com", port=5432, user="lter", password="bigdata")
+conn <- src_postgres(dbname="popler_3", 
+                     host="ec2-54-212-204-87.us-west-2.compute.amazonaws.com", 
+                     port=5432, user="lter")
 
 #list columns
 proj_cols     <- as.data.frame(tbl(conn, sql( "SELECT column_name FROM information_schema.columns WHERE
