@@ -1,6 +1,8 @@
 # test the browse_popler function 
 library(testthat)
-context("browse() utility functions")
+
+# Main utility functions ---------------------------------------------------------------------
+context("browse() main utility functions")
 
 # does this function actually return character columns? 
 test_that("Format Main Table", {
@@ -51,7 +53,6 @@ test_that("Select by criteria", {
 })
 
 
-
 # Select By Criteria function
 test_that("Keyword", {
   
@@ -69,3 +70,45 @@ test_that("Keyword", {
   rm(x)
   
 })
+
+# error functions ---------------------------------------------------------------------
+context("browse() error functions")
+
+# does this function actually return character columns? 
+test_that("Errors ", {
+  
+  main_t        <- popler:::factor_to_character(popler:::main_popler)
+  names(main_t) <- tolower( names(main_t) )
+  main_t        <- popler:::class_order_names(main_t)
+  possible_arg  <- popler:::possibleargs
+  
+  # err_full_tab errors
+  expect_error(popler:::err_full_tab( "lterids", names(main_t), possible_arg ))
+  expect_error(popler:::err_full_tab( "gensus", names(main_t), possible_arg ))
+  expect_error(popler:::err_full_tab( "tilte", names(main_t), possible_arg ))
+  expect_error(popler:::err_full_tab( "specis", names(main_t), possible_arg ))
+  
+  # select criteria
+  expect_error( popler:::select_by_criteria(main_t, substitute( lterid == "SEVa" )) )
+  expect_error( popler:::select_by_criteria(main_t, substitute( lterids == "SEV" )) ) 
+  expect_error( popler:::select_by_criteria(main_t, substitute( lterids == "SEVa" )) ) 
+  
+})
+
+
+# browse function itself --------------------------------------------------
+context("browse() function")
+
+test_that("browse() function ", {
+  
+ 
+  # n of columns
+  expect_equal(ncol( browse() ), 16 )
+  expect_equal(ncol( browse(full_tbl = T) ), 58 )
+  
+  # functioning of "vars"
+  expect_equal(names( browse(vars="lterid") ), c("proj_metadata_key", "lterid", "taxonomy") )
+  expect_equal(names( browse(vars="lng_lter") ), c("proj_metadata_key", "lng_lter", "taxonomy") )
+  
+})
+
