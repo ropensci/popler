@@ -261,7 +261,8 @@ dictionary_explain <- function(x){
                                    "1st type of indidivual structure (if any)","2nd type of indidivual structure (if any)","3rd type of indidivual structure (if any)",
                                    "type of 1st treatment (if any)","type of 2nd treatment (if any)","type of 3rd treatment (if any)",
                                    "lter site latitude", "lter site longitude","specific epithet of a taxonomic unit",
-                                   "kingdom","phylum","class","order","family","genus") )
+                                   "kingdom","phylum","class","order","family","genus") ,
+                     stringsAsFactors = F)
   } else {
     out = data.frame(variable = names(x), 
                      description=c("project_id","foreign key of lter project",
@@ -321,7 +322,8 @@ dictionary_explain <- function(x){
                                    "subdivision","superphylum",
                                    "phylum","subphylum","class","subclass","order","family","genus",
                                    "specific epithet", "common name of species", 
-                                   "scholar who first published the species name") )
+                                   "scholar who first published the species name"),
+                     stringsAsFactors = F)
   }
   
   return(out)
