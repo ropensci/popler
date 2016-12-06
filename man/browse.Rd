@@ -11,7 +11,7 @@ browse(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE)
 
 \item{full_tbl}{Should the function return the standard columns, or the full main table?}
 
-\item{vars}{A vector of characters that specifies which columns of popler's main table should be selected.}
+\item{vars}{A vector of characters: which variables of popler's main table should be selected?}
 
 \item{trim}{If TRUE, strings are truncated at the 50th character. Default is TRUE.}
 
@@ -28,10 +28,10 @@ The user can subset what data and what columns to visualize.
 }
 \examples{
 # No arguments return the standard 16 columns of popler's main table
-standard_columns = browse()
+default_vars = browse()
 
 # full.table==T returns the full table
-full_tbl = browse(full_tbl = TRUE)
+all_vars = browse(full_tbl = TRUE)
 
 # subset only data from the sevilleta LTER 
 sev_data = browse(lterid == "SEV")
