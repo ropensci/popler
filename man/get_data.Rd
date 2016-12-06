@@ -35,6 +35,6 @@ gh_data_96_99 = get_data(grasshop, year > 1995 & year < 2000)
 insect_sev = browse(class == "Insecta" & lterid == "SEV")
 insect_21_yrs96_99 = get_data(insect_sev, year > 1995 & year < 2000 & proj_metadata_key == 21)
 
-insect_21_25 = get_data(subset = (proj_metadata_key == 21 | proj_metadata_key == 25) & year > 1995)
+insect_21_25 = get_data(subset = (proj_metadata_key == 21 | proj_metadata_key == 25) & year < 1995 )
 }
 
