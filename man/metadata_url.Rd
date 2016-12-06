@@ -4,7 +4,7 @@
 \alias{metadata_url}
 \title{Get metadata information from a data object}
 \usage{
-metadata_url(x)
+metadata_url(data_object)
 }
 \arguments{
 \item{data_object}{An object produced by the function get_data()}
