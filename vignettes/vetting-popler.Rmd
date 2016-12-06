@@ -30,7 +30,7 @@ library(popler)
 browse(duration_years > 10)
 ```
 
-Note that most LTER projects contemplate sampling at a yearly or sub-yearly frequency. Thus, studies longer than 10 years generally guarantee a longitudinal series of 10 or more observations. In this scanario, knowing what sample frequency characterizes each study is farily simple [COMMENT: "samplefreq" is not browse() and dictionary() default settings. Still debating whether I should describe *full_tbl* right away or below]: 
+Note that most LTER projects contemplate sampling at a yearly or sub-yearly frequency. Thus, studies longer than 10 years generally guarantee a longitudinal series of 10 or more observations. The variable "samplefreq" characterizes the sample frequency of each study. [COMMENT: "samplefreq" is not browse() and dictionary() default settings. Still debating whether I should describe *full_tbl* right away or below]: 
 
 ```{r, warning = FALSE, message = FALSE}
 dictionary("samplefreq")
@@ -44,32 +44,37 @@ browse(samplefreq == "monthly")
 
 ###2. Taxonomic group
 
-Selecting information based on taxonomica groups is straightforward. The default settings of popler provide seven taxonomic groups: kingdom, phylum, class, order, family, genus, and species. Selecting 
+To selecting information based on taxonomic groups, simply specify which group and which category you wish to select. The default settings of popler provide seven taxonomic groups: kingdom, phylum, class, order, family, genus, and species: 
 
 ```{r, warning = FALSE, message = FALSE}
-dictionary("kingdom")
-browse(kingdom == "Plantae")
-browse(class == "Insect")
+dictionary("class")
+browse(class == "Insecta")
 ```
 
 ###3. Study characteristics
 
-Metadata information provides a few variables to select studies in a straightforward way. In particular:
+Metadata information provides a few variables to select studies based on their a straightforward way. In particular:
 
- - `studytype`: is the study observational or experimental? 
- - `treatment_type `: if the study is experimental, what type of treatments are used?
+ - `studytype`: indicates whether the study is observational or experimental. 
+ - `treatment_type`: type of treatments, if study is experimental.
  - `community`: does project provide data on multiple species?
 
-Below we provie several three examples on how to use these three respective fields. 
+Below we provie several three examples on how to use these three fields. 
 
 ```{r, warning = FALSE, message = FALSE}
 dictionary("community")
-browse(community == "no") # single-species studies
+browse(community == "no") # 8 single-species studies
+
+dictionary("treatment_type_1")
+nrow( browse(treatment_type_1 == "grazing") ) # 2 grazing studies
+
+dictionary("studytype")
+nrow( browse(studytype == "obs") ) # 28 observational studies
 ```
 
 ### 4. Geographic location.
 
-It is easy to select studies based on the latitude and longitude of the LTER headquarters they are located at. For example: 
+To select studies based on the latitude and longitude of the LTER headquarters, simply use the `lat_lter` and `lng_lter` numeric variables: 
 
 ```{r, warning = FALSE, message = FALSE}
 dictionary( c("lat_lter","lng_lter") )
@@ -78,7 +83,7 @@ browse(lat_lter > 40 & lng_lter < -100) # single-species studies
 
 ### 5. More complicated searches
 
-Popler allows somewhat complicated searches.  
+Popler allows more complicated searches.  
 
  - combine several types of metadata information.
  - use keywords.

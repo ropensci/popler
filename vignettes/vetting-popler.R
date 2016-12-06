@@ -7,15 +7,20 @@ dictionary("samplefreq")
 browse(samplefreq == "monthly")
 
 ## ---- warning = FALSE, message = FALSE-----------------------------------
-dictionary("kingdom")
-browse(kingdom == "Plantae")
-browse(class == "Insect")
+dictionary("class")
+browse(class == "Insecta")
 
 ## ---- warning = FALSE, message = FALSE-----------------------------------
 dictionary("community")
-browse(community == "no") # single-species studies
+browse(community == "no") # 8 single-species studies
+
+dictionary("treatment_type_1")
+nrow( browse(treatment_type_1 == "grazing") ) # 2 grazing studies
+
+dictionary("studytype")
+nrow( browse(studytype == "obs") ) # 28 observational studies
 
 ## ---- warning = FALSE, message = FALSE-----------------------------------
-dictionary("community")
-browse(community == "no") # single-species studies
+dictionary( c("lat_lter","lng_lter") )
+browse(lat_lter > 40 & lng_lter < -100) # single-species studies
 
