@@ -3,8 +3,8 @@
 #' This function browses LTER studies contained in the popler database. The user can group, tally, and subset the data sets based on a number of the factors (or columns) of the database.
 #' @param browsed_data A on object produced by the function browse() 
 #' @param subset A logical argument A string that to specify which columns to add in the default columns used in queries to the database. See Details for default columns.
-#' @param add_columns A string to specify which columns the user wants to add in queries to the database 
-#' @param subtract_columns A string to specify which, among the default columns, the user wishes to discard in queries to the database 
+#' @param add_vars A string to specify which columns the user wants to add in queries to the database 
+#' @param subtract_vars A string to specify which, among the default columns, the user wishes to discard in queries to the database 
 #' @return A data frame of the selected data.
 #' @export
 #' @examples
@@ -25,7 +25,7 @@
 
 # Function that connects and gathers the information from the database
 get_data <- function(browsed_data = NULL, subset = NULL,
-                     add_columns = NULL, subtract_columns = NULL){
+                     add_vars = NULL, subtract_vars = NULL){
   
   # define possible columns ---------------------------------------------------------------
   
@@ -40,8 +40,8 @@ get_data <- function(browsed_data = NULL, subset = NULL,
   inherit_vars    <- popler:::inherit_variables(browsed_data, substitute(subset), all_columns)
 
   # variables (de)selected explicitly
-  actual_vars     <- unique( c(default_columns, add_columns, inherit_vars) )
-  select_vars     <- paste( setdiff(actual_vars, subtract_columns), collapse = ", ")
+  actual_vars     <- unique( c(default_columns, add_vars, inherit_vars) )
+  select_vars     <- paste( setdiff(actual_vars, subtract_vars), collapse = ", ")
   
   
   # subset argument(s) --------------------------------------------------------------------
