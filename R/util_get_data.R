@@ -209,7 +209,7 @@ query_popler <- function(connection, select_vars, search_arg){
 data_message <- function(x){
   
   if( length(unique(x$proj_metadata_key)) == 1)
-    message(paste0("You have downloaded data from ",length(unique(x$proj_metadata_key))," project. \nThis project has the follwing identification number: ",
+    message(paste0("You have downloaded data from ",length(unique(x$proj_metadata_key))," project. \nThe identification number of this project is: ",
            paste0(unique(x$proj_metadata_key),collapse=", "),"."),"\n
 IMPORTANT NOTICE: 
 If you are about to use this data in a formal publication, as courtesy, please:
@@ -219,7 +219,7 @@ If you are about to use this data in a formal publication, as courtesy, please:
    Access metadata by using function metadata_url() on this object. \n")
 
   else {
-    message("\n",paste0("You have downloaded data from ",length(unique(x$proj_metadata_key))," project(s). \nThese projects have the follwing identification numbers: ",
+    message("\n",paste0("You have downloaded data from ",length(unique(x$proj_metadata_key))," projects. \nThe identification numbers of these projects are: ",
                paste0(unique(x$proj_metadata_key),collapse=", "),"."),"\n
 IMPORTANT NOTICE: 
 If you are about to use this data in a formal publication, as courtesy, please:
