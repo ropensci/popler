@@ -36,16 +36,30 @@ table_search <- tbl(conn, sql(
         "lter_table.lterid")))
 
 # Convert to data.frame and create 'duration_years'
-out                 <- as.data.frame(table_search, n=-1)
-out$duration_years  <- out$studyendyr - out$studystartyr
+out                   <- as.data.frame(table_search)
+out$duration_years    <- out$studyendyr - out$studystartyr
 # Select project-specific information 
-proj_info           <- out[,c(proj_cols,"duration_years",lter_cols)]
+proj_info             <- out[,c(proj_cols,"duration_years",lter_cols)]
 # Discard replicated information
-out_proj            <- unique(proj_info)
+out_proj              <- unique(proj_info)
+
+# Total spatial replication
+out_proj$tot_spat_rep <- apply(out_proj[paste0("spatial_replication_level_",1:5,
+                                       "_number_of_unique_reps")],
+                             1,prod,na.rm=T)
+
+# Number of spatial levels 
+out_proj$n_spat_levs  <- apply(!is.na(out_proj[paste0("spatial_replication_level_",
+                                                      1:5,"_number_of_unique_reps")]),
+                               1,sum) 
+
+# reorder
+out_proj              <- out_proj[c(1:36,56:57,37:55)]
+
 
 # Unique Taxonomic information 
-taxas     <- taxa_cols[-c(1:2)]
-out_taxa  <- unique(out[,c("proj_metadata_key",taxas)])
+taxas                 <- taxa_cols[-c(1:2)]
+out_taxa              <- unique(out[,c("proj_metadata_key",taxas)])
 
 
 # Nest species data --------------------------------------------------
