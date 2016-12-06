@@ -11,9 +11,9 @@
 #' metadata_url( poa_data )
 
 # function definition 
-metadata_url <- function(x){
+metadata_url <- function( data_object ){
   # study id(s)
-  ids       <- attributes(x)$unique_projects
+  ids       <- attributes( data_object )$unique_projects
   # main table
   main_t    <- popler:::factor_to_character(popler:::main_popler)
   main_t    <- select(main_t, proj_metadata_key, metalink)
