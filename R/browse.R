@@ -4,7 +4,7 @@
 #' The user can subset what data and what columns to visualize.  
 #' @param ... A logical expression to subset popler's main table
 #' @param full_tbl Should the function return the standard columns, or the full main table?
-#' @param vars A vector of characters that specifies which columns of popler's main table should be selected.
+#' @param vars A vector of characters: which variables of popler's main table should be selected?
 #' @param trim If TRUE, strings are truncated at the 50th character. Default is TRUE.
 #' @param view If TRUE, opens up a spreadsheet-style data viewer. If view == "fix" it opens the data frame in a text editor rather than a spreadsheet-style viewer
 #' @return A data frame combining the metadata of each project and the taxonomic units associated with each project.
@@ -12,10 +12,10 @@
 #' @export
 #' @examples
 #' # No arguments return the standard 16 columns of popler's main table
-#' standard_columns = browse()
+#' default_vars = browse()
 #' 
 #' # full.table==T returns the full table
-#' full_tbl = browse(full_tbl = TRUE)
+#' all_vars = browse(full_tbl = TRUE)
 #' 
 #' # subset only data from the sevilleta LTER 
 #' sev_data = browse(lterid == "SEV")
@@ -48,19 +48,22 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
   main_t        <- popler:::class_order_names(main_t)
   
   # Select by subset 
-  subset_data <- popler:::select_by_criteria(main_t, substitute(...) )
+  subset_data   <- popler:::select_by_criteria(main_t, substitute(...) )
   
   # select data based on 
-  subset_data <- popler:::table_select(subset_data, full_tbl)
+  possible_arg  <- popler:::possibleargs
+  subset_data   <- popler:::table_select(subset_data, full_tbl, possible_arg)
   
   # If no column specified, return all columns
   if( is.null(vars) ){
     out_cols <- subset_data
   } else{
+    # include proj_metadata_key if in vars
+    vars      <- popler:::vars_check(vars)
     # Error message if column names are incorrect
-    popler:::err_full_tab( vars, names(main_t) )
+    popler:::err_full_tab( vars, names(main_t), possible_arg )
     # If not, select said columns
-    out_cols <- subset_data[,vars]
+    out_cols  <- subset_data[,vars]
   }
   
   out_form <- popler:::elastic_tab(out_cols, shrink = TRUE, full_tbl)
@@ -71,7 +74,7 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
   
   # attribute class "popler"
   out            <- structure(out_form, 
-                              class = c("popler", class(out_form)),
+                              class = c("popler", class(out_form) ),
                               search_argument = substitute(...)
                               )
   
