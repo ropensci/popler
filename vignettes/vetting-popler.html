@@ -12,7 +12,7 @@
 
 <meta name="author" content="Aldo Compagnoni" />
 
-<meta name="date" content="2016-12-05" />
+<meta name="date" content="2016-12-06" />
 
 <title>Vetting popler</title>
 
@@ -52,13 +52,13 @@ code > span.er { color: #ff0000; font-weight: bold; }
 
 <h1 class="title toc-ignore">Vetting popler</h1>
 <h4 class="author"><em>Aldo Compagnoni</em></h4>
-<h4 class="date"><em>2016-12-05</em></h4>
+<h4 class="date"><em>2016-12-06</em></h4>
 
 
 
 <div id="introduction-identifying-groups-of-data-sets" class="section level2">
 <h2>Introduction: identifying groups of data sets</h2>
-<p>The popler R package was built to foster scientific synthesis using LTER long-term data. The premise of such synthesis is using data from many research projects that share characteristics of scientific interest. To identify projects sharing salient attributes, popler uses the metadata information associated with each LTER project. In particular, it is farily easy to select projects based on one or more of the following features:</p>
+<p>The popler R package was built to foster scientific synthesis using LTER long-term population data. The premise of such synthesis is using data from many research projects that share characteristics of scientific interest. To identify projects sharing salient attributes, popler uses the metadata information associated with each LTER project. In particular, it is farily easy to select projects based on one or more of the following features:</p>
 <ol style="list-style-type: decimal">
 <li>Replication, temporal or spatial.</li>
 <li>Taxonomic group.</li>
@@ -110,12 +110,22 @@ code > span.er { color: #ff0000; font-weight: bold; }
 </div>
 <div id="spatial-replication" class="section level4">
 <h4>Spatial replication</h4>
-<p>[COMMENT: Need to create derived variables <code>tot_spatial_rep</code>, <code>n_spatial_levels</code> in <code>project_table</code>]</p>
+<p>If you wish to select data sets based on their spatial replication, you need to consider that popler organizes data in nested spatial levels. For example, in many plant studies data is collected at the <em>plot</em> level, which can be nested within <em>block</em>, which in turn can be nested within <em>site</em>. Plot labels spatial levels using numbers: 1 is the highest level of replication which contains all other spatial replicates. In the example above, spatial level 1 is <em>site</em>, spatial level 2 is <em>block</em>, and spatial level 3 is <em>plot</em>. Popler allows for a total of 5 spatial levels. Given the above, you can select studies based on three criteria:</p>
+<ol style="list-style-type: decimal">
+<li>The total number of spatial replicates.</li>
+<li>The number of replicates within a specific spatial level.</li>
+<li>The number of nested spatial replicates.</li>
+</ol>
+<p>Below we provide respective three examples for each one of these respective searches:</p>
+<pre><code>browse(tot_spat_rep &gt; 100)
+browse(spatial_replication_level_1_number_of_unique_reps &gt; 5)
+browse(n_spat_levs == 3)</code></pre>
 </div>
 </div>
 <div id="taxonomic-group" class="section level3">
 <h3>2. Taxonomic group</h3>
-<p>To selecting information based on taxonomic groups, simply specify which group and which category you wish to select. The default settings of popler provide seven taxonomic groups: kingdom, phylum, class, order, family, genus, and species:</p>
+<p>Popler contains a wealth of taxonomic information……</p>
+<p>To select information based on taxonomic groups, simply specify which group and which category you wish to select. The default settings of popler provide seven taxonomic groups: kingdom, phylum, class, order, family, genus, and species:</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dictionary</span>(<span class="st">&quot;class&quot;</span>)</code></pre>
 <pre><code>## $class
 ##  [1] &quot;Actinopterygii&quot;         &quot;Adenophorea&quot;           
@@ -226,28 +236,24 @@ code > span.er { color: #ff0000; font-weight: bold; }
 </div>
 <div id="more-complicated-searches" class="section level3">
 <h3>5. More complicated searches</h3>
-<p>Popler allows more complicated searches.</p>
-<ul>
-<li>combine several types of metadata information.</li>
-<li>use keywords.</li>
-</ul>
+<p>Popler allows carrying out more complicated searches than those suggested above. In particular, it allows to i) combine to simultaneously search several types of metadata variables, and ii) use keywords. In the first case, simply provide the function <code>browse()</code> with a logical statement regarding more than one metadata variable. For example, if you want studies on plants with at least 4 nested spatial levels, and 10 years of data:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">browse</span>(kingdom ==<span class="st"> &quot;Plantae&quot;</span> &amp;<span class="st"> </span>n_spat_levs ==<span class="st"> </span><span class="dv">4</span> &amp;<span class="st"> </span>duration_years &gt;<span class="st"> </span><span class="dv">10</span>)</code></pre>
+<pre><code>## Source: local data frame [5 x 16]
+## 
+##                       title proj_metadata_key lterid      datatype
+##                       &lt;chr&gt;             &lt;int&gt;  &lt;chr&gt;         &lt;chr&gt;
+## 1 SBC LTER: Reef: Kelp Fore                 1    SBC    individual
+## 2 SBC LTER: Reef: Kelp Fore                 3    SBC         count
+## 3 Monsoon Rainfall Manipula                37    SEV percent_cover
+## 4 Pinon-Juniper (Core Site)                53    SEV percent_cover
+## 5 Small Mammal Exclosure St                62    SEV percent_cover
+## Variables not shown: studytype &lt;chr&gt;, duration_years &lt;dbl&gt;, community
+##   &lt;chr&gt;, structured_type_1 &lt;chr&gt;, structured_type_2 &lt;chr&gt;,
+##   structured_type_3 &lt;chr&gt;, treatment_type_1 &lt;chr&gt;, treatment_type_2 &lt;chr&gt;,
+##   treatment_type_3 &lt;chr&gt;, lat_lter &lt;dbl&gt;, lng_lter &lt;dbl&gt;, taxonomy &lt;list&gt;.</code></pre>
+<p>In the second case, using keywords can be crucial to retrieve data types that are not directly related to the information contained in metadata variables. For example, you might want to select data based on a particular research topic, rather than the taxa or the experimental design. To aid these searches, popler provides the <code>keyword</code> binary operator <code>%=%</code>. tHIS O</p>
+<pre><code>browse( title %=% &quot;parasit&quot; &amp; n_spat_levs &gt; 2 | genus == &quot;Eimeria&quot;)</code></pre>
 </div>
-</div>
-<div id="the-argument-full_tbl" class="section level2">
-<h2>The argument <code>full_tbl</code></h2>
-<p>Metadata information in popler consists of 60 variables. The default settings in <code>dictionary()</code> only show 17 variables. Setting the arugment <code>full_tbl=T</code> shows a description for each of the 60 variables.</p>
-<ol style="list-style-type: decimal">
-<li>metadata info (<code>dictionary()</code>).</li>
-<li>metadata info (<code>dictionary(full_tbl=T)</code>).</li>
-</ol>
-</div>
-<div id="the-schema-function" class="section level2">
-<h2>The <code>schema()</code> function</h2>
-<p><code>schema()</code> returns a description of all the variables contained in popler. It returns a list where each element refers to a specific table of the data base. Each element is a data frame with two columns: the names of the variables contained in the table, and its description. Differences in both</p>
-<ul>
-<li><code>schema()</code> can also open a figure of the graphical representation of the schema of popler.</li>
-<li>Or should we just save the schema as data using devtools::use_data?</li>
-</ul>
 </div>
 
 

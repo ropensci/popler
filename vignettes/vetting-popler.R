@@ -24,3 +24,6 @@ nrow( browse(studytype == "obs") ) # 28 observational studies
 dictionary( c("lat_lter","lng_lter") )
 browse(lat_lter > 40 & lng_lter < -100) # single-species studies
 
+## ---- warning = FALSE, message = FALSE-----------------------------------
+browse(kingdom == "Plantae" & n_spat_levs == 4 & duration_years > 10)
+
