@@ -9,8 +9,8 @@ test_that("query_cols", {
   # possible columns 
   potential_vars  <- popler:::query_cols()
   # tests
-  expect_equal( length(potential_vars$all_cols), 93)
-  expect_equal( length(potential_vars$default_cols), 14)
+  expect_equal( length(potential_vars$all_cols), 105)
+  expect_equal( length(potential_vars$default_cols), 19)
 
 })
 
