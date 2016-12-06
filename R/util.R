@@ -1,3 +1,87 @@
+# Converts factor columns into character format
+factor_to_character <- function(x, full_tbl = FALSE){
+  
+  for(i in 1:ncol(x)){
+    if(class(x[,i])=="factor") x[,i]=as.character(x[,i])
+  }
+  return(x)
+  
+}
+
+# changes clss to class and ordr to order
+class_order_names <- function(x){
+  
+  names(x)   <- gsub("clss","class",names(x))
+  names(x)   <- gsub("ordr","order",names(x))
+  
+  return(x)
+  
+}
+
+
+# Summarizing function
+select_by_criteria <- function(x,criteria){
+  
+  if(!is.null(criteria)) {
+    r <- which(eval(criteria, x, parent.frame()))
+    if( length(r) != 0 ) {
+      subsetDat <- tbl_df(x[r,,drop=F]) #tbl_df() to make object "work" with dplyr functions
+    } 
+    if( length(r) == 0 ) {
+      stop( "No matches found. Either:
+  1. the name of variable(s) you specified is/are incorrect or 
+  2. the values you are looking for are not contained in the variable(s) you specified")
+    }
+    } else { 
+      subsetDat <- tbl_df(x) 
+    }
+  return(subsetDat)
+  
+}
+
+
+# Store possible arguments
+possibleargs <- c("title","proj_metadata_key","lterid",
+                  "datatype","studytype","duration_years",
+                  "community",
+                  "structured_type_1","structured_type_2","structured_type_3",
+                  "treatment_type_1","treatment_type_2","treatment_type_3",
+                  "lat_lter","lng_lter",
+                  "species","kingdom","phylum","class","order","family","genus"
+                  )
+
+
+# returns a full table or not
+table_select <- function(x, full_tbl = FALSE, possible_args){
+  
+  if(full_tbl == FALSE) return(x[,possible_args])
+  if(full_tbl == TRUE)  return(x)
+  
+}
+
+
+# check that at least proj_metadata_key is included in variables
+vars_check <- function(x){
+  
+  if( !"proj_metadata_key" %in% x ) x = c("proj_metadata_key",x)
+  return(x)
+  
+}
+
+# Error for misspelled columns in full table
+err_full_tab <- function(select_columns,columns_full_tab,possibleargs){
+  
+  #Check for spelling mistakes
+  if( !all( is.element(select_columns,columns_full_tab) ) ) {
+    opt <- options(error=NULL)
+    on.exit(opt)
+    stop(paste0("Error: the following 'argument' entry was mispelled: '",
+                setdiff(select_columns,possibleargs),"' "))
+  }
+  
+}
+
+
 # expand table (to nest/unnest taxonomic info) 
 elastic_tab <- function(x, shrink = TRUE, full_tbl){
   
@@ -22,7 +106,7 @@ elastic_tab <- function(x, shrink = TRUE, full_tbl){
   } else {
     out  <- x %>% 
       group_by_( .dots = setdiff(names(x), "taxonomy") ) %>%
-        unnest_(unnest_cols = "taxonomy")
+        unnest_( unnest_cols = "taxonomy" )
   }
   
   return(out)
@@ -30,68 +114,19 @@ elastic_tab <- function(x, shrink = TRUE, full_tbl){
 }
 
 
-# Converts factor columns into character format
-factor_to_character <- function(x, full_tbl = FALSE){
+# trim the display of character values. Mostly for project "titles"
+trim_display=function(x, trim){
   
-  for(i in 1:ncol(x)){
-    if(class(x[,i])=="factor") x[,i]=as.character(x[,i])
-  }
-  return(x)
-  
-}
-
-
-# Error for misspelled columns in full table
-err_full_tab <- function(select_columns,columns_full_tab){
-  
-  #Check for spelling mistakes
-  if( !all( is.element(select_columns,columns_full_tab) ) ) {
-    
-    opt <- options(error=NULL)
-    on.exit(opt)
-    stop(paste0("Error: the following 'argument' entry was mispelled: '",
-                setdiff(select_columns,possibleargs),"' "))
-  }
-  
-}
-
-
-# Summarizing function
-select_by_criteria <- function(x,criteria){
-  
-  if(!is.null(criteria)) {
-    r <- which(eval(criteria, x, parent.frame()))
-    if( length(r) != 0 ) {
-      subsetDat <- tbl_df(x[r,,drop=F]) #tbl_df() to make object "work" with dplyr functions
-    } 
-    if( length(r) == 0 ) {
-      stop( "No matches found. Either:
-  1. the name of variable(s) you specified is/are incorrect or 
-  2. the values you are looking for are not contained in the variable(s) you specified")
+  if(trim==T){
+    tmp=as.data.frame(x)
+    for(i in 1:ncol(tmp)){
+      if(is.character(tmp[,i])){ tmp[,i]=strtrim(tmp[,i],25) }
     }
-  } else { 
-    subsetDat <- tbl_df(x) 
+    tmp=as.tbl(tmp)
+    return(tmp)
+  } else{
+    return(x)
   }
-  return(subsetDat)
-  
-}
-
-
-# returns a full table or not
-table_select <- function(x, full_tbl = FALSE){
-  
-  # Initial group_factors
-  possibleargs <- tolower(c("title","proj_metadata_key","lterid",
-                            "datatype","studytype","duration_years",
-                            "community",
-                            "structured_type_1","structured_type_2","structured_type_3",
-                            "treatment_type_1","treatment_type_2","treatment_type_3",
-                            "lat_lter","lng_lter",
-                            "species","kingdom","phylum","class","order","family","genus") )
-  
-  if(full_tbl == FALSE) return(x[,possibleargs])
-  if(full_tbl == TRUE)  return(x)
-
 }
 
 
@@ -163,22 +198,6 @@ dict_list <- function(x, select_columns){
 }
 
 
-# trim the display of character values. Mostly for project "titles"
-trim_display=function(x, trim){
-  
-  if(trim==T){
-    tmp=as.data.frame(x)
-    for(i in 1:ncol(tmp)){
-      if(is.character(tmp[,i])){ tmp[,i]=strtrim(tmp[,i],25) }
-    }
-    tmp=as.tbl(tmp)
-    return(tmp)
-  } else{
-    return(x)
-  }
-}
-
-
 # Calculate tallies
 tallies=function(browsed_data,tally_columns,group_factors,trim){
   
@@ -239,15 +258,6 @@ multiple_columns=function(x) {
 }
 
 
-# changes clss to class and ordr to order
-class_order_names <- function(x){
-  
-  names(x)   <- gsub("clss","class",names(x))
-  names(x)   <- gsub("ordr","order",names(x))
-  
-  return(x)
-  
-}
 
 # explain meaning of dictionary variables 
 dictionary_explain <- function(x){
@@ -297,6 +307,8 @@ dictionary_explain <- function(x){
                                    "unit of measure by which extent of the replication level 5 was measured",
                                    "label by which rep. level 5 is identified in the original data set",
                                    "number of replicates (level 5)",
+                                   "total number of spatial replicates",
+                                   "number of nested spatial levels",
                                    
                                    "type of 1st treatment (if any)","type of 2nd treatment (if any)","type of 3rd treatment (if any)",
                                    "label of control treatment/group",
