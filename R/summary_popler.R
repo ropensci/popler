@@ -28,7 +28,7 @@ summary_popler <- function(group_vars = NULL, count_vars = "title", trim = TRUE)
   browse_data <- popler:::class_order_names(browse_data)
   
   # tally cases, if tally_by is not NULL
-  out <- popler:::tallies(browse_data, count_vars, group_vars, trim = TRUE)
+  out <- popler:::tallies(browse_data, count_vars, group_vars, trim)
   
   return(out) # return output
 
