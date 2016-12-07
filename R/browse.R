@@ -69,6 +69,7 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
   out_form <- popler:::elastic_tab(out_cols, shrink = TRUE, full_tbl)
   out_form <- popler:::trim_display(out_form, trim)
   
+  
   # write output
   if(view == TRUE) View(out_form) ; if(view == "fix") fix(out_form) 
   
