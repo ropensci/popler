@@ -2,7 +2,7 @@
 library(testthat)
 
 # Main utility functions ---------------------------------------------------------------------
-context("browse() main utility functions")
+context("browse(): Format Main Table()")
 
 # does this function actually return character columns? 
 test_that("Format Main Table", {
@@ -14,6 +14,8 @@ test_that("Format Main Table", {
   expect_equal(is.character(popler:::factor_to_character(popler:::main_popler)[,9]),T)
   
 })
+
+context("browse(): Informational messages")
 
 # Do informational messages provide the expected output?
 test_that("Informational messages", {
@@ -31,6 +33,7 @@ test_that("Informational messages", {
   
 })
 
+context("browse(): Select by criteria")
 
 # Select By Criteria function
 test_that("Select by criteria", {
@@ -52,6 +55,7 @@ test_that("Select by criteria", {
   
 })
 
+context("browse(): Keyword binary operator")
 
 # Select By Criteria function
 test_that("Keyword", {
@@ -72,7 +76,7 @@ test_that("Keyword", {
 })
 
 # error functions ---------------------------------------------------------------------
-context("browse() error functions")
+context("browse(): error functions")
 
 # does this function actually return character columns? 
 test_that("Errors ", {
