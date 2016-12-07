@@ -4,7 +4,7 @@ author: "Aldo Compagnoni"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Introduction to popler}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -20,7 +20,7 @@ The popler R package allows browsing and querying population data collected at `
 The popler R package is currently in the development phase, and it should be downloaded directly from its [GitHub page](https://github.com/AldoCompagnoni/popler). Before doing this, make sure to install the [Devtools R package](https://cran.r-project.org/web/packages/devtools/README.html). Once devtools is installed on your machine, install and load popler:
 
 ```{r, message = FALSE, warning = FALSE}
-#devtools::install_github("AldoCompagnoni/popler",ref = "0.0.9001", #build_vignettes = TRUE)
+#devtools::install_github("AldoCompagnoni/popler", build_vignettes = TRUE)
 library(popler)
 ```
 
