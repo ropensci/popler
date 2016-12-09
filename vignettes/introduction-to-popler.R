@@ -1,5 +1,5 @@
 ## ---- message = FALSE, warning = FALSE-----------------------------------
-#devtools::install_github("AldoCompagnoni/popler",ref = "0.0.9001", #build_vignettes = TRUE)
+#devtools::install_github("AldoCompagnoni/popler", build_vignettes = TRUE)
 library(popler)
 
 ## ------------------------------------------------------------------------

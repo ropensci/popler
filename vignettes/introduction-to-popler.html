@@ -12,7 +12,7 @@
 
 <meta name="author" content="Aldo Compagnoni" />
 
-<meta name="date" content="2016-12-04" />
+<meta name="date" content="2016-12-07" />
 
 <title>Introduction to popler</title>
 
@@ -52,7 +52,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
 
 <h1 class="title toc-ignore">Introduction to popler</h1>
 <h4 class="author"><em>Aldo Compagnoni</em></h4>
-<h4 class="date"><em>2016-12-04</em></h4>
+<h4 class="date"><em>2016-12-07</em></h4>
 
 
 
@@ -64,7 +64,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <div id="installation" class="section level2">
 <h2>Installation</h2>
 <p>The popler R package is currently in the development phase, and it should be downloaded directly from its <a href="https://github.com/AldoCompagnoni/popler">GitHub page</a>. Before doing this, make sure to install the <a href="https://cran.r-project.org/web/packages/devtools/README.html">Devtools R package</a>. Once devtools is installed on your machine, install and load popler:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#devtools::install_github(&quot;AldoCompagnoni/popler&quot;,ref = &quot;0.0.9001&quot;, #build_vignettes = TRUE)</span>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#devtools::install_github(&quot;AldoCompagnoni/popler&quot;, build_vignettes = TRUE)</span>
 <span class="kw">library</span>(popler)</code></pre>
 <p>library(“popler”)</p>
 </div>
@@ -88,16 +88,21 @@ code > span.er { color: #ff0000; font-weight: bold; }
 ## 5          studytype        experimental or observational study?
 ## 6     duration_years                duration of project in years
 ## 7          community        does data set contain multiple taxa?
-## 8         structured              is indidivual data structured?
-## 9           lat_lter                          lter site latitude
-## 10          lng_lter                         lter site longitude
-## 11           species        specific epithet of a taxonomic unit
-## 12           kingdom                                     kingdom
-## 13            phylum                                      phylum
-## 14             class                                       class
-## 15             order                                       order
-## 16            family                                      family
-## 17             genus                                       genus</code></pre>
+## 8  structured_type_1   1st type of indidivual structure (if any)
+## 9  structured_type_2   2nd type of indidivual structure (if any)
+## 10 structured_type_3   3rd type of indidivual structure (if any)
+## 11  treatment_type_1              type of 1st treatment (if any)
+## 12  treatment_type_2              type of 2nd treatment (if any)
+## 13  treatment_type_3              type of 3rd treatment (if any)
+## 14          lat_lter                          lter site latitude
+## 15          lng_lter                         lter site longitude
+## 16           species        specific epithet of a taxonomic unit
+## 17           kingdom                                     kingdom
+## 18            phylum                                      phylum
+## 19             class                                       class
+## 20             order                                       order
+## 21            family                                      family
+## 22             genus                                       genus</code></pre>
 <p>To show what data each variable actually contains, specify one or more variable:</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dictionary</span>(<span class="st">&quot;phylum&quot;</span>)</code></pre>
 <pre><code>## $phylum
@@ -105,72 +110,77 @@ code > span.er { color: #ff0000; font-weight: bold; }
 ##  [3] &quot;Apicomplexa&quot;                     &quot;Arthropoda&quot;                     
 ##  [5] &quot;Bryozoa&quot;                         &quot;Chlorophyta&quot;                    
 ##  [7] &quot;Chordata&quot;                        &quot;Chromista&quot;                      
-##  [9] &quot;Cnidaria&quot;                        &quot;Dinoflagellata&quot;                 
-## [11] &quot;Echinodermata&quot;                   &quot;Ectoprocta&quot;                     
-## [13] &quot;Entoprocta&quot;                      &quot;Magnoliophyta&quot;                  
-## [15] &quot;Mollusca&quot;                        &quot;Nematoda&quot;                       
-## [17] &quot;Phaeophyta&quot;                      &quot;Phoronida&quot;                      
-## [19] &quot;Platyhelminthes&quot;                 &quot;Platyhelminthes (eggs negative)&quot;
-## [21] &quot;Platyhelminthes (eggs positive)&quot; &quot;Porifera&quot;                       
-## [23] &quot;Rhodophyta&quot;</code></pre>
+##  [9] &quot;Cnidaria&quot;                        &quot;Echinodermata&quot;                  
+## [11] &quot;Ectoprocta&quot;                      &quot;Entoprocta&quot;                     
+## [13] &quot;Magnoliophyta&quot;                   &quot;Mollusca&quot;                       
+## [15] &quot;Nematoda&quot;                        &quot;Phaeophyta&quot;                     
+## [17] &quot;Phoronida&quot;                       &quot;Platyhelminthes (eggs negative)&quot;
+## [19] &quot;Platyhelminthes (eggs positive)&quot; &quot;Porifera&quot;                       
+## [21] &quot;Rhodophyta&quot;</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dictionary</span>(<span class="dt">vars =</span> <span class="kw">c</span>(<span class="st">&quot;lterid&quot;</span>, <span class="st">&quot;duration_years&quot;</span>) )</code></pre>
 <pre><code>## $lterid
 ## [1] &quot;BNZ&quot; &quot;SBC&quot; &quot;SEV&quot; &quot;SGS&quot; &quot;VCR&quot;
 ## 
 ## $duration_years
-## [1] &quot;numeric field: from 1 to 50&quot;</code></pre>
+## [1] &quot;numeric field: from 2 to 50&quot;</code></pre>
 </div>
 <div id="browse" class="section level3">
 <h3>browse()</h3>
 <p><code>browse()</code> accesses and subsets the popler metadata table directly. Calling the function returns the raw metadata table:</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">browse</span>()</code></pre>
-<pre><code>## Source: local data frame [59 x 11]
+<pre><code>## Source: local data frame [56 x 16]
 ## 
-##                        title proj_metadata_key lterid   datatype studytype
-##                        &lt;chr&gt;             &lt;int&gt;  &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt;
-## 1  SBC LTER: Reef: Kelp Fore                 1    SBC individual        NA
-## 2  SBC LTER: Reef: Kelp Fore                 2    SBC      count        NA
-## 3  SBC LTER: Reef: Kelp Fore                 3    SBC      count        NA
-## 4  SBC LTER: Reef: Kelp Fore                 4    SBC  per_cover        NA
-## 5  SBC LTER: Reef: Long-term                 5    SBC individual        NA
-## 6  SBC LTER: Reef: Long-term                 6    SBC      count        NA
-## 7  SBC LTER: Reef: Long-term                 7    SBC      count        NA
-## 8  SBC LTER: Reef: Long-term                 8    SBC  per_cover        NA
-## 9  SBC LTER: Reef: Long-term                 9    SBC    biomass        NA
-## 10 SBC LTER: Reef: Abundance                11    SBC      count        NA
-## ..                       ...               ...    ...        ...       ...
-## Variables not shown: duration_years &lt;dbl&gt;, community &lt;chr&gt;, structured
-##   &lt;chr&gt;, lat_lter &lt;dbl&gt;, lng_lter &lt;dbl&gt;, taxonomy &lt;list&gt;.</code></pre>
+##                        title proj_metadata_key lterid      datatype
+##                        &lt;chr&gt;             &lt;int&gt;  &lt;chr&gt;         &lt;chr&gt;
+## 1  SBC LTER: Reef: Kelp Fore                 1    SBC    individual
+## 2  SBC LTER: Reef: Kelp Fore                 2    SBC         count
+## 3  SBC LTER: Reef: Kelp Fore                 3    SBC         count
+## 4  SBC LTER: Reef: Kelp Fore                 4    SBC percent_cover
+## 5  SBC LTER: Reef: Long-term                 5    SBC    individual
+## 6  SBC LTER: Reef: Long-term                 6    SBC         count
+## 7  SBC LTER: Reef: Long-term                 7    SBC         count
+## 8  SBC LTER: Reef: Long-term                 8    SBC percent_cover
+## 9  SBC LTER: Reef: Long-term                 9    SBC       biomass
+## 10 SBC LTER: Reef: Abundance                11    SBC         count
+## ..                       ...               ...    ...           ...
+## Variables not shown: studytype &lt;chr&gt;, duration_years &lt;dbl&gt;, community
+##   &lt;chr&gt;, structured_type_1 &lt;chr&gt;, structured_type_2 &lt;chr&gt;,
+##   structured_type_3 &lt;chr&gt;, treatment_type_1 &lt;chr&gt;, treatment_type_2 &lt;chr&gt;,
+##   treatment_type_3 &lt;chr&gt;, lat_lter &lt;dbl&gt;, lng_lter &lt;dbl&gt;, taxonomy &lt;list&gt;.</code></pre>
 <p>This metadata table can be subset by specifying a logical statement. This is useful to focus on datasets of interest.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">browse</span>(lterid ==<span class="st"> &quot;SEV&quot;</span>)</code></pre>
-<pre><code>## Source: local data frame [35 x 11]
+<pre><code>## Source: local data frame [29 x 16]
 ## 
-##                        title proj_metadata_key lterid     datatype
-##                        &lt;chr&gt;             &lt;int&gt;  &lt;chr&gt;        &lt;chr&gt;
-## 1   Long-Term Core Site Gras                21    SEV        count
-## 2   Rodent Parasite Data for                25    SEV        count
-## 3   Rainfall Manipulation St                26    SEV    per_cover
-## 4   2003 Prescribed Burn Eff                27    SEV    per_cover
-## 5   Burn Exclosure Rodent Po                28    SEV   individual
-## 6   Nitrogen Fertilization E                29    SEV    per_cover
-## 7   Burn Study Sites Quadrat                30    SEV    per_cover
-## 8   Plant Removal Study: Rec                31    SEV    per_cover
-## 9   Bird Community Assessmen                32    SEV presence-abs
-## 10  Pino Gate Prairie Dog St                33    SEV        count
-## ..                       ...               ...    ...          ...
+##                        title proj_metadata_key lterid      datatype
+##                        &lt;chr&gt;             &lt;int&gt;  &lt;chr&gt;         &lt;chr&gt;
+## 1  Long-Term Core Site Grass                21    SEV         count
+## 2  Rodent Parasite Data for                 25    SEV         count
+## 3  2003 Prescribed Burn Effe                27    SEV percent_cover
+## 4  Burn Exclosure Rodent Pop                28    SEV    individual
+## 5  Nitrogen Fertilization Ex                29    SEV percent_cover
+## 6  Burn Study Sites Quadrat                 30    SEV percent_cover
+## 7  Plant Removal Study: Reco                31    SEV percent_cover
+## 8  Bird Community Assessment                32    SEV  presence-abs
+## 9  Pino Gate Prairie Dog Stu                33    SEV         count
+## 10 Warming-El Nino-Nitrogen                 34    SEV percent_cover
+## ..                       ...               ...    ...           ...
 ## Variables not shown: studytype &lt;chr&gt;, duration_years &lt;dbl&gt;, community
-##   &lt;chr&gt;, structured &lt;chr&gt;, lat_lter &lt;dbl&gt;, lng_lter &lt;dbl&gt;, taxonomy &lt;list&gt;.</code></pre>
+##   &lt;chr&gt;, structured_type_1 &lt;chr&gt;, structured_type_2 &lt;chr&gt;,
+##   structured_type_3 &lt;chr&gt;, treatment_type_1 &lt;chr&gt;, treatment_type_2 &lt;chr&gt;,
+##   treatment_type_3 &lt;chr&gt;, lat_lter &lt;dbl&gt;, lng_lter &lt;dbl&gt;, taxonomy &lt;list&gt;.</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">poa_metadata   &lt;-<span class="st"> </span><span class="kw">browse</span>(genus ==<span class="st"> &quot;Poa&quot;</span>)
 poa_metadata</code></pre>
-<pre><code>## Source: local data frame [3 x 11]
+<pre><code>## Source: local data frame [3 x 16]
 ## 
-##                       title proj_metadata_key lterid  datatype studytype
-##                       &lt;chr&gt;             &lt;int&gt;  &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;
-## 1  Livestock Exclosure Stud                35    SEV per_cover        NA
-## 2  Pinon Juniper Net Primar                36    SEV per_cover        NA
-## 3  Pinon-Juniper (Core Site                53    SEV per_cover        NA
-## Variables not shown: duration_years &lt;dbl&gt;, community &lt;chr&gt;, structured
-##   &lt;chr&gt;, lat_lter &lt;dbl&gt;, lng_lter &lt;dbl&gt;, taxonomy &lt;list&gt;.</code></pre>
+##                       title proj_metadata_key lterid      datatype
+##                       &lt;chr&gt;             &lt;int&gt;  &lt;chr&gt;         &lt;chr&gt;
+## 1 Livestock Exclosure Study                35    SEV percent_cover
+## 2 Pinon Juniper Net Primary                36    SEV percent_cover
+## 3 Pinon-Juniper (Core Site)                53    SEV percent_cover
+## Variables not shown: studytype &lt;chr&gt;, duration_years &lt;dbl&gt;, community
+##   &lt;chr&gt;, structured_type_1 &lt;chr&gt;, structured_type_2 &lt;chr&gt;,
+##   structured_type_3 &lt;chr&gt;, treatment_type_1 &lt;chr&gt;, treatment_type_2 &lt;chr&gt;,
+##   treatment_type_3 &lt;chr&gt;, lat_lter &lt;dbl&gt;, lng_lter &lt;dbl&gt;, taxonomy &lt;list&gt;.</code></pre>
 <div id="the-keyword-binary-operator" class="section level4">
 <h4>The keyword binary operator, <code>%=%</code></h4>
 <p>The projects carried out within the LTER network tackle a striking variety of research topics. Therefore, searching projects based on keywords can provide decisive advantages. The keyword binary operator <code>%=%</code> facilitates subsetting the metadata table by matching one or more keywords. In particular, <code>%=%</code> matches one or more character strings to one of the character variables shown by <code>dictionary()</code>. It is especially useful to match keywords with the title of projects:</p>
@@ -189,9 +199,10 @@ parasite_npp    &lt;-<span class="st"> </span><span class="kw">browse</span>(tit
 </ol>
 <p>First, you can download data by providing an object created through <code>browse()</code>. In the example below, the code returns all population data concerning species of the genus <em>Poa</em>:</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">as.tbl</span>(<span class="kw">get_data</span>(poa_metadata))</code></pre>
+<pre><code>## Auto-disconnecting postgres connection (10276, 0)</code></pre>
 <pre><code>## 
-## You have downloaded data from 3 project(s). 
-## These projects have the follwing identification numbers: 35, 36, 53.
+## You have downloaded data from 3 projects. 
+## The identification numbers of these projects are: 35, 36, 53.
 ## 
 ## IMPORTANT NOTICE: 
 ## If you are about to use this data in a formal publication, as courtesy, please:
@@ -199,30 +210,31 @@ parasite_npp    &lt;-<span class="st"> </span><span class="kw">browse</span>(tit
 ##    Obtain contact information by using function authors() on this object. 
 ## 2) Acknowledge funding sources, if these are provided in the metadata.   
 ##    Access project metadata by using function metadata_url() on this object.</code></pre>
-<pre><code>## Source: local data frame [298 x 16]</code></pre>
-<pre><code>## Auto-disconnecting postgres connection (8048, 1)</code></pre>
-<pre><code>## Auto-disconnecting postgres connection (8048, 0)</code></pre>
-<pre><code>##     year   day month genus     species structure  datatype
-##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;       &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;
-## 1   2006     0     9   Poa fendleriana        NA per_cover
-## 2   2001     0     0   Poa   bigelovii         2 per_cover
-## 3   2001     0     0   Poa   bigelovii         2 per_cover
-## 4   2001     0     0   Poa   bigelovii         3 per_cover
-## 5   2001     0     0   Poa   bigelovii         3 per_cover
-## 6   2001     0     0   Poa   bigelovii         4 per_cover
-## 7   2001     0     0   Poa   bigelovii         2 per_cover
-## 8   2001     0     0   Poa   bigelovii         2 per_cover
-## 9   2001     0     0   Poa   bigelovii         2 per_cover
-## 10  2001     0     0   Poa   bigelovii         1 per_cover
-## ..   ...   ...   ...   ...         ...       ...       ...
+<pre><code>## Source: local data frame [298 x 20]
+## 
+##     year   day month genus     species      datatype
+##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;       &lt;chr&gt;         &lt;chr&gt;
+## 1   2006    NA     9   Poa fendleriana percent_cover
+## 2   2001    NA    NA   Poa   bigelovii percent_cover
+## 3   2001    NA    NA   Poa   bigelovii percent_cover
+## 4   2001    NA    NA   Poa   bigelovii percent_cover
+## 5   2001    NA    NA   Poa   bigelovii percent_cover
+## 6   2001    NA    NA   Poa   bigelovii percent_cover
+## 7   2001    NA    NA   Poa   bigelovii percent_cover
+## 8   2001    NA    NA   Poa   bigelovii percent_cover
+## 9   2001    NA    NA   Poa   bigelovii percent_cover
+## 10  2001    NA    NA   Poa   bigelovii percent_cover
+## ..   ...   ...   ...   ...         ...           ...
 ## Variables not shown: spatial_replication_level_1 &lt;chr&gt;,
 ##   spatial_replication_level_2 &lt;chr&gt;, spatial_replication_level_3 &lt;chr&gt;,
 ##   spatial_replication_level_4 &lt;chr&gt;, authors &lt;chr&gt;, authors_contact &lt;chr&gt;,
-##   proj_metadata_key &lt;int&gt;, trt_label &lt;chr&gt;, count_observation &lt;dbl&gt;.</code></pre>
+##   proj_metadata_key &lt;int&gt;, structure_type_1 &lt;chr&gt;, structure_type_2 &lt;chr&gt;,
+##   structure_type_3 &lt;chr&gt;, treatment_type_1 &lt;chr&gt;, treatment_type_2 &lt;chr&gt;,
+##   treatment_type_3 &lt;chr&gt;, count_observation &lt;dbl&gt;.</code></pre>
 <p>Second, you can further subset objects created through <code>browse()</code>. In the code below, popler downloads data concerning the genus <em>Poa</em> collected after the year 2008.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">as.tbl</span>( <span class="kw">get_data</span>(poa_metadata, year &gt;<span class="st"> </span><span class="dv">2008</span>) )</code></pre>
 <pre><code>## You have downloaded data from 1 project. 
-## This project has the follwing identification number: 53.
+## The identification number of this project is: 53.
 ## 
 ## IMPORTANT NOTICE: 
 ## If you are about to use this data in a formal publication, as courtesy, please:
@@ -230,31 +242,33 @@ parasite_npp    &lt;-<span class="st"> </span><span class="kw">browse</span>(tit
 ##    Do this by using function authors() on this object. 
 ## 2) Acknowledge funding sources, if these are provided in the metadata.   
 ##    Access metadata by using function metadata_url() on this object.</code></pre>
-<pre><code>## Source: local data frame [117 x 16]
+<pre><code>## Source: local data frame [117 x 20]
 ## 
-##     year   day month genus     species structure  datatype
-##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;       &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;
-## 1   2009    13     5   Poa fendleriana        16 per_cover
-## 2   2009    13     5   Poa fendleriana         6 per_cover
-## 3   2009    13     5   Poa fendleriana         5 per_cover
-## 4   2009    13     5   Poa fendleriana         7 per_cover
-## 5   2009    13     5   Poa fendleriana         6 per_cover
-## 6   2009    13     5   Poa fendleriana        13 per_cover
-## 7   2010    27     9   Poa fendleriana        24 per_cover
-## 8   2010    27     9   Poa fendleriana        15 per_cover
-## 9   2010    27     9   Poa fendleriana        14 per_cover
-## 10  2010    27     9   Poa fendleriana        13 per_cover
-## ..   ...   ...   ...   ...         ...       ...       ...
+##     year   day month genus     species      datatype
+##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;       &lt;chr&gt;         &lt;chr&gt;
+## 1   2009    13     5   Poa fendleriana percent_cover
+## 2   2009    13     5   Poa fendleriana percent_cover
+## 3   2009    13     5   Poa fendleriana percent_cover
+## 4   2009    13     5   Poa fendleriana percent_cover
+## 5   2009    13     5   Poa fendleriana percent_cover
+## 6   2009    13     5   Poa fendleriana percent_cover
+## 7   2010    27     9   Poa fendleriana percent_cover
+## 8   2010    27     9   Poa fendleriana percent_cover
+## 9   2010    27     9   Poa fendleriana percent_cover
+## 10  2010    27     9   Poa fendleriana percent_cover
+## ..   ...   ...   ...   ...         ...           ...
 ## Variables not shown: spatial_replication_level_1 &lt;chr&gt;,
 ##   spatial_replication_level_2 &lt;chr&gt;, spatial_replication_level_3 &lt;chr&gt;,
 ##   spatial_replication_level_4 &lt;chr&gt;, authors &lt;chr&gt;, authors_contact &lt;chr&gt;,
-##   proj_metadata_key &lt;int&gt;, trt_label &lt;chr&gt;, count_observation &lt;dbl&gt;.</code></pre>
+##   proj_metadata_key &lt;int&gt;, structure_type_1 &lt;chr&gt;, structure_type_2 &lt;chr&gt;,
+##   structure_type_3 &lt;chr&gt;, treatment_type_1 &lt;chr&gt;, treatment_type_2 &lt;chr&gt;,
+##   treatment_type_3 &lt;chr&gt;, count_observation &lt;dbl&gt;.</code></pre>
 <p>Third, you can directly provide a logical statement to <code>get_data()</code>:</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">as.tbl</span>( <span class="kw">get_data</span>(<span class="dt">subset =</span> proj_metadata_key ==<span class="st"> </span><span class="dv">25</span>) )</code></pre>
-<pre><code>## Auto-disconnecting postgres connection (8048, 3)</code></pre>
-<pre><code>## Auto-disconnecting postgres connection (8048, 2)</code></pre>
+<pre><code>## Auto-disconnecting postgres connection (10276, 3)</code></pre>
+<pre><code>## Auto-disconnecting postgres connection (10276, 2)</code></pre>
 <pre><code>## You have downloaded data from 1 project. 
-## This project has the follwing identification number: 25.
+## The identification number of this project is: 25.
 ## 
 ## IMPORTANT NOTICE: 
 ## If you are about to use this data in a formal publication, as courtesy, please:
@@ -262,25 +276,27 @@ parasite_npp    &lt;-<span class="st"> </span><span class="kw">browse</span>(tit
 ##    Do this by using function authors() on this object. 
 ## 2) Acknowledge funding sources, if these are provided in the metadata.   
 ##    Access metadata by using function metadata_url() on this object.</code></pre>
-<pre><code>## Source: local data frame [9,099 x 16]
+<pre><code>## Source: local data frame [59 x 20]
 ## 
-##     year   day month              genus    species structure datatype
-##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;              &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;
-## 1   1990     0     0       Physaloptera    massino         f    count
-## 2   1990     0     0  Pterygodermatites  dipodomis         f    count
-## 3   1990     0     0    Heteromyoxyuris    deserti         f    count
-## 4   1990     0     0    Heteromyoxyuris    deserti         m    count
-## 5   1990     0     0  Pterygodermatites  dipodomis         m    count
-## 6   1990     0     0  Pterygodermatites  dipodomis         f    count
-## 7   1990     0     0          Trichuris  dipodomis         m    count
-## 8   1990     0     0          Trichuris  dipodomis         f    count
-## 9   1990     0     0                 NA         NA        na    count
-## 10  1990     0     0    Heteromyoxyuris    deserti         m    count
-## ..   ...   ...   ...                ...        ...       ...      ...
-## Variables not shown: spatial_replication_level_1 &lt;chr&gt;,
-##   spatial_replication_level_2 &lt;chr&gt;, spatial_replication_level_3 &lt;chr&gt;,
-##   spatial_replication_level_4 &lt;chr&gt;, authors &lt;chr&gt;, authors_contact &lt;chr&gt;,
-##   proj_metadata_key &lt;int&gt;, trt_label &lt;chr&gt;, count_observation &lt;dbl&gt;.</code></pre>
+##     year   day month genus species datatype spatial_replication_level_1
+##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;                       &lt;chr&gt;
+## 1   1990    NA    NA    NA      NA    count                    sepultur
+## 2   1990    NA    NA    NA      NA    count                    sepultur
+## 3   1990    NA    NA    NA      NA    count                    sepultur
+## 4   1990    NA    NA    NA      NA    count                    sepultur
+## 5   1990    NA    NA    NA      NA    count                    sepultur
+## 6   1990    NA    NA    NA      NA    count                    sepultur
+## 7   1990    NA    NA    NA      NA    count                    sepultur
+## 8   1990    NA    NA    NA      NA    count                    sepultur
+## 9   1990    NA    NA    NA      NA    count                    sepultur
+## 10  1990    NA    NA    NA      NA    count                    sepultur
+## ..   ...   ...   ...   ...     ...      ...                         ...
+## Variables not shown: spatial_replication_level_2 &lt;chr&gt;,
+##   spatial_replication_level_3 &lt;chr&gt;, spatial_replication_level_4 &lt;chr&gt;,
+##   authors &lt;chr&gt;, authors_contact &lt;chr&gt;, proj_metadata_key &lt;int&gt;,
+##   structure_type_1 &lt;chr&gt;, structure_type_2 &lt;chr&gt;, structure_type_3 &lt;chr&gt;,
+##   treatment_type_1 &lt;chr&gt;, treatment_type_2 &lt;chr&gt;, treatment_type_3 &lt;chr&gt;,
+##   count_observation &lt;dbl&gt;.</code></pre>
 </div>
 
 
