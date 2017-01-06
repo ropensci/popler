@@ -1,8 +1,7 @@
 #' Browse the popler database
 #'
 #' This function browses LTER studies contained in the popler database. The user can group, tally, and subset the data sets based on a number of the factors (or columns) of the database.
-#' @param browsed_data A on object produced by the function browse() 
-#' @param subset A logical argument A string that to specify which columns to add in the default columns used in queries to the database. See Details for default columns.
+#' @param ... A list of one or two objects: an object produced by browse, a logical statement, or both.
 #' @param add_vars A string to specify which columns the user wants to add in queries to the database 
 #' @param subtract_vars A string to specify which, among the default columns, the user wishes to discard in queries to the database 
 #' @return A data frame of the selected data.
