@@ -9,9 +9,13 @@ library(tidyr)
 
 #conn <- src_postgres(
 #  dbname="popler_3", host="www.how-imodel-it.com", port=5432, user="lter", password="bigdata")
-conn <- src_postgres(dbname="popler_3", 
-                     host="ec2-54-212-204-87.us-west-2.compute.amazonaws.com", 
-                     port=5432, user="lter")
+
+#conn <- src_postgres(dbname="popler_3", 
+#                     host="ec2-54-212-204-87.us-west-2.compute.amazonaws.com", 
+#                     port=5432, user="lter")
+conn <- src_postgres(dbname="popler_3", password="bigdata",
+                     host="ec2-54-214-212-101.us-west-2.compute.amazonaws.com", 
+                     port=5432, user="other_user")
 
 #list columns
 proj_cols     <- as.data.frame(tbl(conn, sql( "SELECT column_name FROM information_schema.columns WHERE
