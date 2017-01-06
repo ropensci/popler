@@ -24,7 +24,7 @@
 
 
 # Function that connects and gathers the information from the database
-get_data <- function(browsed_data = NULL, subset = NULL,
+get_data <- function(..., #browsed_data = NULL, subset = NULL,
                      add_vars = NULL, subtract_vars = NULL){
   
   # define possible columns ---------------------------------------------------------------
@@ -37,23 +37,22 @@ get_data <- function(browsed_data = NULL, subset = NULL,
   
   # selected columns ----------------------------------------------------------------------
   # "inherit" variables from search arguments 
-  inherit_vars    <- popler:::inherit_variables(browsed_data, substitute(subset), all_columns)
-
+  inherit_vars    <- popler:::inherit_variables(..., all_columns = all_columns)
+  
   # variables (de)selected explicitly
   actual_vars     <- unique( c(default_columns, add_vars, inherit_vars) )
   select_vars     <- paste( setdiff(actual_vars, subtract_vars), collapse = ", ")
   
   
   # subset argument(s) --------------------------------------------------------------------
-  search_arg      <- popler:::subset_arguments(browsed_data, substitute(subset) )
-  
+  search_arg      <- popler:::subset_arguments(...)
   
   # query ---------------------------------------------------------------------------------
   #conn <- src_postgres(
   #  dbname="popler_3", host="www.how-imodel-it.com", port=5432, user="lter", password="bigdata")
-  conn <- src_postgres(dbname="popler_3", 
-                       host="ec2-54-212-204-87.us-west-2.compute.amazonaws.com", 
-                       port=5432, user="lter")
+  conn <- src_postgres(dbname="popler_3", password="bigdata",
+                       host="ec2-54-214-212-101.us-west-2.compute.amazonaws.com", 
+                       port=5432, user="other_user")
   
   output_data <- popler:::query_popler(conn, select_vars, search_arg)
   
