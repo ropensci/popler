@@ -334,7 +334,8 @@ dictionary_explain <- function(x){
                                    "subdivision","superphylum",
                                    "phylum","subphylum","class","subclass","order","family","genus",
                                    "specific epithet", "common name of species", 
-                                   "scholar who first published the species name"),
+                                   "scholar who first published the species name".
+                                   "foreign key of taxa table"),
                      stringsAsFactors = F)
   }
   
