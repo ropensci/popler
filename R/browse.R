@@ -6,7 +6,7 @@
 #' @param full_tbl Should the function return the standard columns, or the full main table?
 #' @param vars A vector of characters: which variables of popler's main table should be selected?
 #' @param trim If TRUE, strings are truncated at the 50th character. Default is TRUE.
-#' @param view If TRUE, opens up a spreadsheet-style data viewer. If view == "fix" it opens the data frame in a text editor rather than a spreadsheet-style viewer
+#' @param view If TRUE, opens up a spreadsheet-style data viewer.
 #' @return A data frame combining the metadata of each project and the taxonomic units associated with each project.
 #' @return This data frame is of class "popler", "data.frame", "tbl_df", and "tbl".  
 #' @export
@@ -71,7 +71,7 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
   
   
   # write output
-  if(view == TRUE) View(out_form) ; if(view == "fix") fix(out_form) 
+  if(view == TRUE) View(out_form)
   
   # attribute class "popler"
   out            <- structure(out_form, 
