@@ -114,6 +114,11 @@ test_that("browse() function ", {
   expect_equal(names( browse(vars="lterid") ), c("proj_metadata_key", "lterid", "taxonomy") )
   expect_equal(names( browse(vars="lng_lter") ), c("proj_metadata_key", "lng_lter", "taxonomy") )
   
+  #functioning error messages
+  expect_error( browse(structured_type_3 == "stage" & datatype == "individual") )
+  expect_error( browse(lterid == "SEVa") )
+  expect_error( browse(lter == "SEV") )
+  
 })
 
 
