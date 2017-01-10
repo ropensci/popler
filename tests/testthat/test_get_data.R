@@ -9,7 +9,7 @@ test_that("query_cols", {
   # possible columns 
   potential_vars  <- popler:::query_cols()
   # tests
-  expect_equal( length(potential_vars$all_cols), 105)
+  expect_equal( length(potential_vars$all_cols), 107)
   expect_equal( length(potential_vars$default_cols), 19)
 
 })
@@ -26,7 +26,7 @@ test_that("inherit_search", {
   author    <- as.character( attributes(browse(authors == "Scott Collins"))$search_argument )
   fund      <- as.character( attributes(browse(currently_funded == "0"))$search_argument )
   sev_cla   <- as.character( attributes(browse(lterid == "SEV" & class == "Insecta"))$search_argument )
-  sev_ord   <- as.character( attributes(browse(lterid == "SEV" & order == "Carnivora"))$search_argument )
+  sev_ord   <- as.character( attributes(browse(lterid == "SEV" & order == "Diptera"))$search_argument )
   
   # "ordr/clss" to "order/class"
   sev_ord   <- gsub("order", "ordr", sev_ord)
