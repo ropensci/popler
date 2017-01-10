@@ -51,18 +51,17 @@ test_that("inherit_variables", {
   potential_vars  <- popler:::query_cols()
   
   # testing objects
-  aut_lter      <- popler:::inherit_variables(browse(authors == "Scott Collins"),
-                                              substitute(lterid == "SEV"), 
-                                                         potential_vars$all_cols)
-  aut_clss      <- popler:::inherit_variables(browse(authors == "Scott Collins"),
-                                              substitute(class == "Insecta"), 
-                                                         potential_vars$all_cols)
-  aut_ordr      <- popler:::inherit_variables(browse(authors == "Scott Collins"),
-                                              substitute(order == "Carnivora"), 
-                                                         potential_vars$all_cols)
-  fun_aut_lter  <- popler:::inherit_variables(browse(currently_funded == "1"),
-                                              substitute(authors == "Scott Collins" & lterid == "SEV"), 
-                                                         potential_vars$all_cols)
+  browse_input  <- browse(authors == "Scott Collins")
+  aut_lter      <- popler:::inherit_variables(browse_input,lterid == "SEV", 
+                                              all_columns = potential_vars$all_cols)
+  aut_clss      <- popler:::inherit_variables(browse_input,class == "Insecta", 
+                                              all_columns = potential_vars$all_cols)
+  aut_ordr      <- popler:::inherit_variables(browse_input,order == "Carnivora", 
+                                              all_columns = potential_vars$all_cols)
+  browse_input  <- browse(currently_funded == "1")
+  fun_aut_lter  <- popler:::inherit_variables(browse_input,
+                                              authors == "Scott Collins" & lterid == "SEV", 
+                                              all_columns = potential_vars$all_cols)
   
   # tests
   expect_equal(aut_lter, c("authors", "lterid") )
@@ -83,15 +82,15 @@ test_that("inherit_variables", {
   
   # only one argument
   expect_equal(popler:::subset_arguments(aut),"authors = 'Scott Collins'")
-  expect_equal(popler:::subset_arguments(subset = substitute(lterid == "SEV") ),
+  expect_equal(popler:::subset_arguments(lterid == "SEV"),
                "lterid = 'SEV'")
   # multiple arguments
-  expect_equal(popler:::subset_arguments(aut, substitute(lterid == "SEV")),
+  expect_equal(popler:::subset_arguments(aut, lterid == "SEV"),
                "authors = 'Scott Collins' AND lterid = 'SEV'")
   # multiple statements and multiple arguments
-  expect_equal(popler:::subset_arguments(current, substitute(class == "Insecta")),
+  expect_equal(popler:::subset_arguments(current, class == "Insecta"),
                "currently_funded = '1' OR lterid = 'SEV' AND clss = 'Insecta'")
-  expect_equal(popler:::subset_arguments(current, substitute(class == "Insecta" | order == "Carnivora")),
+  expect_equal(popler:::subset_arguments(current, class == "Insecta" | order == "Carnivora"),
                "currently_funded = '1' OR lterid = 'SEV' AND clss = 'Insecta' OR ordr = 'Carnivora'")
   
   rm(list=c("aut", "current"))
