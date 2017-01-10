@@ -108,7 +108,7 @@ test_that("browse() function ", {
  
   # n of columns
   expect_equal(ncol( browse() ), 16 )
-  expect_equal(ncol( browse(full_tbl = T) ), 58 )
+  expect_equal(ncol( browse(full_tbl = T) ), 59 )
   
   # functioning of "vars"
   expect_equal(names( browse(vars="lterid") ), c("proj_metadata_key", "lterid", "taxonomy") )
@@ -125,7 +125,7 @@ test_that("dictionary() function ", {
   
   # n of variables in "informational message"
   expect_equal(nrow( dictionary() ), 22 )
-  expect_equal(nrow( dictionary(full_tbl = T) ), 75 )
+  expect_equal(nrow( dictionary(full_tbl = T) ), 76 )
   
   # n of list elements
   expect_equal( length(dictionary("species")), 1)
