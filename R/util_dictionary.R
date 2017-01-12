@@ -77,6 +77,62 @@ explanations = data.frame(variable = c('proj_metadata_key','lter_project_fkey','
                           stringsAsFactors = F)
 
 
+dict_list_1 <- function(x, select_columns){
+  
+  # index "special" and "normal"
+  i_spec          <- which(select_columns %in% c("structure","species") )
+  i_norm          <- setdiff(c(1:length(select_columns)), i_spec)
+  spec_cols       <- select_columns[i_spec]
+  norm_cols       <- select_columns[i_norm]
+  
+  # get unique values of "normal" variables -------------------------------------------
+  if(length(norm_cols) > 1){
+    out_norm <- lapply(x[,norm_cols], unique)
+  } else {
+    out_norm <- lapply(x[,norm_cols,drop=F], unique)
+  }
+  
+  # get unique values of "special" variables ------------------------------------------
+  out_spec        <- list(species=NULL,structure=NULL)
+  
+  if( any( "species" == select_columns) ){
+    out_spec[[1]]   <- unique(x[,c("genus","species")])
+  }
+  if( any("structure" == select_columns) ){
+    # stash all structure data in a single vector
+    str_vec         <- unlist( c(x[,paste0("structured_type_",1:3)]) )
+    out_spec[[2]]   <- unique( str_vec )
+  }
+  descr_spec      <- c("species (species name)","structure (type of indidivual structure)")
+  if( identical(spec_cols,"species") )   { out_spec = out_spec[1] ; descr_spec=descr_spec[1] }
+  if( identical(spec_cols,"structure") ) { out_spec = out_spec[2] ; descr_spec=descr_spec[2] }
+  #keep_s             <- match(names(out_spec),spec_cols)
+  #names(out_spec)    <- c("species (species name)","structure (type of indidivual structure)")
+  #keep_s            <- keep_s[!is.na(keep_s)]
+  #out_spec          <- out_spec[keep_s]
+  
+  # Final list (keeps order of inputs) -----------------------------------------------------------------------
+  out               <- vector("list", length(select_columns))
+  out[i_norm]       <- out_norm
+  out[i_spec]       <- out_spec
+
+  # Add variable explanations
+  description     <- explanations$description[ match(names(out_norm),explanations$variable) ]
+  descr_norm      <- paste0(names(out_norm), " (", description,")" )
+  
+  nam_out         <- character(length(out))
+  nam_out[i_norm] <- descr_norm
+  nam_out[i_spec] <- descr_spec
+  
+  names(out)      <- nam_out
+  
+  return(out) 
+  
+}
+
+
+  
+
 # produce a list of dictionary entries
 dict_list <- function(x, select_columns){
   
