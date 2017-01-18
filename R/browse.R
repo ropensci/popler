@@ -46,9 +46,10 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
   # Case insensitive matching ("lower" everything)
   names(main_t) <- tolower( names(main_t) )
   main_t        <- popler:::class_order_names(main_t)
-  
+
   # Select by subset 
-  subset_data   <- popler:::select_by_criteria(main_t, substitute(...) )
+  sbst_popler   <- popler:::update_call( substitute(...) )
+  subset_data   <- popler:::select_by_criteria(main_t, sbst_popler )
   
   # select data based on 
   possible_arg  <- popler:::possibleargs
@@ -76,7 +77,7 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
   # attribute class "popler"
   out            <- structure(out_form, 
                               class = c("popler", class(out_form) ),
-                              search_argument = substitute(...)
+                              search_argument = sbst_popler
                               )
   
   return(out)
