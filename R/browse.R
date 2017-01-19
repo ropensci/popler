@@ -7,6 +7,7 @@
 #' @param vars A vector of characters: which variables of popler's main table should be selected?
 #' @param trim If TRUE, strings are truncated at the 50th character. Default is TRUE.
 #' @param view If TRUE, opens up a spreadsheet-style data viewer.
+#' @param keyword A string that selects 
 #' @return A data frame combining the metadata of each project and the taxonomic units associated with each project.
 #' @return This data frame is of class "popler", "data.frame", "tbl_df", and "tbl".  
 #' @export
@@ -37,7 +38,7 @@
 
 
 # The browse popler function
-browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE){
+browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE, keyword = NULL){
 
   # LOAD two object data types
   # Data table; convert factors to characters
@@ -49,7 +50,8 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
 
   # Select by subset 
   sbst_popler   <- popler:::update_call( substitute(...) )
-  subset_data   <- popler:::select_by_criteria(main_t, sbst_popler )
+  key_subset    <- popler:::key_arg(main_t, keyword ,sbst_popler)
+  subset_data   <- popler:::select_by_criteria(key_subset$tab, sbst_popler )
   
   # select data based on 
   possible_arg  <- popler:::possibleargs
@@ -77,7 +79,7 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
   # attribute class "popler"
   out            <- structure(out_form, 
                               class = c("popler", class(out_form) ),
-                              search_argument = sbst_popler
+                              search_argument = c(sbst_popler,key_subset$s_arg)[[1]]
                               )
   
   return(out)
