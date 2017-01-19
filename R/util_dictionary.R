@@ -78,8 +78,7 @@ explanations = data.frame(variable = c('proj_metadata_key','lter_project_fkey','
 
 explain_short = data.frame( variable = c('title','proj_metadata_key','lterid','datatype',
                                           'studytype','duration_years','community',
-                                          'structure',
-                                          'treatment_type_1','treatment_type_2','treatment_type_3',
+                                          'structure','treatment',
                                           'lat_lter','lng_lter',
                                           'species','kingdom','phylum','class','order','family','genus'),
                            
@@ -88,16 +87,29 @@ explain_short = data.frame( variable = c('title','proj_metadata_key','lterid','d
                                           "experimental or observational study?","duration of project in years",
                                           "does data set contain multiple taxa?",
                                           "types of indidivual structure (if any)",
-                                          "type of 1st treatment (if any)","type of 2nd treatment (if any)","type of 3rd treatment (if any)",
+                                          "types of treatment (if any)",
                                           "lter site latitude", "lter site longitude","specific epithet of a taxonomic unit",
                                           "kingdom","phylum","class","order","family","genus"),
                             stringsAsFactors = F)
                           
 
+# lazy evaluation in dictionary
+vars_dict <- function(...){
+  
+  eval_that <- lazyeval::lazy_dots(...)
+  out       <- sapply(eval_that, function(x) as.character(x$expr) )
+  
+  if(length(out) > 0 ) {
+    return(out)
+  } else { return(NULL) }
+  
+}
+
+# produce the lists of unique dictionary values
 dict_list <- function(x, select_columns){
   
   # index "special" and "normal"
-  i_spec          <- which(select_columns %in% c("structure","species") )
+  i_spec          <- which(select_columns %in% c("structure","treatment","species") )
   i_norm          <- setdiff(c(1:length(select_columns)), i_spec)
   spec_cols       <- select_columns[i_spec]
   norm_cols       <- select_columns[i_norm]
@@ -110,39 +122,47 @@ dict_list <- function(x, select_columns){
   }
   
   # get unique values of "special" variables ------------------------------------------
-  out_spec        <- list(species=NULL,structure=NULL)
+  out_spc     <- list()
   
   if( any( "species" == select_columns) ){
-    out_spec[[1]]   <- unique(x[,c("genus","species")])
+    out_spc$species   <- unique(x[,c("genus","species")])
   }
   if( any("structure" == select_columns) ){
     # stash all structure data in a single vector
-    str_vec         <- unlist( c(x[,paste0("structured_type_",1:3)]) )
-    out_spec[[2]]   <- unique( str_vec )
+    str_vec           <- unlist( c(x[,paste0("structured_type_",1:3)]) )
+    out_spc$structure <- unique( str_vec )
   }
-  descr_spec      <- c("species (species name)","structure (type of indidivual structure)")
-  if( identical(spec_cols,"species") )   { out_spec = out_spec[1] ; descr_spec=descr_spec[1] }
-  if( identical(spec_cols,"structure") ) { out_spec = out_spec[2] ; descr_spec=descr_spec[2] }
-  #keep_s             <- match(names(out_spec),spec_cols)
-  #names(out_spec)    <- c("species (species name)","structure (type of indidivual structure)")
-  #keep_s            <- keep_s[!is.na(keep_s)]
-  #out_spec          <- out_spec[keep_s]
+  if( any("treatment" == select_columns) ){
+    # stash all structure data in a single vector
+    tr_vec            <- unlist( c(x[,paste0("treatment_type_",1:3)]) )
+    out_spc$treatment <- unique( tr_vec )
+  }
   
-  # Final list (keeps order of inputs) -----------------------------------------------------------------------
-  out               <- vector("list", length(select_columns))
-  out[i_norm]       <- out_norm
-  out[i_spec]       <- out_spec
+  # Variable descriptions ----------------------------------------------------------------
+  # Special variables
+  descr_spec  <- c("species (species name)","structure (types of indidivual structure (if any))",
+                   "treatment (type of treatment(if any))")
+  if(length(out_spc) > 0 ){
+    d_s_ind     <- sapply( names(out_spc), function(x) grep(x, descr_spec))
+    descr_spc   <- descr_spec[d_s_ind]
+  }
+  
+  # Normal variables
+  description <- explanations$description[ match(names(out_norm), explanations$variable) ]
+  descr_norm  <- paste0(names(out_norm), " (", description,")" )
+  
+  # final descriptions
+  names_out   <- rep(NA, length(select_columns))
+  names_out[i_norm] <- descr_norm
+  names_out[i_spec] <- descr_spc
 
-  # Add variable explanations
-  description     <- explanations$description[ match(names(out_norm),explanations$variable) ]
-  descr_norm      <- paste0(names(out_norm), " (", description,")" )
   
-  nam_out         <- character(length(out))
-  nam_out[i_norm] <- descr_norm
-  nam_out[i_spec] <- descr_spec
-  
-  names(out)      <- nam_out
-  
+  # description of output -----------------------------------------------------------------
+  out         <- rep(list(NULL), length(select_columns))
+  out[i_norm] <- out_norm
+  out[i_spec] <- out_spc
+  out         <- setNames(out, names_out)
+ 
   return(out) 
   
 }
