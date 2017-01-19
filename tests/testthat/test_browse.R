@@ -129,16 +129,16 @@ test_that("dictionary() function ", {
   
   
   # n of variables in "informational message"
-  expect_equal(nrow( dictionary() ), 22 )
+  expect_equal(nrow( dictionary() ), 18 )
   expect_equal(nrow( dictionary(full_tbl = T) ), 76 )
   
   # n of list elements
-  expect_equal( length(dictionary("species")), 1)
-  expect_equal( length(dictionary(c("lterid","lng_lter"))), 2)
+  expect_equal( length(dictionary(species)), 1)
+  expect_equal( length(dictionary(lterid,lng_lter)), 2)
   
   # class of list elements
-  expect_equal( class(dictionary("species")[[1]]), "data.frame")
-  expect_equal( class(dictionary("lterid")[[1]]), "character")
+  expect_equal( class(dictionary(species)[[1]]), "data.frame")
+  expect_equal( class(dictionary(lterid)[[1]]), "character")
   
 })
 
