@@ -21,6 +21,8 @@ class_order_names <- function(x){
 # implements the 'keyword' argument in browse() 
 key_arg <- function(x,keyword,criteria){
   
+  if( is.null(keyword) ) return(list(tab=x))
+  
   if(!is.null(criteria)) {
     stop("
          
