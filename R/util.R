@@ -18,6 +18,46 @@ class_order_names <- function(x){
   
 }
 
+# implements the 'keyword' argument in browse() 
+key_arg <- function(x,keyword,criteria){
+  
+  if(!is.null(criteria)) {
+    stop("
+         
+         browse() cannot simultaneously subset based on both 
+         a logical statement and the 'keyword' argument
+         
+         Choose either of the two methods, or... 
+         refine your search using get_data()
+         
+         ")
+  }
+  
+  #index of keywords
+  i_keyw <- function(x,keyword) {
+    ind <- which( grepl(keyword,x,ignore.case = T) )
+    return(ind)
+  }
+  
+  # row numbers selected
+  ind_list    <- lapply(x, i_keyw, keyword)
+  key_inds    <- unique( unlist(ind_list) )
+  
+  # projects selected
+  if(length(key_inds) > 0){
+    proj_n      <- unique( x$proj_metadata_key[key_inds] )
+    statements  <- paste0("proj_metadata_key == ", proj_n)
+    src_arg     <- parse(text=paste0(statements, collapse = " | "))[[1]]
+  } else { 
+    src_arg     <- NULL
+  }
+  
+  # return values
+  out         <- list(tab=x[key_inds,],s_arg=src_arg) 
+  return(out)
+  
+  }
+
 
 # Summarizing function
 select_by_criteria <- function(x,criteria){
