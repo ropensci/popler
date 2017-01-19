@@ -105,8 +105,27 @@ vars_dict <- function(...){
   
 }
 
+
+# verify whether provided variables match one of the potential variables
+verify_vars <- function(sel_col){
+  
+  i <- which(sel_col %in% c(explanations$variable,"structure","treatment","species") )
+  
+  if( length(i) < length(sel_col) ){
+    
+    unmatched <- setdiff(seq_len(length(sel_col)),i) 
+    stop(paste0("variable '",sel_col[unmatched],
+                "' does not match any of the variables contained in popler"))
+         
+  }  
+ 
+}
+
 # produce the lists of unique dictionary values
 dict_list <- function(x, select_columns){
+  
+  # first, verify user input matches with variables contained in popler
+  popler:::verify_vars(select_columns)
   
   # index "special" and "normal"
   i_spec          <- which(select_columns %in% c("structure","treatment","species") )
@@ -136,7 +155,7 @@ dict_list <- function(x, select_columns){
     # stash all structure data in a single vector
     tr_vec            <- unlist( c(x[,paste0("treatment_type_",1:3)]) )
     out_spc$treatment <- unique( tr_vec )
-  }
+  } 
   
   # Variable descriptions ----------------------------------------------------------------
   # Special variables
@@ -145,7 +164,7 @@ dict_list <- function(x, select_columns){
   if(length(out_spc) > 0 ){
     d_s_ind     <- sapply( names(out_spc), function(x) grep(x, descr_spec))
     descr_spc   <- descr_spec[d_s_ind]
-  }
+  } else descr_spc <- NULL
   
   # Normal variables
   description <- explanations$description[ match(names(out_norm), explanations$variable) ]
