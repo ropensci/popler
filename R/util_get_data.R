@@ -28,7 +28,8 @@ query_cols <- function(){
                      "spatial_replication_level_3","spatial_replication_level_4",
                      "authors","authors_contact","proj_metadata_key",
                      "structure_type_1","structure_type_2","structure_type_3",
-                     "treatment_type_1","treatment_type_2","treatment_type_3"
+                     "treatment_type_1","treatment_type_2","treatment_type_3",
+                     "covariates" 
                      )
   
   rm(conn)
