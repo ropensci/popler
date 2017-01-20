@@ -159,8 +159,8 @@ dict_list <- function(x, select_columns){
   
   # Variable descriptions ----------------------------------------------------------------
   # Special variables
-  descr_spec  <- c("species (species name)","structure (types of indidivual structure (if any))",
-                   "treatment (type of treatment(if any))")
+  descr_spec  <- c("species (species name)","structure (types of indidivual structure)",
+                   "treatment (type of treatment)")
   if(length(out_spc) > 0 ){
     d_s_ind     <- sapply( names(out_spc), function(x) grep(x, descr_spec))
     descr_spc   <- descr_spec[d_s_ind]
