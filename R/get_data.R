@@ -47,8 +47,6 @@ get_data <- function(..., #browsed_data = NULL, subset = NULL,
   search_arg      <- popler:::subset_arguments(...)
   
   # query ---------------------------------------------------------------------------------
-  #conn <- src_postgres(
-  #  dbname="popler_3", host="www.how-imodel-it.com", port=5432, user="lter", password="bigdata")
   conn <- src_postgres(dbname="popler_3", password="bigdata",
                        host="ec2-54-214-212-101.us-west-2.compute.amazonaws.com", 
                        port=5432, user="other_user")

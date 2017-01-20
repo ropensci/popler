@@ -38,6 +38,26 @@ query_cols <- function(){
 }
 
 
+# function evaluates browse() IF and ONLY IF it is called
+eval_browse <- function(x = raw_calls){
+  
+  for(i in 1:length(x) ){
+    if( grepl("browse\\(", deparse(x[[i]]$expr)) ){
+      do_call       <- parse(text = "brws_obj = a_call")[[1]]
+      # substitute 'a_call" with the expression containing 'browse('
+      do_call[[3]]  <- x[[i]]$expr
+      # evaluate the call to create brws_obj
+      eval(do_call, envir = x[[i]]$env)
+      # change the call!
+      x[[i]]$expr        <- quote(brws_obj)
+      rm(do_call)
+    }
+  }
+  
+  return(x)
+  
+}
+
 
 # Identify which "search_arguments" belong to "all_columns"
 inherit_search <- function(all_cols, inherit_logical){
@@ -58,7 +78,8 @@ inherit_search <- function(all_cols, inherit_logical){
 inherit_variables <- function(..., all_columns){
   
   # calls
-  call_list <- lazyeval::lazy_dots(...)
+  raw_calls <- lazyeval::lazy_dots(...)
+  call_list <- popler:::eval_browse(raw_calls)
   # sql translations
   subset_inherit <- subset_get_dat <- NULL
   
@@ -142,7 +163,8 @@ inherit_variables <- function(..., all_columns){
 subset_arguments <- function(...){
   
   # calls
-  call_list <- lazyeval::lazy_dots(...)
+  raw_calls <- lazyeval::lazy_dots(...)
+  call_list <- popler:::eval_browse(raw_calls)
   # sql translations
   subset_inherit <- subset_get_dat <- NULL
   
