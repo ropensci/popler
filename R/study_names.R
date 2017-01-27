@@ -6,9 +6,11 @@
 #' @export
 #' @examples
 #' # Look up names
-#' study_names(browse())
-#' study_names(browse(datatype == "individual"))
-#' study_names(browse(datatype == "individual"), width = 30)
+#' #tmp = browse()
+#' #study_names(tmp)
+#' vcr_dat = browse(lterid == "VCR")
+#' study_names(vcr_dat)
+#' study_names(vcr_dat, width = 30)
 
 study_names <- function(browsed, width = 60){
   
