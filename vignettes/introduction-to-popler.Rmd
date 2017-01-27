@@ -72,7 +72,7 @@ The projects carried out within the LTER network tackle a striking variety of re
 
 ```r
 parasites       <- browse(title %=% "parasit")
-parasite_npp    <- browse(title %=% c("parasit","npp"), trim = FALSE)
+parasite_npp    <- browse(title %=% "npp", trim = FALSE)
 ```
 
 ## Download data
