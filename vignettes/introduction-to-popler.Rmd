@@ -61,16 +61,15 @@ browse()
 This metadata table can be subset by specifying a logical statement. This is useful to focus on datasets of interest.
 
 ```{r}
-browse(lterid == "SEV")
-poa_metadata   <- browse(genus == "Poa")
+poa_metadata   <- browse(genus == "Poa" & species == "fendleriana")
 poa_metadata
 ```
 
 #### The keyword binary operator, `%=%`
 
-The projects carried out within the LTER network tackle a striking variety of research topics. Therefore, searching projects based on keywords can provide decisive advantages. The keyword binary operator `%=%` facilitates subsetting the metadata table by matching one or more keywords. In particular, `%=%` matches one or more character strings to one of the character variables shown by `dictionary()`. It is especially useful to match keywords with the title of projects:
+The projects carried out within the LTER network tackle a striking variety of research topics. Therefore, searching projects based on keywords can provide decisive advantages. The keyword binary operator `%=%` facilitates subsetting the metadata table by matching one keyword at a time. In particular, `%=%` matches one character string to one of the character variables shown by `dictionary()`. It is especially useful to match keywords with the title of projects:
 
-```r
+```{r}
 parasites       <- browse(title %=% "parasit")
 parasite_npp    <- browse(title %=% "npp", trim = FALSE)
 ```
@@ -83,20 +82,13 @@ Once you identified one or more datasets of interest, download their raw data us
 1. By further subsetting an object created through `browse()`
 1. By subsetting the popler database directly through `get_data()`
 
-First, you can download data by providing an object created through `browse()`. In the example below, the code returns all population data concerning species of the genus *Poa*: 
+A few examples on how to the use of `get_data()` are:
 
-```{r}
-as.tbl(get_data(poa_metadata))
 ```
+poa_metadata <- browse(genus == "Poa" & species == "fendleriana")
+get_data(poa_metadata)
+get_data(poa_metadata, year > 2008)
+get_data(proj_metadata_key == 25)
+get_data(browse(genus == "Poa" & species == "fendleriana"), proj_metadata_key == 35)
 
-Second, you can further subset objects created through `browse()`. In the code below, popler downloads data concerning the genus *Poa* collected after the year 2008.
-
-```{r}
-as.tbl( get_data(poa_metadata, year > 2008) )
-```
-
-Third, you can directly provide a logical statement to `get_data()`:
-
-```{r}
-as.tbl( get_data(subset = proj_metadata_key == 25) )
 ```
