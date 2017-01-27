@@ -30,11 +30,8 @@
 #' # Select only the data you need
 #' study_21 = browse( proj_metadata_key == 21)
 #' 
-#' # Select based on key words
-#' parasite_npp = browse( grepl("parasit|npp",title,ignore.case=T) , trim = FALSE)
-#' 
 #' # More straighforward using keyword operator, %=%
-#' parasite_npp = browse( title %=% c("parasit","npp"), trim = FALSE)
+#' parasite_npp = browse( title %=% "parasit", trim = FALSE)
 
 
 # The browse popler function
