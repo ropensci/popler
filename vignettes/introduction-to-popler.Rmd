@@ -46,8 +46,8 @@ dictionary()
 To show what data each variable actually contains, specify one or more variable:
 
 ```{r}
-dictionary("phylum")
-dictionary(vars = c("lterid", "duration_years") )
+dictionary(phylum)
+dictionary(lterid, duration_years)
 ```
 
 ### browse()
