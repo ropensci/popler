@@ -50,8 +50,8 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
 
   # Select by subset 
   sbst_popler   <- popler:::update_call( substitute(...) )
-  key_subset    <- popler:::key_arg(main_t, keyword ,sbst_popler)
-  subset_data   <- popler:::select_by_criteria(key_subset$tab, sbst_popler )
+  key_subset    <- popler:::key_arg(main_t, keyword ,sbst_popler) # if keyword argument/%=% != NULL 
+  subset_data   <- popler:::select_by_criteria(key_subset$tab, sbst_popler)
   
   # select data based on 
   possible_arg  <- popler:::possibleargs
