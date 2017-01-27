@@ -18,47 +18,93 @@ class_order_names <- function(x){
   
 }
 
-# implements the 'keyword' argument in browse() 
+
+# implements the 'keyword' argument ANd operator in browse() 
 key_arg <- function(x,keyword,criteria){
   
-  if( is.null(keyword) ) return(list(tab=x))
-  
-  if(!is.null(criteria)) {
+  # if both keyword and criteria are used ----------------------------------------------
+  if( !is.null(keyword) & !is.null(criteria) ){
     stop("
          
          browse() cannot simultaneously subset based on both 
          a logical statement and the 'keyword' argument
          
-         Choose either of the two methods, or... 
+         Pick one of the two methods, or... 
          refine your search using get_data()
          
          ")
   }
   
-  #index of keywords
-  i_keyw <- function(x,keyword) {
-    ind <- which( grepl(keyword,x,ignore.case = T) )
-    return(ind)
+  # if only keyword is used --------------------------------------------------
+  if( !is.null(keyword) & is.null(criteria) ){
+    
+    #function: index of keywords
+    i_keyw <- function(x,keyword) {
+      ind <- which( grepl(keyword,x,ignore.case = T) )
+      return(ind)
+    }
+    
+    # row numbers selected
+    ind_list  <- lapply(x, i_keyw, keyword)
+    proj_i    <- unique( unlist(ind_list) )
+    
+    # projects selected
+    if(length(proj_i) > 0){
+      proj_n      <- unique( x$proj_metadata_key[proj_i] )
+      statements  <- paste0("proj_metadata_key == ", proj_n)
+      src_arg     <- parse(text=paste0(statements, collapse = " | "))[[1]]
+    } else { 
+      src_arg     <- NULL
+    }
+    
+    # return values
+    out <- list(tab=x[proj_i,],s_arg=src_arg) 
+    return(out)
+    
   }
   
-  # row numbers selected
-  ind_list    <- lapply(x, i_keyw, keyword)
-  key_inds    <- unique( unlist(ind_list) )
   
-  # projects selected
-  if(length(key_inds) > 0){
-    proj_n      <- unique( x$proj_metadata_key[key_inds] )
-    statements  <- paste0("proj_metadata_key == ", proj_n)
-    src_arg     <- parse(text=paste0(statements, collapse = " | "))[[1]]
-  } else { 
-    src_arg     <- NULL
+  # if only criteria is used --------------------------------------------------
+  if( is.null(keyword) & !is.null(criteria) ){
+    
+    # if is %=% is used
+    if( any(grepl("%=%",deparse(criteria))) ) {
+      
+      # you cannot use %=% and other operators simultaneously
+      if( any(grepl("==|!=|>|<|<=|>=",deparse(criteria))) ){
+        
+        stop("
+             
+             You cannot use `%=%` and R's standard operators (<,>,<=,>=,==,!=)
+             simultaneously. Sorry about that.
+             
+             ")
+        
+      } else{
+        
+        # convert 
+        proj_i     <- which(eval(updtd_crit, x, parent.frame()))
+        
+        # get project IDs
+        if( length(proj_i) != 0 ) {
+          proj_n <- unique( x[proj_i,,drop=F]$proj_metadata_key )
+          statements  <- paste0("proj_metadata_key == ", proj_n)
+          src_arg     <- parse(text=paste0(statements, collapse = " | "))[[1]]
+        } else { src_arg <- NULL }
+        
+        # return values
+        out         <- list(tab=x[proj_i,]) 
+        sbst_popler <<- src_arg # change the subset statement in parent environment
+      }
+      
+      # if neither keyword, nor %=% are used, return data frame as is
+    } else { 
+      return(list(tab=x))
+    }
+    
   }
   
-  # return values
-  out         <- list(tab=x[key_inds,],s_arg=src_arg) 
-  return(out)
-  
-  }
+}
 
 
 # Summarizing function
