@@ -75,8 +75,8 @@ key_arg <- function(x,keyword,criteria){
         
         stop("
              
-             You cannot use `%=%` and R's standard operators (<,>,<=,>=,==,!=)
-             simultaneously. Sorry about that.
+             You currently cannot use `%=%` and R's standard operators (<,>,<=,>=,==,!=)
+             simultaneously. We are currently working to improve this - sorry about that.
              
              ")
         
