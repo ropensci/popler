@@ -86,8 +86,8 @@ explain_short = data.frame( variable = c('title','proj_metadata_key','lterid','d
                                           "type of abundance data (e.g. count,biomass)",
                                           "experimental or observational study?","duration of project in years",
                                           "does data set contain multiple taxa?",
-                                          "types of indidivual structure (if any)",
-                                          "types of treatment (if any)",
+                                          "types of indidivual structure",
+                                          "types of treatment",
                                           "lter site latitude", "lter site longitude","specific epithet of a taxonomic unit",
                                           "kingdom","phylum","class","order","family","genus"),
                             stringsAsFactors = F)
@@ -148,7 +148,7 @@ dict_list <- function(x, select_columns){
   }
   if( any("structure" == select_columns) ){
     # stash all structure data in a single vector
-    str_vec           <- unlist( c(x[,paste0("structured_type_",1:3)]) )
+    str_vec           <- unlist( c(x[,paste0("structured_type_",1:4)]) )
     out_spc$structure <- unique( str_vec )
   }
   if( any("treatment" == select_columns) ){
