@@ -7,15 +7,15 @@
 var \%=\% keyword
 }
 \arguments{
-\item{var}{The name of a vector object.}
+\item{var}{The name of a character vector.}
 
-\item{keyword}{A string containing the keyword(s) that need be matched}
+\item{keyword}{A character string containing a keyword to be matched to the argument `var`}
 }
 \value{
 A logical vector.
 }
 \description{
-Match one or more string patterns with the contents of a string vector.
+Match one string pattern with the contents of a string vector.
 This is a wrapper of the grepl() function in base.
 }
 \examples{
@@ -23,8 +23,5 @@ letters \%=\% "a"
 
 # matching is case insensitive 
 letters \%=\% "A"
-
-# Matches multiple patterns
-letters \%=\% c("A","c","d")
 }
 

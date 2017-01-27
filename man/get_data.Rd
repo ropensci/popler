@@ -7,13 +7,11 @@
 get_data(..., add_vars = NULL, subtract_vars = NULL)
 }
 \arguments{
+\item{...}{A list of one or two objects: an object produced by browse, a logical statement, or both.}
+
 \item{add_vars}{A string to specify which columns the user wants to add in queries to the database}
 
 \item{subtract_vars}{A string to specify which, among the default columns, the user wishes to discard in queries to the database}
-
-\item{browsed_data}{A on object produced by the function browse()}
-
-\item{subset}{A logical argument A string that to specify which columns to add in the default columns used in queries to the database. See Details for default columns.}
 }
 \value{
 A data frame of the selected data.
@@ -34,6 +32,6 @@ gh_data_96_99 = get_data(grasshop, year > 1995 & year < 2000)
 insect_sev = browse(class == "Insecta" & lterid == "SEV")
 insect_21_yrs96_99 = get_data(insect_sev, year > 1995 & year < 2000 & proj_metadata_key == 21)
 
-insect_21_25 = get_data(subset = (proj_metadata_key == 21 | proj_metadata_key == 25) & year < 1995 )
+insect_21_25 = get_data((proj_metadata_key == 21 | proj_metadata_key == 25) & year < 1995 )
 }
 

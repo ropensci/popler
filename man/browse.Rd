@@ -4,7 +4,8 @@
 \alias{browse}
 \title{Browse the project metadata contained in the popler database}
 \usage{
-browse(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE)
+browse(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE,
+  keyword = NULL)
 }
 \arguments{
 \item{...}{A logical expression to subset popler's main table}
@@ -15,7 +16,9 @@ browse(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE)
 
 \item{trim}{If TRUE, strings are truncated at the 50th character. Default is TRUE.}
 
-\item{view}{If TRUE, opens up a spreadsheet-style data viewer. If view == "fix" it opens the data frame in a text editor rather than a spreadsheet-style viewer}
+\item{view}{If TRUE, opens up a spreadsheet-style data viewer.}
+
+\item{keyword}{A string that selects}
 }
 \value{
 A data frame combining the metadata of each project and the taxonomic units associated with each project.
@@ -45,10 +48,7 @@ three_columns = browse(vars = c("title","proj_metadata_key","genus","species"))
 # Select only the data you need
 study_21 = browse( proj_metadata_key == 21)
 
-# Select based on key words
-parasite_npp = browse( grepl("parasit|npp",title,ignore.case=T) , trim = FALSE)
-
 # More straighforward using keyword operator, \%=\%
-parasite_npp = browse( title \%=\% c("parasit","npp"), trim = FALSE)
+parasite_npp = browse( title \%=\% "parasit", trim = FALSE)
 }
 
