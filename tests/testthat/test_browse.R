@@ -108,7 +108,7 @@ test_that("browse() function ", {
  
   # n of columns
   expect_equal(ncol( browse() ), 16 )
-  expect_equal(ncol( browse(full_tbl = T) ), 59 )
+  expect_equal(ncol( browse(full_tbl = T) ), 61 )
   
   # functioning of "vars"
   expect_equal(names( browse(vars="lterid") ), c("proj_metadata_key", "lterid", "taxonomy") )
