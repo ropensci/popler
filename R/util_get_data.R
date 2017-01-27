@@ -2,8 +2,6 @@
 # query columns 
 query_cols <- function(){
   
-  #conn <- src_postgres(
-  #  dbname="popler_3", host="www.how-imodel-it.com", port=5432, user="lter", password="bigdata")
   conn <- src_postgres(dbname="popler_3", password="bigdata",
                        host="ec2-54-214-212-101.us-west-2.compute.amazonaws.com", 
                        port=5432, user="other_user")
@@ -38,7 +36,7 @@ query_cols <- function(){
 }
 
 
-# function evaluates browse() IF and ONLY IF it is called
+# evaluate browse() IF and ONLY IF browse() is called in the ... argument of get_data()
 eval_browse <- function(x = raw_calls){
   
   for(i in 1:length(x) ){
@@ -59,6 +57,16 @@ eval_browse <- function(x = raw_calls){
 }
 
 
+# update get data call
+updt_gt_dt_call <- function(x){
+
+  for(i in 1:length(x)){
+    x[[i]]$expr <- popler:::update_call( x[[i]]$expr ) 
+  }
+  return(x)
+
+}
+  
 # Identify which "search_arguments" belong to "all_columns"
 inherit_search <- function(all_cols, inherit_logical){
   
@@ -79,7 +87,9 @@ inherit_variables <- function(..., all_columns){
   
   # calls
   raw_calls <- lazyeval::lazy_dots(...)
-  call_list <- popler:::eval_browse(raw_calls)
+  e_b_calls <- popler:::eval_browse(raw_calls) 
+  call_list <- popler:::updt_gt_dt_call(e_b_calls)
+  
   # sql translations
   subset_inherit <- subset_get_dat <- NULL
   
@@ -164,7 +174,8 @@ subset_arguments <- function(...){
   
   # calls
   raw_calls <- lazyeval::lazy_dots(...)
-  call_list <- popler:::eval_browse(raw_calls)
+  e_b_calls <- popler:::eval_browse(raw_calls) 
+  call_list <- popler:::updt_gt_dt_call(e_b_calls)
   # sql translations
   subset_inherit <- subset_get_dat <- NULL
   
