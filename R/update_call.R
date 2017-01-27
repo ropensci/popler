@@ -90,7 +90,7 @@ update_call <- function(orig_call){
     match_field   <- old_call[[3]]
     
     # expand boolean operation to structured_type 1 through 3
-    new_cols      <- paste0("treatment_type_", c(1:4))
+    new_cols      <- paste0("treatment_type_", c(1:3))
     new_state     <- paste0(paste0( new_cols, operation,"'", match_field,"'"), collapse = " | ")
     new_call      <- parse(text = paste0("(",new_state,")"))[[1]]
     
