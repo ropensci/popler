@@ -83,7 +83,7 @@ key_arg <- function(x,keyword,criteria){
       } else{
         
         # convert 
-        proj_i     <- which(eval(updtd_crit, x, parent.frame()))
+        proj_i     <- which(eval(criteria, x, parent.frame()))
         
         # get project IDs
         if( length(proj_i) != 0 ) {
@@ -93,8 +93,8 @@ key_arg <- function(x,keyword,criteria){
         } else { src_arg <- NULL }
         
         # return values
-        out         <- list(tab=x[proj_i,]) 
         sbst_popler <<- src_arg # change the subset statement in parent environment
+        return(list(tab=x))
       }
       
       # if neither keyword, nor %=% are used, return data frame as is
@@ -103,7 +103,9 @@ key_arg <- function(x,keyword,criteria){
     }
     
   }
-  
+ 
+  if( is.null(keyword) & is.null(criteria) ){ return(list(tab=x)) }
+   
 }
 
 
