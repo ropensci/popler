@@ -11,17 +11,15 @@ study_names(browsed, width = 60)
 
 \item{width}{A positive integer giving the target column for wrapping lines in the output (from base function strwrap)}
 }
-\value{
-prints the names of popler studies as separate paragraphs
-}
 \description{
 Prints the names of popler studies as paragraphs of known width. This is a wrapper of the strwrap function in base.
 }
 \examples{
-
 # Look up names
-study_names(browse())
-study_names(browse(datatype == "individual"))
-study_names(browse(datatype == "individual"), width = 30)
+#tmp = browse()
+#study_names(tmp)
+vcr_dat = browse(lterid == "VCR")
+study_names(vcr_dat)
+study_names(vcr_dat, width = 30)
 }
 

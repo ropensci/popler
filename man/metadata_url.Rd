@@ -9,9 +9,6 @@ metadata_url(data_object)
 \arguments{
 \item{data_object}{An object produced by the function get_data()}
 }
-\value{
-opens up one or more webpages
-}
 \description{
 Load the webpage containing the metadata of the data sets downloaded through get_data(). If you downloaded data from multiple projects, this function opens multiple webpages. 
 This is a wrapper of function browseURL in base.
