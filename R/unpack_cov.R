@@ -1,3 +1,16 @@
+#' Unpack the covariates for a data set
+#'
+#' Obtain author name and email from a data object downloaded from popler.
+#' @param An object produced by the function get_data(). NOTE: temporarily, data can come from 1 study only. 
+#' @return A data frame whose columns represent the covariates of the data set.
+#' @export
+#' @examples
+#' 
+#' # get author names and email from studies containing data from the genus Poa
+#' demo_d <- get_data(proj_metadata_key == 8)
+#' as.tbl( unpack_cov( demo_d ) )
+
+
 # function to unpack covariates
 unpack_cov <- function(x){
   
@@ -8,6 +21,8 @@ unpack_cov <- function(x){
   
   # test: whether 
   n_elem   <- sapply(fields, length)
+  # identify error
+  err_id   <- which(unlist(lapply(n_elem, `%%`, 2)) == 1)
   n_cols   <- unique(lapply(n_elem, `%%`, 2))
   if(length(n_cols) == 1 & n_cols == 0){
   
@@ -34,7 +49,8 @@ unpack_cov <- function(x){
     }  
     
   } else {
-    stop("Error: cannot unpack covariates.")
+    stop("Error: cannot unpack covariates.
+          Error occured at line(s) ", paste0(err_id,collapse=",") )
   }
   
 }
