@@ -36,5 +36,5 @@ unpack_cov <- function(x){
   covariate_data <- cbind(value_data, key_data)
   # And ordering the columns by alphabetical order
   covariate_data <- covariate_data[, order(names(covariate_data))] ### END PRODUCT ####
-  
+  return(covariate_data)
 }
