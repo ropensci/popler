@@ -14,43 +14,27 @@
 # function to unpack covariates
 unpack_cov <- function(x){
   
-  spl_flds <- lapply(lapply(x$covariates, strsplit, ","), unlist)
-  no_brack <- lapply(lapply(spl_flds, strsplit, "\\{|\\}"), unlist)
-  keep_dat <- lapply(no_brack, function(x) return(x[grep(":",x)]))
-  fields   <- lapply(lapply(keep_dat, strsplit, ":"),unlist)
+  # Extract all characters between the brackets and split the string on each comma (',')
+  # followed by a space ('\\s')
+  key_value_pair_dictionary_list <- str_split(
+    trimws(str_match(x$covariates, "\\{(.*)\\}"))[,2], ",\\s", simplify = T)
   
-  # test: whether 
-  n_elem   <- sapply(fields, length)
-  # identify error
-  err_id   <- which(unlist(lapply(n_elem, `%%`, 2)) == 1)
-  n_cols   <- unique(lapply(n_elem, `%%`, 2))
-  if(length(n_cols) == 1 & n_cols == 0){
+  # Extract values from dictionary syntax (key: value)
+  value_data <- data.frame(apply(
+    gsub("\\'", "", key_value_pair_dictionary_list), 2, function(x) {
+      str_match(x, "\\:\\s(.*)")[,2]}))
+  colnames(value_data) <- paste0(colnames(value_data) , '_value')
   
-    keep_even <- grep(0,c(1:unique(n_elem)) %% 2)
-    keep_nams <- grep(1,c(1:unique(n_elem)) %% 2)
-    
-    kept_fields <- lapply(fields, function(x) return(x[keep_even]))
-    kept_nams   <- lapply(fields, function(x) return(x[keep_nams]))
-    field_nams  <- unique(kept_nams)
-    
-    field_mat   <- as.data.frame( do.call(rbind,kept_fields) )
-    
-    if( length(field_nams) > 1 ) stop("Error: cannot unpack covariates.")
-    
-    if( length(field_nams) == 1 ){
-      
-      # "clean" names
-      
-      field_nams  <- unlist( strsplit(unlist(field_nams), "'") )
-      field_nams  <- field_nams[-grep(" |  |$^",field_nams)]
-      
-      field_mat <- setNames(field_mat, field_nams )
-      return(field_mat)
-    }  
-    
-  } else {
-    stop("Error: cannot unpack covariates.
-          Error occured at line(s) ", paste0(err_id,collapse=",") )
-  }
   
+  # Extract keys from dicitonary
+  key_data <- data.frame(apply(
+    gsub("\\'", "", key_value_pair_dictionary_list), 2, function(x) {
+      str_match(x, "(.*)\\:")[,2]}))
+  colnames(key_data) <- paste0(colnames(key_data) , '_label')
+  
+  # combing them into a dataframe
+  covariate_data <- cbind(value_data, key_data)
+  # And ordering the columns by alphabetical order
+  covariate_data <- covariate_data[, order(names(covariate_data))] ### END PRODUCT ####
+  return(covariate_data)
 }
