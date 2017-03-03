@@ -19,7 +19,7 @@
 #' insect_sev = browse(class == "Insecta" & lterid == "SEV")
 #' insect_21_yrs96_99 = get_data(insect_sev, year > 1995 & year < 2000 & proj_metadata_key == 21)
 #' 
-#' insect_21_25 = get_data(subset = (proj_metadata_key == 21 | proj_metadata_key == 25) & year < 1995 )
+#' insect_21_25 = get_data((proj_metadata_key == 21 | proj_metadata_key == 25) & year < 1995 )
 
 
 # Function that connects and gathers the information from the database
@@ -47,8 +47,6 @@ get_data <- function(..., #browsed_data = NULL, subset = NULL,
   search_arg      <- popler:::subset_arguments(...)
   
   # query ---------------------------------------------------------------------------------
-  #conn <- src_postgres(
-  #  dbname="popler_3", host="www.how-imodel-it.com", port=5432, user="lter", password="bigdata")
   conn <- src_postgres(dbname="popler_3", password="bigdata",
                        host="ec2-54-214-212-101.us-west-2.compute.amazonaws.com", 
                        port=5432, user="other_user")

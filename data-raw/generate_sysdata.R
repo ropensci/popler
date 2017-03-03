@@ -6,13 +6,6 @@ library(dplyr)
 library(tidyr)
 
 # generate main data table--------------------------------------------
-
-#conn <- src_postgres(
-#  dbname="popler_3", host="www.how-imodel-it.com", port=5432, user="lter", password="bigdata")
-
-#conn <- src_postgres(dbname="popler_3", 
-#                     host="ec2-54-212-204-87.us-west-2.compute.amazonaws.com", 
-#                     port=5432, user="lter")
 conn <- src_postgres(dbname="popler_3", password="bigdata",
                      host="ec2-54-214-212-101.us-west-2.compute.amazonaws.com", 
                      port=5432, user="other_user")
@@ -41,13 +34,15 @@ table_search <- tbl(conn, sql(
 
 # Convert to data.frame and create 'duration_years'
 out                   <- as.data.frame(table_search)
-out$duration_years    <- out$studyendyr - out$studystartyr
 # Select project-specific information 
 proj_info             <- out[,c(proj_cols,"duration_years",lter_cols)]
 # Discard replicated information
 out_proj              <- unique(proj_info)
 
 # Total spatial replication
+tmp <- out_proj[paste0("spatial_replication_level_",1:5,"_number_of_unique_reps")]
+tmp[tmp == -99999] <- NA
+out_proj[paste0("spatial_replication_level_",1:5,"_number_of_unique_reps")] <- tmp
 out_proj$tot_spat_rep <- apply(out_proj[paste0("spatial_replication_level_",1:5,
                                        "_number_of_unique_reps")],
                              1,prod,na.rm=T)
@@ -58,7 +53,7 @@ out_proj$n_spat_levs  <- apply(!is.na(out_proj[paste0("spatial_replication_level
                                1,sum) 
 
 # reorder
-out_proj              <- out_proj[c(1:36,56:57,37:55)]
+out_proj              <- out_proj[c(1:11,46:47,12:36,58:59,37:45,48:57)]
 
 
 # Unique Taxonomic information 

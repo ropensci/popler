@@ -7,6 +7,7 @@
 #' @param vars A vector of characters: which variables of popler's main table should be selected?
 #' @param trim If TRUE, strings are truncated at the 50th character. Default is TRUE.
 #' @param view If TRUE, opens up a spreadsheet-style data viewer.
+#' @param keyword A string that selects 
 #' @return A data frame combining the metadata of each project and the taxonomic units associated with each project.
 #' @return This data frame is of class "popler", "data.frame", "tbl_df", and "tbl".  
 #' @export
@@ -29,15 +30,12 @@
 #' # Select only the data you need
 #' study_21 = browse( proj_metadata_key == 21)
 #' 
-#' # Select based on key words
-#' parasite_npp = browse( grepl("parasit|npp",title,ignore.case=T) , trim = FALSE)
-#' 
 #' # More straighforward using keyword operator, %=%
-#' parasite_npp = browse( title %=% c("parasit","npp"), trim = FALSE)
+#' parasite_npp = browse( title %=% "parasit", trim = FALSE)
 
 
 # The browse popler function
-browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE){
+browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE, keyword = NULL){
 
   # LOAD two object data types
   # Data table; convert factors to characters
@@ -46,9 +44,11 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
   # Case insensitive matching ("lower" everything)
   names(main_t) <- tolower( names(main_t) )
   main_t        <- popler:::class_order_names(main_t)
-  
+
   # Select by subset 
-  subset_data   <- popler:::select_by_criteria(main_t, substitute(...) )
+  sbst_popler   <- popler:::update_call( substitute(...) )
+  key_subset    <- popler:::key_arg(main_t, keyword ,sbst_popler) # if keyword argument/%=% != NULL 
+  subset_data   <- popler:::select_by_criteria(key_subset$tab, sbst_popler)
   
   # select data based on 
   possible_arg  <- popler:::possibleargs
@@ -76,7 +76,7 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
   # attribute class "popler"
   out            <- structure(out_form, 
                               class = c("popler", class(out_form) ),
-                              search_argument = substitute(...)
+                              search_argument = c(sbst_popler,key_subset$s_arg)[[1]]
                               )
   
   return(out)

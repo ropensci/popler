@@ -19,6 +19,7 @@ Suggests:
     testthat,
     knitr,
     rmarkdown
+    stringr
 LazyData: true
 RoxygenNote: 5.0.1
 VignetteBuilder: knitr

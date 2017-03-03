@@ -1,9 +1,9 @@
 #' keyword binary operator
 #'
-#' Match one or more string patterns with the contents of a string vector.
+#' Match one string pattern with the contents of a string vector.
 #' This is a wrapper of the grepl() function in base.
-#' @param var The name of a vector object.
-#' @param keyword A string containing the keyword(s) that need be matched 
+#' @param var The name of a character vector.
+#' @param keyword A character string containing a keyword to be matched to the argument `var` 
 #' @return A logical vector. 
 #' @export
 #' @examples
@@ -11,9 +11,7 @@
 #' 
 #' # matching is case insensitive 
 #' letters %=% "A"
-#' 
-#' # Matches multiple patterns
-#' letters %=% c("A","c","d")
+
 
 # define the binary operator
 `%=%` <- function(var, keyword) {
