@@ -34,4 +34,3 @@ insect_21_yrs96_99 = get_data(insect_sev, year > 1995 & year < 2000 & proj_metad
 
 insect_21_25 = get_data((proj_metadata_key == 21 | proj_metadata_key == 25) & year < 1995 )
 }
-

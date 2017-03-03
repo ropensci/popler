@@ -24,4 +24,3 @@ letters \%=\% "a"
 # matching is case insensitive 
 letters \%=\% "A"
 }
-

@@ -19,4 +19,3 @@ This is a wrapper of function browseURL in base.
 poa_data = get_data(subset = genus == "Poa")
 metadata_url( poa_data )
 }
-

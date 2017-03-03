@@ -18,7 +18,6 @@ Obtain author name and email from a data object downloaded from popler.
 \examples{
 
 # get author names and email from studies containing data from the genus Poa
-demo_d <- get_data(proj_metadata_key == 7)
+demo_d <- get_data(proj_metadata_key == 8)
 as.tbl( unpack_cov( demo_d ) )
 }
-

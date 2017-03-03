@@ -33,4 +33,3 @@ summary_popler(group_vars = "title",
 summary_popler(group_vars = "lterid", 
                count_vars = "title", trim = TRUE)
 }
-
