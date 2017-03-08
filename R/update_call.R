@@ -37,14 +37,20 @@ update_call <- function(orig_call){
     
     # modify the call
     old_call      <- eval(parse(text=locate_call))
+    # extracts the operator associated with structure
     operation     <- deparse(old_call[[1]])
+    # extracts the search argument
     match_field   <- old_call[[3]]
     
     # expand boolean operation to structured_type 1 through 3
+    # write down the new variables (called 'cols' here)
     new_cols      <- paste0("structured_type_", c(1:4))
+    # string of updated call
     new_state     <- paste0(paste0( new_cols, operation,"'", match_field,"'"), collapse = " | ")
+    # updated call itself
     new_call      <- parse(text = paste0("(",new_state,")"))[[1]]
     
+    # update the call (literally what this function is doing)
     eval(parse(text = paste0(locate_call, " = new_call ")))
     
   }
