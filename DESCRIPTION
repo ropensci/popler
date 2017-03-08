@@ -11,7 +11,6 @@ Description: This package allows to browse and query the popler database.
 Depends: 
     R (>= 3.0.0),
     dplyr,
-    tidyr,
     RPostgreSQL,
 License: MIT
 Encoding: UTF-8
@@ -19,6 +18,7 @@ Suggests:
     testthat,
     knitr,
     rmarkdown,
+    tidyr,
     stringr
 LazyData: true
 RoxygenNote: 5.0.1.9000
