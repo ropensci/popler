@@ -21,3 +21,4 @@ Obtain author name and email from a data object downloaded from popler.
 poa_data = get_data(subset = genus == "Poa")
 authors( poa_data )
 }
+

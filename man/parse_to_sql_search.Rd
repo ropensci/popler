@@ -17,3 +17,4 @@ A string with an SQL statement
 \description{
 USe dplyr translate_sql() to translate R logical statements into SQL
 }
+

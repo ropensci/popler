@@ -21,3 +21,4 @@ Obtain author name and email from a data object downloaded from popler.
 demo_d <- get_data(proj_metadata_key == 8)
 as.tbl( unpack_cov( demo_d ) )
 }
+
