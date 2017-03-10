@@ -7,11 +7,11 @@ context("browse(): Format Main Table()")
 # does this function actually return character columns? 
 test_that("Format Main Table", {
   
-  expect_equal(is.character(popler:::factor_to_character(popler:::main_popler)[,2]),T)
-  expect_equal(is.character(popler:::factor_to_character(popler:::main_popler)[,3]),T)
-  expect_equal(is.character(popler:::factor_to_character(popler:::main_popler)[,4]),T)
-  expect_equal(is.character(popler:::factor_to_character(popler:::main_popler)[,8]),T)
-  expect_equal(is.character(popler:::factor_to_character(popler:::main_popler)[,9]),T)
+  expect_equal(is.character(factor_to_character(main_popler)[,2]),T)
+  expect_equal(is.character(factor_to_character(main_popler)[,3]),T)
+  expect_equal(is.character(factor_to_character(main_popler)[,4]),T)
+  expect_equal(is.character(factor_to_character(main_popler)[,8]),T)
+  expect_equal(is.character(factor_to_character(main_popler)[,9]),T)
   
 })
 
@@ -26,10 +26,10 @@ test_that("Informational messages", {
                             "species","taxonomy","kingdom","phylum","clss","ordr","family","genus"))
   
   # errors table
-  expect_error(popler:::err_full_tab("pi",possibleargs))
-  expect_error(popler:::err_full_tab("proj_metadata_fkey",possibleargs))
-  expect_error(popler:::err_full_tab("rep_level_3",possibleargs))
-  expect_error(popler:::err_full_tab("treatment",possibleargs))
+  expect_error(err_full_tab("pi",possibleargs))
+  expect_error(err_full_tab("proj_metadata_fkey",possibleargs))
+  expect_error(err_full_tab("rep_level_3",possibleargs))
+  expect_error(err_full_tab("treatment",possibleargs))
   
 })
 
@@ -39,21 +39,54 @@ context("browse(): Select by criteria")
 test_that("Select by criteria", {
   
   # Data
-  x <- popler:::factor_to_character(popler:::main_popler)
+  x <- factor_to_character(main_popler)
   
   # Test 1 
-  subset_data <- popler:::select_by_criteria(x,substitute(kingdom == "Plantae"))
+  subset_data <- select_by_criteria(x,substitute(kingdom == "Plantae"))
   expect_equal( unique(subset_data$kingdom), "Plantae")
   # Test 2
-  subset_data <- popler:::select_by_criteria(x,substitute(lterid == "SEV"))
+  subset_data <- select_by_criteria(x,substitute(lterid == "SEV"))
   expect_equal( unique(subset_data$lterid), "SEV")
   # Test 3
-  subset_data <- popler:::select_by_criteria(x,substitute(genus == "Poa"))
+  subset_data <- select_by_criteria(x,substitute(genus == "Poa"))
   expect_equal( unique(subset_data$genus), "Poa")
   
   rm(list=c("x","subset_data"))
   
 })
+
+
+context("browse(): elastic_tab")
+
+# Select By Criteria function
+test_that("elastic_tab", {
+  
+  # Data
+  x <- factor_to_character(main_popler)
+  # Case insensitive matching ("lower" everything)
+  names(main_t) <- tolower( names(main_t) )
+  # convert columsn "ordr" to "order" and "clss" to "class"
+  main_t        <- class_order_names(main_t)
+  
+  # limit yourself to one/two studies
+  # 1 full tab = TRUE
+  shrinked_tab <- elastic_tab(main_t, full_tbl = T)
+  # test 1a: taxonomy variables
+  expect_equal(ncol(shrinked_tab$taxonomy[[1]]), 18)
+  # test 1b: number of projects
+  expect_equal(nrow(shrinked_tab), length(unique(main_t$proj_metadata_key)))
+  
+  # 2 full tab = FALSE
+  shrinked_tab <- elastic_tab(main_t, full_tbl = TRUE)
+  # test 2a: taxonomy variables
+  expect_equal(ncol(shrinked_tab$taxonomy[[1]]), 18)
+  # test 2b: number of projects
+  expect_equal(nrow(shrinked_tab), length(unique(main_t$proj_metadata_key)))
+  
+  rm(list=c("x","main_t","shrinked_tab"))
+  
+})
+
 
 context("browse(): Keyword binary operator")
 
@@ -61,7 +94,7 @@ context("browse(): Keyword binary operator")
 test_that("Keyword", {
   
   # Data
-  x <- popler:::factor_to_character(popler:::main_popler)
+  x <- factor_to_character(main_popler)
   
   # Tests 
   expect_equal( x$title %=% c("ParAsiTe", "Npp", "hErb"),
@@ -81,21 +114,21 @@ context("browse(): error functions")
 # does this function actually return character columns? 
 test_that("Errors ", {
   
-  main_t        <- popler:::factor_to_character(popler:::main_popler)
+  main_t        <- factor_to_character(main_popler)
   names(main_t) <- tolower( names(main_t) )
-  main_t        <- popler:::class_order_names(main_t)
-  possible_arg  <- popler:::possibleargs
+  main_t        <- class_order_names(main_t)
+  possible_arg  <- possibleargs
   
   # err_full_tab errors
-  expect_error(popler:::err_full_tab( "lterids", names(main_t), possible_arg ))
-  expect_error(popler:::err_full_tab( "gensus", names(main_t), possible_arg ))
-  expect_error(popler:::err_full_tab( "tilte", names(main_t), possible_arg ))
-  expect_error(popler:::err_full_tab( "specis", names(main_t), possible_arg ))
+  expect_error(err_full_tab( "lterids", names(main_t), possible_arg ))
+  expect_error(err_full_tab( "gensus", names(main_t), possible_arg ))
+  expect_error(err_full_tab( "tilte", names(main_t), possible_arg ))
+  expect_error(err_full_tab( "specis", names(main_t), possible_arg ))
   
   # select criteria
-  expect_error( popler:::select_by_criteria(main_t, substitute( lterid == "SEVa" )) )
-  expect_error( popler:::select_by_criteria(main_t, substitute( lterids == "SEV" )) ) 
-  expect_error( popler:::select_by_criteria(main_t, substitute( lterids == "SEVa" )) ) 
+  expect_error( select_by_criteria(main_t, substitute( lterid == "SEVa" )) )
+  expect_error( select_by_criteria(main_t, substitute( lterids == "SEV" )) ) 
+  expect_error( select_by_criteria(main_t, substitute( lterids == "SEVa" )) ) 
   
 })
 
