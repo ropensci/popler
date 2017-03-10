@@ -43,11 +43,12 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
   
   # Case insensitive matching ("lower" everything)
   names(main_t) <- tolower( names(main_t) )
+  # convert columsn "ordr" to "order" and "clss" to "class"
   main_t        <- class_order_names(main_t)
   
   # Select by subset 
   sbst_popler   <- update_call( substitute(...) )
-  key_subset    <- key_arg(main_t, keyword ,sbst_popler) # if keyword argument/%=% != NULL 
+  key_subset    <- key_arg(main_t, keyword, sbst_popler) # if keyword argument/%=% != NULL 
   subset_data   <- select_by_criteria(key_subset$tab, sbst_popler)
   
   # select data based on 

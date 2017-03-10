@@ -29,14 +29,14 @@ get_data <- function(..., #browsed_data = NULL, subset = NULL,
   # define possible columns ---------------------------------------------------------------
   
   # possible columns 
-  potential_vars  <- popler:::query_cols()
+  potential_vars  <- query_cols()
   all_columns     <- potential_vars$all_cols
   default_columns <- potential_vars$default_cols
   
   
   # selected columns ----------------------------------------------------------------------
   # "inherit" variables from search arguments 
-  inherit_vars    <- popler:::inherit_variables(..., all_columns = all_columns)
+  inherit_vars    <- inherit_variables(..., all_columns = all_columns)
   
   # variables (de)selected explicitly
   actual_vars     <- unique( c(default_columns, add_vars, inherit_vars) )
@@ -44,17 +44,17 @@ get_data <- function(..., #browsed_data = NULL, subset = NULL,
   
   
   # subset argument(s) --------------------------------------------------------------------
-  search_arg      <- popler:::subset_arguments(...)
+  search_arg      <- subset_arguments(...)
   
   # query ---------------------------------------------------------------------------------
   conn <- src_postgres(dbname="popler_3", password="bigdata",
                        host="ec2-54-214-212-101.us-west-2.compute.amazonaws.com", 
                        port=5432, user="other_user")
   
-  output_data <- popler:::query_popler(conn, select_vars, search_arg)
+  output_data <- query_popler(conn, select_vars, search_arg)
   
   # Change "ordr" and "clss" to "order" and "class"
-  output_data <- popler:::class_order_names(output_data)
+  output_data <- class_order_names(output_data)
   
   # outputs -------------------------------------------------------------------------------
   
@@ -68,7 +68,7 @@ get_data <- function(..., #browsed_data = NULL, subset = NULL,
                            )
   
   # Informational message
-  popler:::data_message(output_data)
+  data_message(output_data)
   
   return(output_data)
   
@@ -137,7 +137,7 @@ eval_browse <- function(x = raw_calls){
 updt_gt_dt_call <- function(x){
   
   for(i in 1:length(x)){
-    x[[i]]$expr <- popler:::update_call( x[[i]]$expr ) 
+    x[[i]]$expr <- update_call( x[[i]]$expr ) 
   }
   return(x)
   
@@ -163,8 +163,8 @@ inherit_variables <- function(..., all_columns){
   
   # calls
   raw_calls <- lazyeval::lazy_dots(...)
-  e_b_calls <- popler:::eval_browse(raw_calls) 
-  call_list <- popler:::updt_gt_dt_call(e_b_calls)
+  e_b_calls <- eval_browse(raw_calls) 
+  call_list <- updt_gt_dt_call(e_b_calls)
   
   # sql translations
   subset_inherit <- subset_get_dat <- NULL
@@ -190,7 +190,7 @@ inherit_variables <- function(..., all_columns){
         inherit_elem    <- as.character( attributes(eval(call_list[[i]]$expr,call_list[[i]]$env))$search_argument )
         inherit_elem    <- gsub("order", "ordr", inherit_elem)
         inherit_elem    <- gsub("class", "clss", inherit_elem)
-        inherit_browse  <- popler:::inherit_search(all_columns, inherit_elem) 
+        inherit_browse  <- inherit_search(all_columns, inherit_elem) 
         
       } else{ #the nonlogical argument MUST be a popler object
         stop("Error: The object you provide must be produced by browse()")
@@ -201,7 +201,7 @@ inherit_variables <- function(..., all_columns){
       inherit_elem    <- as.character( call_list[[i2]]$expr )
       inherit_elem    <- gsub("order", "ordr", inherit_elem)
       inherit_elem    <- gsub("class", "clss", inherit_elem)
-      inherit_subset  <- popler:::inherit_search(all_columns, inherit_elem)
+      inherit_subset  <- inherit_search(all_columns, inherit_elem)
       
     }else{
       if( all( c("name", "name") %in% arg_class_vec) ){
@@ -224,7 +224,7 @@ inherit_variables <- function(..., all_columns){
       inherit_elem    <- as.character( attributes(browsed_data)$search_argument )
       inherit_elem    <- gsub("order", "ordr", inherit_elem)
       inherit_elem    <- gsub("class", "clss", inherit_elem)
-      inherit_browse  <- popler:::inherit_search(all_columns, inherit_elem) 
+      inherit_browse  <- inherit_search(all_columns, inherit_elem) 
     } else {
       inherit_browse  <- NULL
     }
@@ -233,7 +233,7 @@ inherit_variables <- function(..., all_columns){
       inherit_elem    <- as.character( call_list[[1]]$expr )
       inherit_elem    <- gsub("order", "ordr", inherit_elem)
       inherit_elem    <- gsub("class", "clss", inherit_elem)
-      inherit_subset  <- popler:::inherit_search(all_columns, inherit_elem) 
+      inherit_subset  <- inherit_search(all_columns, inherit_elem) 
     } else {
       inherit_subset  <- NULL
     }
@@ -250,8 +250,8 @@ subset_arguments <- function(...){
   
   # calls
   raw_calls <- lazyeval::lazy_dots(...)
-  e_b_calls <- popler:::eval_browse(raw_calls) 
-  call_list <- popler:::updt_gt_dt_call(e_b_calls)
+  e_b_calls <- eval_browse(raw_calls) 
+  call_list <- updt_gt_dt_call(e_b_calls)
   # sql translations
   subset_inherit <- subset_get_dat <- NULL
   
