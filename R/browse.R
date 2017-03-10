@@ -39,35 +39,35 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
   
   # LOAD two object data types
   # Data table; convert factors to characters
-  main_t        <- factor_to_character(popler:::main_popler)
+  main_t        <- factor_to_character(main_popler)
   
   # Case insensitive matching ("lower" everything)
   names(main_t) <- tolower( names(main_t) )
-  main_t        <- popler:::class_order_names(main_t)
+  main_t        <- class_order_names(main_t)
   
   # Select by subset 
-  sbst_popler   <- popler:::update_call( substitute(...) )
-  key_subset    <- popler:::key_arg(main_t, keyword ,sbst_popler) # if keyword argument/%=% != NULL 
-  subset_data   <- popler:::select_by_criteria(key_subset$tab, sbst_popler)
+  sbst_popler   <- update_call( substitute(...) )
+  key_subset    <- key_arg(main_t, keyword ,sbst_popler) # if keyword argument/%=% != NULL 
+  subset_data   <- select_by_criteria(key_subset$tab, sbst_popler)
   
   # select data based on 
-  possible_arg  <- popler:::possibleargs
-  subset_data   <- popler:::table_select(subset_data, full_tbl, possible_arg)
+  possible_arg  <- possibleargs
+  subset_data   <- table_select(subset_data, full_tbl, possible_arg)
   
   # If no column specified, return all columns
   if( is.null(vars) ){
     out_cols <- subset_data
   } else{
     # include proj_metadata_key if in vars
-    vars      <- popler:::vars_check(vars)
+    vars      <- vars_check(vars)
     # Error message if column names are incorrect
-    popler:::err_full_tab( vars, names(main_t), possible_arg )
+    err_full_tab( vars, names(main_t), possible_arg )
     # If not, select said columns
     out_cols  <- subset_data[,vars]
   }
   
-  out_form <- popler:::elastic_tab(out_cols, shrink = TRUE, full_tbl)
-  out_form <- popler:::trim_display(out_form, trim)
+  out_form <- elastic_tab(out_cols, full_tbl)
+  out_form <- trim_display(out_form, trim)
   
   
   # write output
@@ -261,7 +261,7 @@ err_full_tab <- function(select_columns,columns_full_tab,possibleargs){
 
 
 # expand table (to nest/unnest taxonomic info) 
-elastic_tab <- function(x, shrink = TRUE, full_tbl){
+elastic_tab <- function(x, full_tbl){
   
   # select taxonomic information (based on full_ or standard_table)
   if( full_tbl == FALSE){
@@ -275,18 +275,12 @@ elastic_tab <- function(x, shrink = TRUE, full_tbl){
   }
   
   # nest(shrink)/Unnest(expand) data set
-  if( shrink == TRUE) {
-    out  <- x %>% 
-      group_by_(.dots = setdiff(names(x),taxas) ) %>%
-      nest(.key = taxonomy)
-    # Names of taxonomic lists
-    names(out$taxonomy)  <- paste0("taxa_project_#_",out$proj_metadata_key)
-  } else {
-    out  <- x %>% 
-      group_by_( .dots = setdiff(names(x), "taxonomy") ) %>%
-      unnest_( unnest_cols = "taxonomy" )
-  }
-  
+  out  <- x %>% 
+    group_by_(.dots = setdiff(names(x),taxas) ) %>%
+    nest(.key = taxonomy)
+  # Names of taxonomic lists
+  names(out$taxonomy)  <- paste0("taxa_project_#_",out$proj_metadata_key)
+
   return(out)
   
 }
