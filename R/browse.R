@@ -52,8 +52,8 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
   key_subset    <- key_arg(main_table(), keyword, sbst_popler) # if keyword argument/%=% != NULL 
   subset_data   <- select_by_criteria(key_subset$tab, sbst_popler)
   
-  # select data based on 
-  subset_data   <- table_select(subset_data, full_tbl, possible_args())
+  # select data based on whether or not the full table should be returned
+  subset_data <- if(full_tbl){subset_data} else {subset_data[,possible_args()]}
   
   # If no column specified, return all columns
   if( is.null(vars) ){
@@ -226,15 +226,6 @@ possible_args = function(){
            "treatment_type_1","treatment_type_2","treatment_type_3",
            "lat_lter","lng_lter",
            "species","kingdom","phylum","class","order","family","genus"))
-}
-
-
-# returns a full table or not
-table_select <- function(x, full_tbl = FALSE, possible_args){
-  
-  if(full_tbl == FALSE) return(x[,possible_args])
-  if(full_tbl == TRUE)  return(x)
-  
 }
 
 
@@ -437,4 +428,14 @@ call_update = function(query){
                       paste0(unlist(query_list),    collapse="") %>%
                       paste0("substitute(", . ,")", collapse="")))
   )
+}
+
+
+##### UNUSED FUNCTIONS #########################################################
+# returns a full table or not
+table_select <- function(x, full_tbl = FALSE, possible_args){
+  
+  if(full_tbl == FALSE) return(x[,possible_args])
+  if(full_tbl == TRUE)  return(x)
+  
 }
