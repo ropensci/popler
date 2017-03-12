@@ -191,25 +191,26 @@ key_arg <- function(x,keyword,criteria){
   
 }
 
-
-# Summarizing function
+# function to subset dataframe by criteria and do error checking
 select_by_criteria <- function(x,criteria){
   
   if(!is.null(criteria)) {
-    r <- which(eval(criteria, x, parent.frame()))
-    if( length(r) != 0 ) {
-      subsetDat <- tbl_df(x[r,,drop=F]) #tbl_df() to make object "work" with dplyr functions
-    } 
-    if( length(r) == 0 ) {
-      stop( "No matches found. Either:
-            1. the name of variable(s) you specified is/are incorrect or 
-            2. the values you are looking for are not contained in the variable(s) you specified")
-    }
+    # if criteria are specified, subset the dataframe accordingly
+    out <- subset(x,eval(criteria))
+    
   } else { 
-    subsetDat <- tbl_df(x) 
+    # if no criteria are specified, do nothing
+    out <- x
   }
-  return(subsetDat)
   
+  # if no results are returned, return an error
+  if( nrow(out) == 0 ) {
+    stop( "No matches found. Either:
+          1. the name of variable(s) you specified is/are incorrect or 
+          2. the values you are looking for are not contained in the variable(s) you specified")
+  }
+  
+  return(tbl_df(out))
 }
 
 
@@ -436,7 +437,6 @@ table_select <- function(x, full_tbl = FALSE, possible_args){
   
 }
 
-
 # changes clss to class and ordr to order
 class_order_names <- function(x){
   
@@ -444,5 +444,25 @@ class_order_names <- function(x){
   names(x)   <- gsub("ordr","order",names(x))
   
   return(x)
+  
+}
+
+# Summarizing function
+select_by_criteria_OLD <- function(x,criteria){
+  
+  if(!is.null(criteria)) {
+    r <- which(eval(criteria, x, parent.frame()))
+    if( length(r) != 0 ) {
+      subsetDat <- tbl_df(x[r,,drop=F]) #tbl_df() to make object "work" with dplyr functions
+    } 
+    if( length(r) == 0 ) {
+      stop( "No matches found. Either:
+            1. the name of variable(s) you specified is/are incorrect or 
+            2. the values you are looking for are not contained in the variable(s) you specified")
+    }
+    } else { 
+      subsetDat <- tbl_df(x) 
+    }
+  return(subsetDat)
   
 }
