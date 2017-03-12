@@ -103,20 +103,17 @@ main_table = function(){
   # Case insensitive matching ("lower" everything)
   names(main_t) <- tolower( names(main_t) )
   
-  # convert columsn "ordr" to "order" and "clss" to "class"
-  main_t        <- class_order_names(main_t)
+  # convert columns "ordr" to "order" and "clss" to "class"
+  main_t        <- colname_change("clss", "class", main_t)
+  main_t        <- colname_change("ordr", "order", main_t)
   
   return(main_t)
 }
 
 # changes clss to class and ordr to order
-class_order_names <- function(x){
-  
-  names(x)   <- gsub("clss","class",names(x))
-  names(x)   <- gsub("ordr","order",names(x))
-  
+colname_change = function(from, to, x){
+  names(x) <- gsub(from,to,names(x))
   return(x)
-  
 }
 
 
@@ -437,5 +434,16 @@ table_select <- function(x, full_tbl = FALSE, possible_args){
   
   if(full_tbl == FALSE) return(x[,possible_args])
   if(full_tbl == TRUE)  return(x)
+  
+}
+
+
+# changes clss to class and ordr to order
+class_order_names <- function(x){
+  
+  names(x)   <- gsub("clss","class",names(x))
+  names(x)   <- gsub("ordr","order",names(x))
+  
+  return(x)
   
 }
