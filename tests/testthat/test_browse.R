@@ -88,26 +88,6 @@ test_that("elastic_tab", {
 })
 
 
-context("browse(): Keyword binary operator")
-
-# Select By Criteria function
-test_that("Keyword", {
-  
-  # Data
-  x <- factor_to_character(main_popler)
-  
-  # Tests 
-  expect_equal( x$title %=% c("ParAsiTe", "Npp", "hErb"),
-                grepl(c("ParAsiTe|Npp|herb"), x$title, ignore.case = T))
-  expect_equal( x$title %=% toupper(c("ParAsiTe", "Npp", "hErb")),
-                grepl( toupper(c("ParAsiTe|Npp|herb")), x$title, ignore.case = T))
-  expect_equal( x$authors %=% c("collins", "Lightfoot"),
-                grepl( c("COLLINS|LIGHTfoot"), x$authors, ignore.case = T))
-  
-  rm(x)
-  
-})
-
 # error functions ---------------------------------------------------------------------
 context("browse(): error functions")
 

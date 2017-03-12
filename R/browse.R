@@ -30,8 +30,8 @@
 #' # Select only the data you need
 #' study_21 = browse( proj_metadata_key == 21)
 #' 
-#' # More straighforward using keyword operator, %=%
-#' parasite_npp = browse( title %=% "parasit", trim = FALSE)
+#' # Select studies that contain word "parasite"
+#' parasite_studies = browse( keyword = "parasite")
 
 
 # The browse popler function
