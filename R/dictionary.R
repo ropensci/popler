@@ -17,22 +17,22 @@
 dictionary <- function(..., full_tbl = FALSE){
   
   # Load main data table and convert factors to characters
-  main_t        <- popler:::factor_to_character(popler:::main_popler)
+  main_t        <- factor_to_character(main_popler)
   
   # Case insensitive matching ("lower" everything)
   names(main_t) <- tolower( names(main_t) )
-  main_t        <- popler:::class_order_names(main_t)
-  possible_arg  <- popler:::possibleargs
-  vars          <- popler:::vars_dict(...)
+  main_t        <- class_order_names(main_t)
+  possible_arg  <- possibleargs
+  vars          <- vars_dict(...)
   
   # if no column specified, return ALL column names
   if( is.null(vars) ){
     # select data based on 
-    tmp   <- popler:::table_select(main_t, full_tbl, possible_arg)
-    out   <- popler:::dictionary_explain(tmp)
+    tmp   <- table_select(main_t, full_tbl, possible_arg)
+    out   <- dictionary_explain(tmp)
   # if colums specified.
   } else {
-    out   <- popler:::dict_list(main_t, vars)
+    out   <- dict_list(main_t, vars)
   }
   
   return(out)
