@@ -45,29 +45,29 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
   }
   
   # error message if column names are incorrect
-  err_full_tab( vars, names(main_table()), possible_args() )
+  err_full_tab( vars, c(names(main_table()),"taxonomy"), possible_args() )
+  
+  # update user query to account for actual database column names
+  sbst_popler   <- call_update(substitute(...))
   
   # Select by subset 
-  sbst_popler   <- call_update(substitute(...))
   key_subset    <- key_arg(main_table(), keyword, sbst_popler) # if keyword argument/%=% != NULL 
   subset_data   <- select_by_criteria(key_subset$tab, sbst_popler)
+  elastic_data <- elastic_tab(subset_data, full_tbl)
   
-  # select data based on whether or not the full table should be returned
-  subset_data <- if(full_tbl){subset_data} else {subset_data[,possible_args()]}
-  
-  # If no column specified, return all columns
   if( is.null(vars) ){
-    out_cols <- subset_data
-  } else{
-    # include proj_metadata_key if in vars
-    vars      <- vars_check(vars)
-    # If not, select said columns
-    out_cols  <- subset_data[,vars]
+    
+    # select columns based on whether or not the full table should be returned
+    out_cols <- if(full_tbl){elastic_data} else {elastic_data[,possible_args()]}
+  
+    } else {
+      
+    # select cols based on vars, including 'proj_metadata_key' if not in vars
+    out_cols <- elastic_data[,vars_check(vars)]
   }
   
-  out_form <- elastic_tab(out_cols, full_tbl)
-  out_form <- trim_display(out_form, trim)
-  
+  # trim output
+  out_form <- trim_display(out_cols, trim)
   
   # write output
   if(view == TRUE) View(out_form)
@@ -221,7 +221,8 @@ possible_args = function(){
            "structured_type_1","structured_type_2","structured_type_3","structured_type_4",
            "treatment_type_1","treatment_type_2","treatment_type_3",
            "lat_lter","lng_lter",
-           "species","kingdom","phylum","class","order","family","genus"))
+           "taxonomy"))
+           #"species","kingdom","phylum","class","order","family","genus"))
 }
 
 
@@ -245,7 +246,6 @@ err_full_tab <- function(select_columns,columns_full_tab,possibleargs){
   }
   
 }
-
 
 # expand table (to nest/unnest taxonomic info) 
 elastic_tab <- function(x, full_tbl){
