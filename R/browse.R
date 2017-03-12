@@ -110,12 +110,11 @@ main_table = function(){
   return(main_t)
 }
 
-# changes clss to class and ordr to order
+# changes a column name from one name to another
 colname_change = function(from, to, x){
   names(x) <- gsub(from,to,names(x))
   return(x)
 }
-
 
 # implements the 'keyword' argument ANd operator in browse() 
 key_arg <- function(x,keyword,criteria){
