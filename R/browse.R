@@ -217,7 +217,7 @@ select_by_criteria <- function(x,criteria){
 possible_args = function(){ 
   return(c("title","proj_metadata_key","lterid",
            "datatype","studytype",
-           "duration_years", "community",
+           "duration_years", "community", "studystartyr", "studyendyr",
            "structured_type_1","structured_type_2","structured_type_3","structured_type_4",
            "treatment_type_1","treatment_type_2","treatment_type_3",
            "lat_lter","lng_lter",
