@@ -37,23 +37,23 @@
 # The browse popler function
 browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE, keyword = NULL){
   
-  # LOAD two object data types
-  # Data table; convert factors to characters
-  main_t        <- factor_to_character(main_popler)
+  # stop if user supplies both criteria and a keyword
+  if( !is.null(substitute(...)) & !is.null(keyword)){
+    stop("
+         browse() cannot simultaneously subset based on both a logical statement and the 'keyword' argument.
+         Please use only one of the two methods, or refine your search using get_data().")
+  }
   
-  # Case insensitive matching ("lower" everything)
-  names(main_t) <- tolower( names(main_t) )
-  # convert columsn "ordr" to "order" and "clss" to "class"
-  main_t        <- class_order_names(main_t)
+  # error message if column names are incorrect
+  err_full_tab( vars, names(main_table()), possible_args() )
   
   # Select by subset 
   sbst_popler   <- call_update(substitute(...))
-  key_subset    <- key_arg(main_t, keyword, sbst_popler) # if keyword argument/%=% != NULL 
+  key_subset    <- key_arg(main_table(), keyword, sbst_popler) # if keyword argument/%=% != NULL 
   subset_data   <- select_by_criteria(key_subset$tab, sbst_popler)
   
   # select data based on 
-  possible_arg  <- possibleargs
-  subset_data   <- table_select(subset_data, full_tbl, possible_arg)
+  subset_data   <- table_select(subset_data, full_tbl, possible_args())
   
   # If no column specified, return all columns
   if( is.null(vars) ){
@@ -61,8 +61,6 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
   } else{
     # include proj_metadata_key if in vars
     vars      <- vars_check(vars)
-    # Error message if column names are incorrect
-    err_full_tab( vars, names(main_t), possible_arg )
     # If not, select said columns
     out_cols  <- subset_data[,vars]
   }
@@ -97,6 +95,20 @@ factor_to_character <- function(x, full_tbl = FALSE){
   
 }
 
+main_table = function(){
+
+  # Data table; convert factors to characters
+  main_t       <- factor_to_character(main_popler)
+
+  # Case insensitive matching ("lower" everything)
+  names(main_t) <- tolower( names(main_t) )
+  
+  # convert columsn "ordr" to "order" and "clss" to "class"
+  main_t        <- class_order_names(main_t)
+  
+  return(main_t)
+}
+
 # changes clss to class and ordr to order
 class_order_names <- function(x){
   
@@ -110,19 +122,6 @@ class_order_names <- function(x){
 
 # implements the 'keyword' argument ANd operator in browse() 
 key_arg <- function(x,keyword,criteria){
-  
-  # if both keyword and criteria are used ----------------------------------------------
-  if( !is.null(keyword) & !is.null(criteria) ){
-    stop("
-         
-         browse() cannot simultaneously subset based on both 
-         a logical statement and the 'keyword' argument
-         
-         Pick one of the two methods, or... 
-         refine your search using get_data()
-         
-         ")
-  }
   
   # if only keyword is used --------------------------------------------------
   if( !is.null(keyword) & is.null(criteria) ){
@@ -151,7 +150,6 @@ key_arg <- function(x,keyword,criteria){
     return(out)
     
   }
-  
   
   # if only criteria is used --------------------------------------------------
   if( is.null(keyword) & !is.null(criteria) ){
@@ -220,14 +218,15 @@ select_by_criteria <- function(x,criteria){
 
 
 # Store possible arguments
-possibleargs <- c("title","proj_metadata_key","lterid",
-                  "datatype","studytype","duration_years",
-                  "community",
-                  "structured_type_1","structured_type_2","structured_type_3",
-                  "treatment_type_1","treatment_type_2","treatment_type_3",
-                  "lat_lter","lng_lter",
-                  "species","kingdom","phylum","class","order","family","genus"
-)
+possible_args = function(){ 
+  return(c("title","proj_metadata_key","lterid",
+           "datatype","studytype",
+           "duration_years", "community",
+           "structured_type_1","structured_type_2","structured_type_3","structured_type_4",
+           "treatment_type_1","treatment_type_2","treatment_type_3",
+           "lat_lter","lng_lter",
+           "species","kingdom","phylum","class","order","family","genus"))
+}
 
 
 # returns a full table or not
@@ -368,6 +367,9 @@ multiple_columns=function(x) {
 call_update = function(query){
   
   # query is some user's input (i.e. a query) to the browse() function
+
+  # if the query is null, don't do anything; just return the query
+  if(is.null(query)){ return(query) }
   
   # define some regex strings to:
   f_logic <- "[|]+[!]|[&]+[!]|[&|]+"  # ...find logical operators
