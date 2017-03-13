@@ -28,7 +28,7 @@
 #' three_columns = browse(vars = c("title","proj_metadata_key","genus","species"))
 #' 
 #' # Select only the data you need
-#' study_21 = browse( proj_metadata_key == 21)
+#' study_21 = browse( proj_metadata_key == 25)
 #' 
 #' # Select studies that contain word "parasite"
 #' parasite_studies = browse( keyword = "parasite")
@@ -44,30 +44,47 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
          Please use only one of the two methods, or refine your search using get_data().")
   }
   
-  # error message if column names are incorrect
-  err_full_tab( vars, c(names(main_table()),"taxonomy"), possible_args() )
+  # error message if variable names are incorrect
+  vars_spell( vars, c(names(main_table()),"taxonomy"), possible_vars() )
   
-  # update user query to account for actual database column names
-  sbst_popler   <- call_update(substitute(...))
+  # update user query to account for actual database variable names
+  logic_expr   <- call_update(substitute(...))
+
   
-  # Select by subset 
-  key_subset    <- key_arg(main_table(), keyword, sbst_popler) # if keyword argument/%=% != NULL 
-  subset_data   <- select_by_criteria(key_subset$tab, sbst_popler)
-  elastic_data <- elastic_tab(subset_data, full_tbl)
-  
-  if( is.null(vars) ){
+  # subset rows: if keyword is not NULL ---------------------------
+  if( !is.null(keyword) ){ 
     
-    # select columns based on whether or not the full table should be returned
-    out_cols <- if(full_tbl){elastic_data} else {elastic_data[,possible_args()]}
+    keyword_data   <- keyword_subset(main_table(), keyword)
+    subset_data    <- keyword_data$tab
+    keyword_expr   <- keyword_data$s_arg
   
-    } else {
-      
-    # select cols based on vars, including 'proj_metadata_key' if not in vars
-    out_cols <- elastic_data[,vars_check(vars)]
+  # subset rows: if logic_expr is not NULL
+  } else {  
+    
+    subset_data   <- select_by_criteria(main_table(), logic_expr)
+    keyword_expr  <- NULL 
+    
   }
   
+  
+  # select variables (columns) -------------------------------------
+  if( is.null(vars) ){ # if variables not declared explicitly 
+    
+    # select columns based on whether or not the full table should be returned
+    out_vars <- if(full_tbl==T){subset_data} else {subset_data[,possible_vars()]}
+  
+  } else { # if variables are declared explicitly
+      
+    # select cols based on vars, including 'proj_metadata_key' if not in vars
+    out_vars <- subset_data[,vars_check(vars)]
+  }
+  
+  
+  # collapse taxonomic information for each project into a list 
+  nested_data  <- nest_taxa(out_vars, full_tbl)
+  
   # trim output
-  out_form <- trim_display(out_cols, trim)
+  out_form <- trim_display(nested_data, trim)
   
   # write output
   if(view == TRUE) View(out_form)
@@ -75,8 +92,8 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
   # attribute class "popler"
   out            <- structure(out_form, 
                               class = c("popler", class(out_form) ),
-                              search_argument = c(sbst_popler,key_subset$s_arg)[[1]]
-  )
+                              search_argument = c(logic_expr,keyword_expr)[[1]]
+                              )
   
   return(out)
   
@@ -117,79 +134,33 @@ colname_change = function(from, to, x){
 }
 
 # implements the 'keyword' argument ANd operator in browse() 
-key_arg <- function(x,keyword,criteria){
-  
-  # if only keyword is used --------------------------------------------------
-  if( !is.null(keyword) & is.null(criteria) ){
-    
-    #function: index of keywords
-    i_keyw <- function(x,keyword) {
-      ind <- which( grepl(keyword,x,ignore.case = T) )
-      return(ind)
-    }
-    
-    # row numbers selected
-    ind_list  <- lapply(x, i_keyw, keyword)
-    proj_i    <- unique( unlist(ind_list) )
-    
-    # projects selected
-    if(length(proj_i) > 0){
-      proj_n      <- unique( x$proj_metadata_key[proj_i] )
-      statements  <- paste0("proj_metadata_key == ", proj_n)
-      src_arg     <- parse(text=paste0(statements, collapse = " | "))[[1]]
-    } else { 
-      src_arg     <- NULL
-    }
-    
-    # return values
-    out <- list(tab=x[proj_i,],s_arg=src_arg) 
-    return(out)
-    
+keyword_subset <- function(x, keyword){
+
+  #function: index of keywords
+  i_keyw <- function(x,keyword) {
+    ind <- which( grepl(keyword,x,ignore.case = T) )
+    return(ind)
   }
   
-  # if only criteria is used --------------------------------------------------
-  if( is.null(keyword) & !is.null(criteria) ){
-    
-    # if is %=% is used
-    if( any(grepl("%=%",deparse(criteria))) ) {
-      
-      # you cannot use %=% and other operators simultaneously
-      if( any(grepl("==|!=|>|<|<=|>=",deparse(criteria))) ){
-        
-        stop("
-             
-             You currently cannot use `%=%` and R's standard operators (<,>,<=,>=,==,!=)
-             simultaneously. We are currently working to improve this - sorry about that.
-             
-             ")
-        
-      } else{
-        
-        # convert 
-        proj_i     <- which(eval(criteria, x, parent.frame()))
-        
-        # get project IDs
-        if( length(proj_i) != 0 ) {
-          proj_n <- unique( x[proj_i,,drop=F]$proj_metadata_key )
-          statements  <- paste0("proj_metadata_key == ", proj_n)
-          src_arg     <- parse(text=paste0(statements, collapse = " | "))[[1]]
-        } else { src_arg <- NULL }
-        
-        # return values
-        sbst_popler <<- src_arg # change the subset statement in parent environment
-        return(list(tab=x))
-      }
-      
-      # if neither keyword, nor %=% are used, return data frame as is
-    } else { 
-      return(list(tab=x))
-    }
-    
+  # row numbers selected
+  ind_list  <- lapply(x, i_keyw, keyword)
+  proj_i    <- unique( unlist(ind_list) )
+  
+  # projects selected
+  if(length(proj_i) > 0){
+    proj_n      <- unique( x$proj_metadata_key[proj_i] )
+    statements  <- paste0("proj_metadata_key == ", proj_n)
+    src_arg     <- parse(text=paste0(statements, collapse = " | "))[[1]]
+  } else { 
+    src_arg     <- NULL
   }
   
-  if( is.null(keyword) & is.null(criteria) ){ return(list(tab=x)) }
+  # return values
+  out <- list(tab=x[proj_i,],s_arg=src_arg) 
+  return(out)
   
 }
+
 
 # function to subset dataframe by criteria and do error checking
 select_by_criteria <- function(x,criteria){
@@ -214,16 +185,16 @@ select_by_criteria <- function(x,criteria){
 }
 
 
-# Store possible arguments
-possible_args = function(){ 
+# Store possible variables
+possible_vars = function(){ 
   return(c("title","proj_metadata_key","lterid",
            "datatype","studytype",
            "duration_years", "community", "studystartyr", "studyendyr",
            "structured_type_1","structured_type_2","structured_type_3","structured_type_4",
            "treatment_type_1","treatment_type_2","treatment_type_3",
            "lat_lter","lng_lter",
-           "taxonomy"))
-           #"species","kingdom","phylum","class","order","family","genus"))
+           "species","kingdom","phylum","class","order","family","genus"))
+           #"taxonomy")
 }
 
 
@@ -236,7 +207,7 @@ vars_check <- function(x){
 }
 
 # Error for misspelled columns in full table
-err_full_tab <- function(select_columns,columns_full_tab,possibleargs){
+vars_spell <- function(select_columns,columns_full_tab,possibleargs){
   
   #Check for spelling mistakes
   if( !all( is.element(select_columns,columns_full_tab) ) ) {
@@ -249,7 +220,7 @@ err_full_tab <- function(select_columns,columns_full_tab,possibleargs){
 }
 
 # expand table (to nest/unnest taxonomic info) 
-elastic_tab <- function(x, full_tbl){
+nest_taxa <- function(x, full_tbl){
   
   # select taxonomic information (based on full_ or standard_table)
   if( full_tbl == FALSE){
@@ -262,12 +233,12 @@ elastic_tab <- function(x, full_tbl){
                'common_name','authority')
   }
   
-  # nest(shrink)/Unnest(expand) data set
+  # nest data set
   out  <- x %>% 
     group_by_(.dots = setdiff(names(x),taxas) ) %>%
-    nest(.key = taxonomy)
+    nest(.key = taxas)
   # Names of taxonomic lists
-  names(out$taxonomy)  <- paste0("taxa_project_#_",out$proj_metadata_key)
+  names(out$taxas)  <- paste0("taxa_project_#_",out$proj_metadata_key)
 
   return(out)
   
@@ -298,7 +269,7 @@ tallies=function(browsed_data,tally_columns,group_factors,trim){
   for(i in 1:length(tally_columns)){
     
     #does 'tally_columns' refers to multiple columns
-    multi_tally=popler:::multiple_columns(tally_columns[i])
+    multi_tally=multiple_columns(tally_columns[i])
     
     #columns referring to both group_factors and tallies
     group_tally_cols=c(group_factors,multi_tally)
@@ -327,7 +298,7 @@ tallies=function(browsed_data,tally_columns,group_factors,trim){
     }
     
   }
-  out=popler:::trim_display(Reduce(function(...) merge(...),df_list),trim)
+  out=trim_display(Reduce(function(...) merge(...),df_list),trim)
   return(out)
   
 }
@@ -430,9 +401,9 @@ call_update = function(query){
 
 ##### UNUSED FUNCTIONS #########################################################
 # returns a full table or not
-table_select <- function(x, full_tbl = FALSE, possible_args){
+table_select <- function(x, full_tbl = FALSE, possible_vars){
   
-  if(full_tbl == FALSE) return(x[,possible_args])
+  if(full_tbl == FALSE) return(x[,possible_vars])
   if(full_tbl == TRUE)  return(x)
   
 }

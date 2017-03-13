@@ -21,15 +21,15 @@ context("browse(): Informational messages")
 test_that("Informational messages", {
   
   # Initial group_factors
-  possibleargs <- tolower(c("lterid","proj_metadata_key","title","metalink","studytype","community","duration_years",
+  possiblevars <- tolower(c("lterid","proj_metadata_key","title","metalink","studytype","community","duration_years",
                             "study_site_key","datatype", "structured",
                             "species","taxonomy","kingdom","phylum","clss","ordr","family","genus"))
   
   # errors table
-  expect_error(err_full_tab("pi",possibleargs))
-  expect_error(err_full_tab("proj_metadata_fkey",possibleargs))
-  expect_error(err_full_tab("rep_level_3",possibleargs))
-  expect_error(err_full_tab("treatment",possibleargs))
+  expect_error(vars_spell("pi",possiblevars))
+  expect_error(vars_spell("proj_metadata_fkey",possiblevars))
+  expect_error(vars_spell("rep_level_3",possiblevars))
+  expect_error(vars_spell("treatment",possiblevars))
   
 })
 
@@ -56,10 +56,10 @@ test_that("Select by criteria", {
 })
 
 
-context("browse(): elastic_tab")
+context("browse(): nest_taxa")
 
 # Select By Criteria function
-test_that("elastic_tab", {
+test_that("nest_taxa", {
   
   # Data
   x <- factor_to_character(main_popler)
@@ -70,14 +70,14 @@ test_that("elastic_tab", {
   
   # limit yourself to one/two studies
   # 1 full tab = TRUE
-  shrinked_tab <- elastic_tab(main_t, full_tbl = T)
+  shrinked_tab <- nest_taxa(main_t, full_tbl = T)
   # test 1a: taxonomy variables
   expect_equal(ncol(shrinked_tab$taxonomy[[1]]), 18)
   # test 1b: number of projects
   expect_equal(nrow(shrinked_tab), length(unique(main_t$proj_metadata_key)))
   
   # 2 full tab = FALSE
-  shrinked_tab <- elastic_tab(main_t, full_tbl = TRUE)
+  shrinked_tab <- nest_taxa(main_t, full_tbl = TRUE)
   # test 2a: taxonomy variables
   expect_equal(ncol(shrinked_tab$taxonomy[[1]]), 18)
   # test 2b: number of projects
@@ -97,13 +97,13 @@ test_that("Errors ", {
   main_t        <- factor_to_character(main_popler)
   names(main_t) <- tolower( names(main_t) )
   main_t        <- class_order_names(main_t)
-  possible_arg  <- possibleargs
+  possible_arg  <- possiblevars
   
-  # err_full_tab errors
-  expect_error(err_full_tab( "lterids", names(main_t), possible_arg ))
-  expect_error(err_full_tab( "gensus", names(main_t), possible_arg ))
-  expect_error(err_full_tab( "tilte", names(main_t), possible_arg ))
-  expect_error(err_full_tab( "specis", names(main_t), possible_arg ))
+  # vars_spell errors
+  expect_error(vars_spell( "lterids", names(main_t), possible_arg ))
+  expect_error(vars_spell( "gensus", names(main_t), possible_arg ))
+  expect_error(vars_spell( "tilte", names(main_t), possible_arg ))
+  expect_error(vars_spell( "specis", names(main_t), possible_arg ))
   
   # select criteria
   expect_error( select_by_criteria(main_t, substitute( lterid == "SEVa" )) )
