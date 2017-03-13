@@ -48,7 +48,6 @@ three_columns = browse(vars = c("title","proj_metadata_key","genus","species"))
 # Select only the data you need
 study_21 = browse( proj_metadata_key == 21)
 
-# More straighforward using keyword operator, \%=\%
-parasite_npp = browse( title \%=\% "parasit", trim = FALSE)
+# Select studies that contain word "parasite"
+parasite_studies = browse( keyword = "parasite")
 }
-
