@@ -2,8 +2,8 @@
 #'
 #' This function browses LTER studies contained in the popler database. The user can group, tally, and subset the data sets based on a number of the factors (or columns) of the database.
 #' @param ... A list of one or two objects: an object produced by browse, a logical statement, or both.
-#' @param add_vars A string to specify which columns the user wants to add in queries to the database 
-#' @param subtract_vars A string to specify which, among the default columns, the user wishes to discard in queries to the database 
+#' @param add_vars A string to specify which variables the user wants to add to the default variables used in a query. 
+#' @param subtract_vars A string to specify which, among the default variables, the user wishes to discard in queries to the database 
 #' @return A data frame of the selected data.
 #' @export
 #' @examples
@@ -26,15 +26,20 @@
 get_data <- function(..., #browsed_data = NULL, subset = NULL,
                      add_vars = NULL, subtract_vars = NULL){
   
-  # define possible columns ---------------------------------------------------------------
+  # open connection to database
+  conn <- src_postgres(dbname="popler_3", password="bigdata",
+                       host="ec2-54-214-212-101.us-west-2.compute.amazonaws.com", 
+                       port=5432, user="other_user")
   
-  # possible columns 
-  potential_vars  <- query_cols()
-  all_columns     <- potential_vars$all_cols
-  default_columns <- potential_vars$default_cols
+  # define possible variables ---------------------------------------------------------------
+  
+  # possible variables 
+  potential_vars  <- query_vars()
+  all_columns     <- potential_vars$all_vars
+  default_columns <- potential_vars$default_vars
   
   
-  # selected columns ----------------------------------------------------------------------
+  # selected variables --------------------------------------------------------------------
   # "inherit" variables from search arguments 
   inherit_vars    <- inherit_variables(..., all_columns = all_columns)
   
@@ -47,9 +52,9 @@ get_data <- function(..., #browsed_data = NULL, subset = NULL,
   search_arg      <- subset_arguments(...)
   
   # query ---------------------------------------------------------------------------------
-  conn <- src_postgres(dbname="popler_3", password="bigdata",
-                       host="ec2-54-214-212-101.us-west-2.compute.amazonaws.com", 
-                       port=5432, user="other_user")
+  #conn <- src_postgres(dbname="popler_3", password="bigdata",
+  #                     host="ec2-54-214-212-101.us-west-2.compute.amazonaws.com", 
+  #                     port=5432, user="other_user")
   
   output_data <- query_popler(conn, select_vars, search_arg)
   
@@ -75,29 +80,28 @@ get_data <- function(..., #browsed_data = NULL, subset = NULL,
 }
 
 
-# query columns 
-query_cols <- function(){
+# obtain all potential columns 
+query_vars <- function(){
   
-  conn <- src_postgres(dbname="popler_3", password="bigdata",
-                       host="ec2-54-214-212-101.us-west-2.compute.amazonaws.com", 
-                       port=5432, user="other_user")
-  
-  #list columns
-  proj_cols     <- as.data.frame(tbl(conn, sql( "SELECT column_name FROM information_schema.columns WHERE
+  #list variables from the 6 tables relevant to standard popler queries  
+  proj_vars     <- as.data.frame(tbl(conn, sql( "SELECT column_name FROM information_schema.columns WHERE
                                                 table_name = 'project_table'")))[,1]
-  lter_cols     <- as.data.frame(tbl(conn, sql( "SELECT column_name FROM information_schema.columns WHERE
+  lter_vars     <- as.data.frame(tbl(conn, sql( "SELECT column_name FROM information_schema.columns WHERE
                                                 table_name = 'lter_table'")))[,1]
-  site_cols     <- as.data.frame(tbl(conn, sql( "SELECT column_name FROM information_schema.columns WHERE
+  site_vars     <- as.data.frame(tbl(conn, sql( "SELECT column_name FROM information_schema.columns WHERE
                                                 table_name = 'study_site_table'")))[,1]
-  s_i_p_cols    <- as.data.frame(tbl(conn, sql( "SELECT column_name FROM information_schema.columns WHERE
+  s_i_p_vars    <- as.data.frame(tbl(conn, sql( "SELECT column_name FROM information_schema.columns WHERE
                                                 table_name = 'site_in_project_table'")))[,1]
-  taxa_cols     <- as.data.frame(tbl(conn, sql( "SELECT column_name FROM information_schema.columns WHERE
+  taxa_vars     <- as.data.frame(tbl(conn, sql( "SELECT column_name FROM information_schema.columns WHERE
                                                 table_name = 'taxa_table'")))[,1]
-  abund_cols    <- as.data.frame(tbl(conn, sql( "SELECT column_name FROM information_schema.columns WHERE
-                                                table_name = 'count_table'")))[,1]
+  abund_vars    <- as.data.frame(tbl(conn, sql( "SELECT column_name FROM information_schema.columns WHERE
+   
+                                                                                             table_name = 'count_table'")))[,1]
+  # a vector containing all variables
+  all_vars      <- c(proj_vars,lter_vars,site_vars, s_i_p_vars, taxa_vars, abund_vars)
   
-  all_cols      <- c(proj_cols,lter_cols,site_cols, s_i_p_cols, taxa_cols, abund_cols)
-  default_cols  <- c("year","day","month","genus","species","datatype",         
+  # a vector of "default" variables
+  default_vars  <- c("year","day","month","genus","species","datatype",         
                      "spatial_replication_level_1","spatial_replication_level_2",
                      "spatial_replication_level_3","spatial_replication_level_4",
                      "authors","authors_contact","proj_metadata_key",
@@ -106,55 +110,8 @@ query_cols <- function(){
                      "covariates" 
   )
   
-  rm(conn)
-  return( list(all_cols = all_cols, default_cols = default_cols) )
+  return( list(all_vars = all_vars, default_vars = default_vars) )
   
-}
-
-
-# evaluate browse() IF and ONLY IF browse() is called in the ... argument of get_data()
-eval_browse <- function(x = raw_calls){
-  
-  for(i in 1:length(x) ){
-    if( grepl("browse\\(", deparse(x[[i]]$expr)) ){
-      do_call       <- parse(text = "brws_obj = a_call")[[1]]
-      # substitute 'a_call" with the expression containing 'browse('
-      do_call[[3]]  <- x[[i]]$expr
-      # evaluate the call to create brws_obj
-      eval(do_call, envir = x[[i]]$env)
-      # change the call!
-      x[[i]]$expr        <- quote(brws_obj)
-      rm(do_call)
-    }
-  }
-  
-  return(x)
-  
-}
-
-
-# update get data call
-updt_gt_dt_call <- function(x){
-  
-  for(i in 1:length(x)){
-    x[[i]]$expr <- update_call( x[[i]]$expr ) 
-  }
-  return(x)
-  
-}
-
-# Identify which "search_arguments" belong to "all_columns"
-inherit_search <- function(all_cols, inherit_logical){
-  
-  inherit_elem <- as.character(inherit_logical)
-  
-  inds = NULL
-  for(i in 1:length(all_cols)){
-    if( any( grepl(all_cols[i], inherit_elem) ) ){
-      inds = c(inds,i)  
-    }
-  }
-  return( unique(all_cols[inds]) )
 }
 
 
@@ -163,6 +120,7 @@ inherit_variables <- function(..., all_columns){
   
   # calls
   raw_calls <- lazyeval::lazy_dots(...)
+  # IF browse() appears in ONE of the calls, evaluate it.
   e_b_calls <- eval_browse(raw_calls) 
   call_list <- updt_gt_dt_call(e_b_calls)
   
@@ -243,6 +201,57 @@ inherit_variables <- function(..., all_columns){
   return( unique( c(inherit_browse, inherit_subset) ) )
   
 }  
+
+
+
+
+# evaluate browse() IF and ONLY IF browse() is called in the ... argument of get_data()
+eval_browse <- function(x = raw_calls){
+  
+  for(i in 1:length(x) ){
+    if( grepl("browse\\(", deparse(x[[i]]$expr)) ){
+      do_call       <- parse(text = "brws_obj = a_call")[[1]]
+      # substitute 'a_call" with the expression containing 'browse('
+      do_call[[3]]  <- x[[i]]$expr
+      # evaluate the call to create brws_obj
+      eval(do_call, envir = x[[i]]$env)
+      # change the call!
+      x[[i]]$expr        <- quote(brws_obj)
+      rm(do_call)
+    }
+  }
+  
+  return(x)
+  
+}
+
+
+# apply call_updated() to each one of the calls in the '...' argument of get_data()
+updt_gt_dt_call <- function(x){
+  
+  for(i in 1:length(x)){
+    x[[i]]$expr <- call_update( x[[i]]$expr ) 
+  }
+  return(x)
+  
+}
+
+# Identify which "search_arguments" belong to "all_columns"
+inherit_search <- function(all_cols, inherit_logical){
+  
+  inherit_elem <- as.character(inherit_logical)
+  
+  inds = NULL
+  for(i in 1:length(all_cols)){
+    if( any( grepl(all_cols[i], inherit_elem) ) ){
+      inds = c(inds,i)  
+    }
+  }
+  return( unique(all_cols[inds]) )
+}
+
+
+
 
 
 # subset_arguments function
