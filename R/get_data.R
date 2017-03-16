@@ -9,17 +9,17 @@
 #' @examples
 #' 
 #' # browse a study, then get the data associated with it
-#' grasshop = browse(proj_metadata_key == 25)
-#' gh_data = get_data(grasshop)
+#' parasite = browse(proj_metadata_key == 25)
+#' gh_data = get_data(parasite)
 #' 
 #' # further subset this data set, based on year
-#' gh_data_96_99 = get_data(grasshop, year > 1995 & year < 2000)
+#' gh_data_96_99 = get_data(parasite, year > 1995 & year < 2000)
 #' 
 #' # insect data sets from the SEV lter site
 #' insect_sev = browse(class == "Insecta" & lterid == "SEV")
-#' insect_21_yrs96_99 = get_data(insect_sev, year > 1995 & year < 2000 & proj_metadata_key == 21)
+#' insect_25_yrs96_99 = get_data(insect_sev, year > 1995 & year < 2000 & proj_metadata_key == 25)
 #' 
-#' insect_21_25 = get_data((proj_metadata_key == 21 | proj_metadata_key == 25) & year < 1995 )
+#' insect_21_25 = get_data((proj_metadata_key == 43 | proj_metadata_key == 25) & year < 1995 )
 
 
 # Function that connects and gathers the information from the database
@@ -57,10 +57,7 @@ get_data <- function(..., #browsed_data = NULL, subset = NULL,
   search_arg      <- subset_arguments(...)
   
   # query ---------------------------------------------------------------------------------
-  #conn <- src_postgres(dbname="popler_3", password="bigdata",
-  #                     host="ec2-54-214-212-101.us-west-2.compute.amazonaws.com", 
-  #                     port=5432, user="other_user")
-  
+
   # query popler online
   output_data <- query_popler(conn, select_vars, search_arg)
   
@@ -85,7 +82,7 @@ get_data <- function(..., #browsed_data = NULL, subset = NULL,
   
 }
 
-
+#' @noRd
 # obtain all potential columns 
 query_vars <- function(){
   
@@ -129,7 +126,9 @@ inherit_variables <- function(..., all_columns){
   # calls
   raw_calls <- lazyeval::lazy_dots(...)
   # IF browse() appears in ONE of the calls, evaluate it.
-  e_b_calls <- eval_browse(raw_calls) 
+  # 1. store call in object 'brws_obj'
+  # 2. change call to 'brws_obj'
+  e_b_calls <- eval_browse(raw_calls)
   # evaluate each elements of the e_b_call (up to 2 elements)
   call_list <- updt_gt_dt_call(e_b_calls)
   

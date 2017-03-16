@@ -49,7 +49,7 @@ dictionary <- function(..., full_tbl = FALSE){
 }
 
 
-
+#' @noRd
 # data frame of variable explanations
 explanations = data.frame(variable = c('proj_metadata_key','lter_project_fkey','title','samplingunits','datatype',
                                        'structured_type_1','structured_type_1_units','structured_type_2','structured_type_2_units',
