@@ -9,7 +9,7 @@
 #' @examples
 #' 
 #' # browse a study, then get the data associated with it
-#' grasshop = browse(proj_metadata_key == 21)
+#' grasshop = browse(proj_metadata_key == 25)
 #' gh_data = get_data(grasshop)
 #' 
 #' # further subset this data set, based on year
@@ -35,20 +35,25 @@ get_data <- function(..., #browsed_data = NULL, subset = NULL,
   
   # possible variables 
   potential_vars  <- query_vars()
+  # all potential variables in a query
   all_columns     <- potential_vars$all_vars
+  # default variables 
   default_columns <- potential_vars$default_vars
   
   
   # selected variables --------------------------------------------------------------------
-  # "inherit" variables from search arguments 
+  
+  # extract the variables contained in the logical expressions contained in '...'
   inherit_vars    <- inherit_variables(..., all_columns = all_columns)
   
-  # variables (de)selected explicitly
+  
+  # variables that appear either as default, added manually, or inherited from a logical operation
   actual_vars     <- unique( c(default_columns, add_vars, inherit_vars) )
+  # 'actual_vars' minus variables subtracted manually via argument 'subtract_vars' 
   select_vars     <- paste( setdiff(actual_vars, subtract_vars), collapse = ", ")
   
   
-  # subset argument(s) --------------------------------------------------------------------
+  # translate R logical expressions in '...' into SQL --------------------------------------------------------------------
   search_arg      <- subset_arguments(...)
   
   # query ---------------------------------------------------------------------------------
@@ -56,6 +61,7 @@ get_data <- function(..., #browsed_data = NULL, subset = NULL,
   #                     host="ec2-54-214-212-101.us-west-2.compute.amazonaws.com", 
   #                     port=5432, user="other_user")
   
+  # query popler online
   output_data <- query_popler(conn, select_vars, search_arg)
   
   # Change "ordr" and "clss" to "order" and "class"
@@ -95,8 +101,8 @@ query_vars <- function(){
   taxa_vars     <- as.data.frame(tbl(conn, sql( "SELECT column_name FROM information_schema.columns WHERE
                                                 table_name = 'taxa_table'")))[,1]
   abund_vars    <- as.data.frame(tbl(conn, sql( "SELECT column_name FROM information_schema.columns WHERE
-   
-                                                                                             table_name = 'count_table'")))[,1]
+                                                table_name = 'count_table'")))[,1]
+  
   # a vector containing all variables
   all_vars      <- c(proj_vars,lter_vars,site_vars, s_i_p_vars, taxa_vars, abund_vars)
   
@@ -115,13 +121,16 @@ query_vars <- function(){
 }
 
 
-# inherit_variables
+# Extract the variabels which appear in the logical statements of the '...' argument.
+# Why? If you the variable that you are looking for is not a default variable, 
+# this makes sure that it will appear in the query to popler.  
 inherit_variables <- function(..., all_columns){
   
   # calls
   raw_calls <- lazyeval::lazy_dots(...)
   # IF browse() appears in ONE of the calls, evaluate it.
   e_b_calls <- eval_browse(raw_calls) 
+  # evaluate each elements of the e_b_call (up to 2 elements)
   call_list <- updt_gt_dt_call(e_b_calls)
   
   # sql translations
@@ -254,7 +263,7 @@ inherit_search <- function(all_cols, inherit_logical){
 
 
 
-# subset_arguments function
+# translate R logical expressions in '...' into SQL
 subset_arguments <- function(...){
   
   # calls
