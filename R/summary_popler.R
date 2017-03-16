@@ -24,11 +24,11 @@
 summary_popler <- function(group_vars = NULL, count_vars = "title", trim = TRUE){
   
   # read data
-  browse_data <- popler:::factor_to_character(popler:::main_popler)
-  browse_data <- popler:::class_order_names(browse_data)
+  browse_data <- factor_to_character(main_popler)
+  browse_data <- class_order_names(browse_data)
   
   # tally cases, if tally_by is not NULL
-  out <- popler:::tallies(browse_data, count_vars, group_vars, trim)
+  out <- tallies(browse_data, count_vars, group_vars, trim)
   
   return(out) # return output
 

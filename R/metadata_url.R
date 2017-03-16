@@ -15,7 +15,7 @@ metadata_url <- function( data_object ){
   # study id(s)
   ids       <- attributes( data_object )$unique_projects
   # main table
-  main_t    <- popler:::factor_to_character(popler:::main_popler)
+  main_t    <- factor_to_character(main_popler)
   main_t    <- select(main_t, proj_metadata_key, metalink)
   
   for(i in 1:length(ids)){
