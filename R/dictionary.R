@@ -177,7 +177,7 @@ verify_vars <- function(sel_col){
 dict_list <- function(x, select_columns){
   
   # first, verify user input matches with variables contained in popler
-  popler:::verify_vars(select_columns)
+  verify_vars(select_columns)
   
   # index "special" and "normal"
   i_spec          <- which(select_columns %in% c("structure","treatment","species") )
