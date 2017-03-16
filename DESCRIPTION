@@ -13,13 +13,13 @@ Depends:
     dplyr,
     tidyr,
     RPostgreSQL,
+    stringr
 License: MIT
 Encoding: UTF-8
 Suggests: 
     testthat,
     knitr,
     rmarkdown,
-    stringr
 LazyData: true
 RoxygenNote: 6.0.0
 VignetteBuilder: knitr
