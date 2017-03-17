@@ -7,7 +7,7 @@ context("get_data() utility functions")
 test_that("query_cols", {
   
   # possible columns 
-  potential_vars  <- popler:::query_cols()
+  potential_vars  <- query_cols()
   # tests
   expect_equal( length(potential_vars$all_cols), 110)
   expect_equal( length(potential_vars$default_cols), 20)
@@ -19,7 +19,7 @@ test_that("query_cols", {
 test_that("inherit_search", {
   
   # possible columns 
-  potential_vars  <- popler:::query_cols()
+  potential_vars  <- query_cols()
   
   # testing objects
   sev       <- as.character( attributes(browse(lterid == "SEV"))$search_argument )
@@ -33,11 +33,11 @@ test_that("inherit_search", {
   sev_cla   <- gsub("class", "clss", sev_cla)
   
   # tests
-  expect_equal(popler:::inherit_search(potential_vars$all_cols, sev), "lterid")
-  expect_equal(popler:::inherit_search(potential_vars$all_cols, author), "authors")
-  expect_equal(popler:::inherit_search(potential_vars$all_cols, fund), "currently_funded")
-  expect_equal(popler:::inherit_search(potential_vars$all_cols, sev_cla), c("lterid","clss") )
-  expect_equal(popler:::inherit_search(potential_vars$all_cols, sev_ord), c("lterid","ordr") )
+  expect_equal(inherit_search(potential_vars$all_cols, sev), "lterid")
+  expect_equal(inherit_search(potential_vars$all_cols, author), "authors")
+  expect_equal(inherit_search(potential_vars$all_cols, fund), "currently_funded")
+  expect_equal(inherit_search(potential_vars$all_cols, sev_cla), c("lterid","clss") )
+  expect_equal(inherit_search(potential_vars$all_cols, sev_ord), c("lterid","ordr") )
   
   rm( list = c("sev", "author", "fund", "sev_cla", "sev_ord") )
   
@@ -48,18 +48,18 @@ test_that("inherit_search", {
 test_that("inherit_variables", {
   
   # possible columns 
-  potential_vars  <- popler:::query_cols()
+  potential_vars  <- query_cols()
   
   # testing objects
   browse_input  <- browse(authors == "Scott Collins")
-  aut_lter      <- popler:::inherit_variables(browse_input,lterid == "SEV", 
+  aut_lter      <- inherit_variables(browse_input,lterid == "SEV", 
                                               all_columns = potential_vars$all_cols)
-  aut_clss      <- popler:::inherit_variables(browse_input,class == "Insecta", 
+  aut_clss      <- inherit_variables(browse_input,class == "Insecta", 
                                               all_columns = potential_vars$all_cols)
-  aut_ordr      <- popler:::inherit_variables(browse_input,order == "Carnivora", 
+  aut_ordr      <- inherit_variables(browse_input,order == "Carnivora", 
                                               all_columns = potential_vars$all_cols)
   browse_input  <- browse(currently_funded == "1")
-  fun_aut_lter  <- popler:::inherit_variables(browse_input,
+  fun_aut_lter  <- inherit_variables(browse_input,
                                               authors == "Scott Collins" & lterid == "SEV", 
                                               all_columns = potential_vars$all_cols)
   
@@ -81,16 +81,16 @@ test_that("inherit_variables", {
   current   <- browse(currently_funded == "1" | lterid == "SEV")   
   
   # only one argument
-  expect_equal(popler:::subset_arguments(aut),"authors = 'Scott Collins'")
-  expect_equal(popler:::subset_arguments(lterid == "SEV"),
+  expect_equal(subset_arguments(aut),"authors = 'Scott Collins'")
+  expect_equal(subset_arguments(lterid == "SEV"),
                "lterid = 'SEV'")
   # multiple arguments
-  expect_equal(popler:::subset_arguments(aut, lterid == "SEV"),
+  expect_equal(subset_arguments(aut, lterid == "SEV"),
                "authors = 'Scott Collins' AND lterid = 'SEV'")
   # multiple statements and multiple arguments
-  expect_equal(popler:::subset_arguments(current, class == "Insecta"),
+  expect_equal(subset_arguments(current, class == "Insecta"),
                "currently_funded = '1' OR lterid = 'SEV' AND clss = 'Insecta'")
-  expect_equal(popler:::subset_arguments(current, class == "Insecta" | order == "Carnivora"),
+  expect_equal(subset_arguments(current, class == "Insecta" | order == "Carnivora"),
                "currently_funded = '1' OR lterid = 'SEV' AND clss = 'Insecta' OR ordr = 'Carnivora'")
   
   rm(list=c("aut", "current"))
