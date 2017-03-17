@@ -86,3 +86,21 @@ call_update = function(query){
 string_eval_local = function(x){
   deparse(eval(parse(text=paste0("local(",x,")"))))
 }
+
+# function to (quietly) close database connections
+db_close = function(connection, quiet=T){
+  if(quiet){
+    # silent disconnect from db
+    invisible(RPostgreSQL::dbDisconnect(connection$con,quiet=TRUE))
+    
+    # silent garbage collect
+    invisible(suppressMessages(gc()))
+    
+  } else {
+    # silent disconnect from db
+    invisible(RPostgreSQL::dbDisconnect(connection$con,quiet=TRUE))
+    
+    # silent garbage collect
+    invisible(gc())
+  }
+}
