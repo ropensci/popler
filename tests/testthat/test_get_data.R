@@ -45,19 +45,6 @@ test_that("inherit_search", {
 
 
 
-
-# one comment 
-concatenate_queries(poa_d, poa_d)
-concatenate_queries(year == 2000, year == 2000)
-concatenate_queries(poa_d, poa_d, obj)
-concatenate_queries(poa_d, obj)
-
-# COMMENTS
-# concatenate_queries(poa_d, poa_d) should specifically say that you entered two browse objects.
-# concatenate_queries(poa_d, poa_d, obj) should say that you specified 3 entries (not refer to obj as source of error) 
-
-
-
 # all conditinos in which concatenate queries should work  
 test_that("concatenate_queries", {
 
@@ -80,6 +67,7 @@ test_that("concatenate_queries", {
   call_conc <- concatenate_queries(browse(genus == "Poa"), year == 2000) %>%
                 deparse()
   expect_true( grepl("&",call_conc))
+  
   
   #expected errors ------------------------------------------------------
   
