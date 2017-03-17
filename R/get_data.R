@@ -142,6 +142,13 @@ concatenate_queries = function(...){
   browse_calls <- 0
   new_calls    <- 0
   
+  if(length(Q) > 2){
+    stop("You cannot enter more than two arguments:.\n
+           1) an object returned by browse() and/or\n
+           2) a logical statement\n
+           Please refer to the '...' argument in ?get_data.")
+  }
+  
   # loop over all inputs
   for(i in 1:length(Q)){
     if(class(Q[[i]]$expr) == "name"){
@@ -183,10 +190,10 @@ concatenate_queries = function(...){
   
   # if either call counter is more than 1, call an error
   if(browse_calls > 1){
-    stop("Error: you cannot enter more than one browse() argument.\n  Please refer to the '...' argument in ?get_data.")
+    stop("You cannot enter more than one browse() argument.\n  Please refer to the '...' argument in ?get_data.")
   }
   if(new_calls > 1){
-    stop("Error: you cannot enter more than one logical argument.\n  Please refer to the '...' argument in ?get_data.")
+    stop("You cannot enter more than one logical argument.\n  Please refer to the '...' argument in ?get_data.")
   }
   
   # return a single logical call
