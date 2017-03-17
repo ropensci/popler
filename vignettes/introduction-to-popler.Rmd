@@ -65,13 +65,10 @@ poa_metadata   <- browse(genus == "Poa" & species == "fendleriana")
 poa_metadata
 ```
 
-#### The keyword binary operator, `%=%`
+#### The keyword argument
 
-The projects carried out within the LTER network tackle a striking variety of research topics. Therefore, searching projects based on keywords can provide decisive advantages. The keyword binary operator `%=%` facilitates subsetting the metadata table by matching one keyword at a time. In particular, `%=%` matches one character string to one of the character variables shown by `dictionary()`. It is especially useful to match keywords with the title of projects:
-
-```{r}
-parasites       <- browse(title %=% "parasit")
-parasite_npp    <- browse(title %=% "npp", trim = FALSE)
+```
+browse(keyword == "parasite")
 ```
 
 ## Download data
