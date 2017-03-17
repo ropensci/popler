@@ -1,7 +1,7 @@
 #' Browse the popler database
 #'
 #' This function browses LTER studies contained in the popler database. The user can group, tally, and subset the data sets based on a number of the factors (or columns) of the database.
-#' @param ... A list of one or two objects: an object produced by browse, a logical statement, or both.
+#' @param ... A list of one or two objects: an object produced by browse, a logical expression, or both.
 #' @param add_vars A string to specify which variables the user wants to add to the default variables used in a query. 
 #' @param subtract_vars A string to specify which, among the default variables, the user wishes to discard in queries to the database 
 #' @return A data frame of the selected data.
@@ -157,7 +157,7 @@ concatenate_queries = function(...){
       if(class(tmp)[1] != "popler"){
         stop(paste0("Error using the following argument:\n\n      ", 
                     Q[[i]]$expr,
-                    "\n\n  Only logical arguments or outputs from the 'browse()' function may be used"))
+                    "\n\n  Only logical expressions or outputs from the 'browse()' function may be used"))
       }
       
       # store search argument as output
@@ -190,7 +190,7 @@ concatenate_queries = function(...){
     stop("You cannot enter more than one browse() argument.\n  Please refer to the '...' argument in ?get_data.")
   }
   if(new_calls > 1){
-    stop("You cannot enter more than one logical argument.\n  Please refer to the '...' argument in ?get_data.")
+    stop("You cannot enter more than one logical expression.\n  Please refer to the '...' argument in ?get_data.")
   }
   
   # return a single logical call
@@ -221,7 +221,7 @@ inherit_search <- function(all_cols, inherit_logical){
 # query popler
 query_popler <- function(connection, select_vars, search_arg){
   
-  if(length(search_arg) == 0) stop( "No logical argument specified. Please specify what data you wish to download from popler" )
+  if(length(search_arg) == 0) stop( "No logical expression specified. Please specify what data you wish to download from popler" )
   
   # table specific variables
   vars                     <- list()
