@@ -54,7 +54,7 @@ call_update = function(query){
     if(LHS_RHS[i,1] == "treatment"){
       
       # update "treatment" string if necessary, then put query back together
-      query_list[i] <- paste(gsub("@", LHS_RHS[i,2], 
+      query_list[i] <- paste(gsub("@", string_eval_local(LHS_RHS[i,2]), 
                                   gsub("@@", comps[i], 
                                        gsub("@@@", op, r_trt))),
                              logic[i])
@@ -62,15 +62,15 @@ call_update = function(query){
     } else if(LHS_RHS[i,1] == "structure"){
       
       # update "structure" string if necessary, then put query back together
-      query_list[i] <- paste(gsub("@", LHS_RHS[i,2], 
-                                  gsub("@@", comps[i], 
+      query_list[i] <- paste(gsub("@", string_eval_local(LHS_RHS[i,2]),
+                                  gsub("@@", comps[i],
                                        gsub("@@@", op, r_str))),
                              logic[i])
       
     } else{
       
       # for any other LHS, just put the query back together
-      query_list[i] = paste(LHS_RHS[i,1], comps[i], LHS_RHS[i,2], logic[i])
+      query_list[i] = paste(LHS_RHS[i,1], comps[i], string_eval_local(LHS_RHS[i,2]), logic[i])
       
     }
   }
@@ -80,4 +80,9 @@ call_update = function(query){
                       paste0(unlist(query_list),    collapse="") %>%
                       paste0("substitute(", . ,")", collapse="")))
   )
+}
+
+# evaluate a string using the local environment, return the evaluation as string
+string_eval_local = function(x){
+  deparse(eval(parse(text=paste0("local(",x,")"))))
 }
