@@ -15,36 +15,6 @@ test_that("query_cols", {
 })
 
 
-# Does inherit_search() accurately identify the variables mentioned in a "browse" logical statement?   
-test_that("inherit_search", {
-  
-  # possible columns 
-  potential_vars  <- query_cols()
-  
-  # testing objects
-  sev       <- as.character( attributes(browse(lterid == "SEV"))$search_argument )
-  author    <- as.character( attributes(browse(authors == "Scott Collins"))$search_argument )
-  fund      <- as.character( attributes(browse(currently_funded == "0"))$search_argument )
-  sev_cla   <- as.character( attributes(browse(lterid == "SEV" & class == "Insecta"))$search_argument )
-  sev_ord   <- as.character( attributes(browse(lterid == "SEV" & order == "Diptera"))$search_argument )
-  
-  # "ordr/clss" to "order/class"
-  sev_ord   <- gsub("order", "ordr", sev_ord)
-  sev_cla   <- gsub("class", "clss", sev_cla)
-  
-  # tests
-  expect_equal(inherit_search(potential_vars$all_cols, sev), "lterid")
-  expect_equal(inherit_search(potential_vars$all_cols, author), "authors")
-  expect_equal(inherit_search(potential_vars$all_cols, fund), "currently_funded")
-  expect_equal(inherit_search(potential_vars$all_cols, sev_cla), c("lterid","clss") )
-  expect_equal(inherit_search(potential_vars$all_cols, sev_ord), c("lterid","ordr") )
-  
-  rm( list = c("sev", "author", "fund", "sev_cla", "sev_ord") )
-  
-})
-
-
-
 # all conditinos in which concatenate queries should work  
 test_that("concatenate_queries", {
 
@@ -87,57 +57,4 @@ test_that("concatenate_queries", {
   
 })
 
-
-# Does inherit_variables() accurately identify the variables mentioned in MULTIPLE logical statement?   
-test_that("inherit_variables", {
-  
-  # possible columns 
-  potential_vars  <- query_cols()
-  
-  # testing objects
-  browse_input  <- browse(authors == "Scott Collins")
-  aut_lter      <- inherit_variables(browse_input,lterid == "SEV", 
-                                              all_columns = potential_vars$all_cols)
-  aut_clss      <- inherit_variables(browse_input,class == "Insecta", 
-                                              all_columns = potential_vars$all_cols)
-  aut_ordr      <- inherit_variables(browse_input,order == "Carnivora", 
-                                              all_columns = potential_vars$all_cols)
-  browse_input  <- browse(currently_funded == "1")
-  fun_aut_lter  <- inherit_variables(browse_input,
-                                              authors == "Scott Collins" & lterid == "SEV", 
-                                              all_columns = potential_vars$all_cols)
-  
-  # tests
-  expect_equal(aut_lter, c("authors", "lterid") )
-  expect_equal(aut_clss, c("authors", "clss") )
-  expect_equal(aut_ordr, c("authors", "ordr") )
-  expect_equal(fun_aut_lter, c("currently_funded", "authors", "lterid") )
-  
-  rm( list = c("aut_lter", "aut_clss", "aut_ordr", "fun_aut_lter") )
-  
-})
-
-
-# combine subset statements and translate them into sql 
-test_that("inherit_variables", {
-  
-  aut       <- browse(authors == "Scott Collins")
-  current   <- browse(currently_funded == "1" | lterid == "SEV")   
-  
-  # only one argument
-  expect_equal(subset_arguments(aut),"authors = 'Scott Collins'")
-  expect_equal(subset_arguments(lterid == "SEV"),
-               "lterid = 'SEV'")
-  # multiple arguments
-  expect_equal(subset_arguments(aut, lterid == "SEV"),
-               "authors = 'Scott Collins' AND lterid = 'SEV'")
-  # multiple statements and multiple arguments
-  expect_equal(subset_arguments(current, class == "Insecta"),
-               "currently_funded = '1' OR lterid = 'SEV' AND clss = 'Insecta'")
-  expect_equal(subset_arguments(current, class == "Insecta" | order == "Carnivora"),
-               "currently_funded = '1' OR lterid = 'SEV' AND clss = 'Insecta' OR ordr = 'Carnivora'")
-  
-  rm(list=c("aut", "current"))
-  
-})
 
