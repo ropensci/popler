@@ -91,14 +91,14 @@ string_eval_local = function(x){
 db_close = function(connection, quiet=T){
   if(quiet){
     # silent disconnect from db
-    invisible(RPostgreSQL::dbDisconnect(connection$con,quiet=TRUE))
+    invisible(RPostgreSQL::dbDisconnect(connection$con,quiet=T))
     
     # silent garbage collect
     invisible(suppressMessages(gc()))
     
   } else {
     # silent disconnect from db
-    invisible(RPostgreSQL::dbDisconnect(connection$con,quiet=TRUE))
+    invisible(RPostgreSQL::dbDisconnect(connection$con))
     
     # silent garbage collect
     invisible(gc())
