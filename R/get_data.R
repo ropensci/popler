@@ -183,7 +183,10 @@ concatenate_queries = function(...){
   
   # if either call counter is more than 1, call an error
   if(browse_calls > 1 | new_calls > 1){
-    stop("Error: you cannot enter more than 2 arguments in the '...' field.\n  After the second comma, please refer to the arguments described in the documentation.")
+    stop("Error: you cannot enter more than one browse() argument.\nPlease refer to the '...' argument in ?get_data.")
+  }
+  if(new_calls > 1){
+    stop("Error: you cannot enter more than one logical argument.\nPlease refer to the '...' argument in ?get_data.")
   }
   
   # return a single logical call
