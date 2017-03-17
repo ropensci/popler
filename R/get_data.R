@@ -32,7 +32,7 @@ get_data <- function(..., #browsed_data = NULL, subset = NULL,
                        port=5432, user="other_user")
   
   # define possible variables ---------------------------------------------------------------
-  print(lazyeval::lazy_dots(...)[[1]])
+
   # possible variables 
   potential_vars  <- query_vars(conn)
   # all potential variables in a query
