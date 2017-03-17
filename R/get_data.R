@@ -106,7 +106,7 @@ query_vars <- function(conn){
                      "spatial_replication_level_1","spatial_replication_level_2",
                      "spatial_replication_level_3","spatial_replication_level_4","spatial_replication_level_5",
                      "authors","authors_contact","proj_metadata_key",
-                     "structure_type_1","structure_type_2","structure_type_3","structure_type_4"
+                     "structure_type_1","structure_type_2","structure_type_3","structure_type_4",
                      "treatment_type_1","treatment_type_2","treatment_type_3",
                      "covariates" 
   )
