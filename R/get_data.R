@@ -32,14 +32,13 @@ get_data <- function(..., #browsed_data = NULL, subset = NULL,
                        port=5432, user="other_user")
   
   # define possible variables ---------------------------------------------------------------
-  
+  print(lazyeval::lazy_dots(...)[[1]])
   # possible variables 
   potential_vars  <- query_vars(conn)
   # all potential variables in a query
   all_columns     <- potential_vars$all_vars
   # default variables 
   default_columns <- potential_vars$default_vars
-  
   
   # selected variables --------------------------------------------------------------------
   
@@ -105,9 +104,9 @@ query_vars <- function(conn){
   # a vector of "default" variables
   default_vars  <- c("year","day","month","genus","species","datatype",         
                      "spatial_replication_level_1","spatial_replication_level_2",
-                     "spatial_replication_level_3","spatial_replication_level_4",
+                     "spatial_replication_level_3","spatial_replication_level_4","spatial_replication_level_5",
                      "authors","authors_contact","proj_metadata_key",
-                     "structure_type_1","structure_type_2","structure_type_3",
+                     "structure_type_1","structure_type_2","structure_type_3","structure_type_4"
                      "treatment_type_1","treatment_type_2","treatment_type_3",
                      "covariates" 
   )
@@ -241,6 +240,69 @@ updt_gt_dt_call <- function(x){
   }
   return(x)
   
+}
+
+# a function to concatenate browse() outputs and new arguments
+concatenate_queries = function(...){
+  
+  # lazy_dots eval get_data query
+  Q <- lazyeval::lazy_dots(...)
+  
+  # a list to store the outputs
+  out <- list()
+  
+  # counters to check whether more than one browse() or new calls are used
+  browse_calls <- 0
+  new_calls    <- 0
+  
+  # loop over all inputs
+  for(i in 1:length(Q)){
+    if(class(Q[[i]]$expr) == "name"){
+      
+      # if class of object is "name" evaluate it to get original browse() query
+      tmp <- eval(Q[[i]]$expr)
+      
+      # if this variable isn't a popler object, throw an error
+      if(class(tmp)[1] != "popler"){
+        stop(paste0("Error using the following argument:\n\n      ", 
+                    Q[[i]]$expr,
+                    "\n\n  Only outputs from the 'browse()' function may be used"))
+      }
+      
+      # store search argument as output
+      out[[i]] <- attributes(tmp)$search_argument
+      
+      # update counter
+      browse_calls <- browse_calls + 1
+    } else { 
+      
+      # if class of object is "call"...
+      if(grepl("browse[(]",deparse(Q[[i]]$expr))) {
+        
+        # if the call is to browse(), evaluate is and then get the search arg
+        out[[i]] <- attributes(eval(Q[[i]]$expr))$search_argument
+        
+        # update browse_calls counter
+        browse_calls <- browse_calls + 1
+      } else {
+        # just save the expression
+        out[[i]] <- Q[[i]]$expr
+        
+        # update calls counter
+        new_calls <- new_calls + 1
+      }
+    }
+  }
+  
+  # if either call counter is more than 1, call an error
+  if(browse_calls > 1 | new_calls > 1){
+    stop("Error: you cannot enter more than 2 arguments in the '...' field.\n  After the second comma, please refer to the arguments described in the documentation.")
+  }
+  
+  # return a single logical call
+  return(eval(parse(text = paste0(unlist(out),    collapse="&") %>%
+                           paste0("substitute(", . ,")", collapse="")))
+  )
 }
 
 # Identify which "search_arguments" belong to "all_columns"
