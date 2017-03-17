@@ -153,7 +153,7 @@ concatenate_queries = function(...){
       if(class(tmp)[1] != "popler"){
         stop(paste0("Error using the following argument:\n\n      ", 
                     Q[[i]]$expr,
-                    "\n\n  Only outputs from the 'browse()' function may be used"))
+                    "\n\n  Only logical arguments or outputs from the 'browse()' function may be used"))
       }
       
       # store search argument as output
@@ -182,11 +182,11 @@ concatenate_queries = function(...){
   }
   
   # if either call counter is more than 1, call an error
-  if(browse_calls > 1 | new_calls > 1){
-    stop("Error: you cannot enter more than one browse() argument.\nPlease refer to the '...' argument in ?get_data.")
+  if(browse_calls > 1){
+    stop("Error: you cannot enter more than one browse() argument.\n  Please refer to the '...' argument in ?get_data.")
   }
   if(new_calls > 1){
-    stop("Error: you cannot enter more than one logical argument.\nPlease refer to the '...' argument in ?get_data.")
+    stop("Error: you cannot enter more than one logical argument.\n  Please refer to the '...' argument in ?get_data.")
   }
   
   # return a single logical call
