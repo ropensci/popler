@@ -34,7 +34,7 @@ get_data <- function(..., #browsed_data = NULL, subset = NULL,
   # define possible variables ---------------------------------------------------------------
   
   # possible variables 
-  potential_vars  <- query_vars()
+  potential_vars  <- query_vars(conn)
   # all potential variables in a query
   all_columns     <- potential_vars$all_vars
   # default variables 
@@ -84,12 +84,11 @@ get_data <- function(..., #browsed_data = NULL, subset = NULL,
 
 #' @noRd
 # obtain all potential columns 
-query_vars <- function(){
+query_vars <- function(conn){
   
   #list variables from the 6 tables relevant to standard popler queries  
-  proj_vars     <- as.data.frame(tbl(conn, sql( "SELECT column_name FROM information_schema.columns WHERE
-                                                table_name = 'project_table'")))[,1]
-  lter_vars     <- as.data.frame(tbl(conn, sql( "SELECT column_name FROM information_schema.columns WHERE
+  proj_vars     <- as.data.frame(tbl(conn, sql( "SELECT column_name FROM information_schema.columns WHERE table_name = 'project_table'")))[,1]
+  lter_vars     <- as.data.frame(tbl(conn, sql( "SELECT column_name FROM information_schema.columns WHERE 
                                                 table_name = 'lter_table'")))[,1]
   site_vars     <- as.data.frame(tbl(conn, sql( "SELECT column_name FROM information_schema.columns WHERE
                                                 table_name = 'study_site_table'")))[,1]
