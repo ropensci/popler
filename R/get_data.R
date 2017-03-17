@@ -143,10 +143,7 @@ concatenate_queries = function(...){
   new_calls    <- 0
   
   if(length(Q) > 2){
-    stop("You cannot enter more than two arguments:.\n
-           1) an object returned by browse() and/or\n
-           2) a logical statement\n
-           Please refer to the '...' argument in ?get_data.")
+    stop("You cannot enter more than two arguments:\n1) an object returned by browse() and/or\n2) a logical statement\nPlease refer to the '...' argument in ?get_data.")
   }
   
   # loop over all inputs
