@@ -56,7 +56,7 @@ get_data <- function(..., #browsed_data = NULL, subset = NULL,
   search_arg      <- subset_arguments(...)
   
   # query ---------------------------------------------------------------------------------
-
+  
   # query popler online
   output_data <- query_popler(conn, select_vars, search_arg)
   
@@ -72,7 +72,7 @@ get_data <- function(..., #browsed_data = NULL, subset = NULL,
                                                                    "authors",
                                                                    "authors_contact")]),
                            class = c("popler", class(output_data)) 
-                           )
+  )
   
   # Informational message
   data_message(output_data)
@@ -301,7 +301,7 @@ concatenate_queries = function(...){
   
   # return a single logical call
   return(eval(parse(text = paste0(unlist(out),    collapse="&") %>%
-                           paste0("substitute(", . ,")", collapse="")))
+                      paste0("substitute(", . ,")", collapse="")))
   )
 }
 
@@ -535,3 +535,5 @@ class_order_subset <- function(call_var) {
   return(call_var)
   
 }
+
+##### UNUSED FUNCTIONS #########################################################
