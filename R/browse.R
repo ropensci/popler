@@ -45,7 +45,7 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
   }
   
   # error message if variable names are incorrect
-  vars_spell( vars, c(names(main_table()),"taxonomy"), possible_vars() )
+  vars_spell( vars, c(names(summary_table),"taxonomy"), possible_vars() )
   
   # update user query to account for actual database variable names
   logic_expr   <- call_update(substitute(...))
@@ -54,14 +54,14 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
   # subset rows: if keyword is not NULL ---------------------------
   if( !is.null(keyword) ){ 
     
-    keyword_data   <- keyword_subset(main_table(), keyword)
+    keyword_data   <- keyword_subset(summary_table, keyword)
     subset_data    <- keyword_data$tab
     keyword_expr   <- keyword_data$s_arg
   
   # subset rows: if logic_expr is not NULL
   } else {  
     
-    subset_data   <- select_by_criteria(main_table(), logic_expr)
+    subset_data   <- select_by_criteria(summary_table, logic_expr)
     keyword_expr  <- NULL 
     
   }
@@ -102,31 +102,6 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
 
 
 #' @noRd
-# Converts factor columns into character format
-factor_to_character <- function(x, full_tbl = FALSE){
-  
-  for(i in 1:ncol(x)){
-    if(class(x[,i])=="factor") x[,i]=as.character(x[,i])
-  }
-  return(x)
-  
-}
-
-main_table = function(){
-
-  # Data table; convert factors to characters
-  main_t       <- factor_to_character(main_popler)
-
-  # Case insensitive matching ("lower" everything)
-  names(main_t) <- tolower( names(main_t) )
-  
-  # convert columns "ordr" to "order" and "clss" to "class"
-  main_t        <- colname_change("clss", "class", main_t)
-  main_t        <- colname_change("ordr", "order", main_t)
-  
-  return(main_t)
-}
-
 # implements the 'keyword' argument ANd operator in browse() 
 keyword_subset <- function(x, keyword){
 
@@ -317,40 +292,3 @@ multiple_columns=function(x) {
 
 
 ##### UNUSED FUNCTIONS #########################################################
-# returns a full table or not
-table_select <- function(x, full_tbl = FALSE, possible_vars){
-  
-  if(full_tbl == FALSE) return(x[,possible_vars])
-  if(full_tbl == TRUE)  return(x)
-  
-}
-
-# changes clss to class and ordr to order
-class_order_names <- function(x){
-  
-  names(x)   <- gsub("clss","class",names(x))
-  names(x)   <- gsub("ordr","order",names(x))
-  
-  return(x)
-  
-}
-
-# Summarizing function
-select_by_criteria_OLD <- function(x,criteria){
-  
-  if(!is.null(criteria)) {
-    r <- which(eval(criteria, x, parent.frame()))
-    if( length(r) != 0 ) {
-      subsetDat <- tbl_df(x[r,,drop=F]) #tbl_df() to make object "work" with dplyr functions
-    } 
-    if( length(r) == 0 ) {
-      stop( "No matches found. Either:
-            1. the name of variable(s) you specified is/are incorrect or 
-            2. the values you are looking for are not contained in the variable(s) you specified")
-    }
-    } else { 
-      subsetDat <- tbl_df(x) 
-    }
-  return(subsetDat)
-  
-}

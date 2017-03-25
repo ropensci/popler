@@ -1,10 +1,3 @@
-# changes a column name from one name to another
-colname_change = function(from, to, x){
-  names(x) <- gsub(from,to,names(x))
-  return(x)
-}
-
-
 # function updates "treatment" and "structure" in a user's query to match the
 # appropriate columns in the database.
 call_update = function(query){
@@ -82,25 +75,173 @@ call_update = function(query){
   )
 }
 
+# generate main data table summary ---------------------------------------------
+summary_table_update = function(){
+  
+  message("Please wait while popler updates its summary table... this may take several minutes.")
+  
+  # set database connection
+  conn <- db_open()
+  
+  # list all columns
+  proj_cols   <- query_get(conn, "SELECT column_name FROM information_schema.columns WHERE table_name = 'project_table'")[,1]
+  lter_cols   <- query_get(conn, "SELECT column_name FROM information_schema.columns WHERE table_name = 'lter_table'")[,1]
+  taxa_cols   <- query_get(conn, "SELECT column_name FROM information_schema.columns WHERE table_name = 'taxa_table'")[,1]
+  search_cols <- paste( c(proj_cols,lter_cols,taxa_cols), collapse = ", ")
+  
+  # open database connection, query result
+  out <- query_get(conn, 
+                   paste("SELECT", search_cols,
+                         "FROM project_table
+                         JOIN site_in_project_table ON project_table.proj_metadata_key = site_in_project_table.project_table_fkey
+                         JOIN taxa_table ON site_in_project_table.site_in_project_key = taxa_table.site_in_project_taxa_key
+                         JOIN study_site_table ON site_in_project_table.study_site_table_fkey = study_site_table.study_site_key
+                         JOIN lter_table ON study_site_table.lter_table_fkey = lter_table.lterid"))
+  
+  # Select project-specific information 
+  proj_info             <- out[,c(proj_cols,lter_cols)]
+  
+  # Discard replicated information
+  out_proj              <- unique(proj_info)
+  
+  # strings for spatial_replication_level_X_number_of_unique_reps
+  sr_colnames <- paste0("spatial_replication_level_",1:5,"_number_of_unique_reps")
+  
+  # change any spatial replication -99999 to NA
+  out_proj[,sr_colnames][out_proj[,sr_colnames] == -99999] <- NA
+  
+  # add column for total spatial replicates
+  out_proj$tot_spat_rep <- apply(out_proj[sr_colnames], 1, prod, na.rm=T)
+  
+  # add column for number of spatial levels 
+  out_proj$n_spat_levs  <- apply(!is.na(out_proj[sr_colnames]), 1, sum) 
+  
+  # reorder out_proj columns
+  out_proj  <- out_proj[c(1:11,46:47,12:36,58:59,37:45,48:57)]
+  
+  # return unique taxonomic information for each proj_metadata_key
+  taxas    <- taxa_cols[! taxa_cols %in% c("taxa_table_key", 
+                                           "site_in_project_taxa_key",
+                                           "metadata_taxa_key")]
+  
+  out_taxa <- unique(out[,c("proj_metadata_key",taxas)])
+  
+  # merge project and species data
+  summary_table <- merge(out_proj, out_taxa)
+  
+  # convert factors to characters
+  summary_table <- factor_to_character(summary_table)
+  
+  # Case insensitive matching ("lower" everything)
+  names(summary_table) <- tolower( names(summary_table) )
+  
+  # convert columns "ordr" to "order" and "clss" to "class"
+  summary_table <- colname_change("clss", "class", summary_table)
+  summary_table <- colname_change("ordr", "order", summary_table)
+  
+  # store main data table--------------------------------------------------
+  suppressMessages(devtools::use_data(summary_table, overwrite=TRUE))
+  devtools::load_data()
+  
+  # close database connection
+  db_close(conn)
+  
+  message("Finished.")
+}
+
+# check if the main table needs to be updated
+summary_table_check = function(){
+  # if summary_table.rda does not exist, add it
+  if(!file.exists("./data/summary_table.rda")){
+    summary_table_update()
+  } else {
+    wks_passed <- floor(as.numeric(difftime(Sys.time(),
+                                            file.mtime("./data/summary_table.rda"), 
+                                            units=c("weeks"))))
+    # if summary_table.rda does exist, but was created more than 6 weeeks ago,
+    # prompt user to update the table.
+    if(wks_passed >= 6){
+      message("It's been ", wks_passed, " weeks since popler's summary table has been updated.\nWe recommend running 'summary_table_update()' to make sure your summary table is up to date with the latest database changes.")
+    }
+  }
+}
+
+# open a connection to the popler database
+db_open = function(){
+  popler_connector(dbname="popler_3", 
+                    host="ec2-54-214-212-101.us-west-2.compute.amazonaws.com",
+                    port=5432,
+                    user="other_user",
+                    password="bigdata",
+                    silent=TRUE)
+}
+
+# a wrapper function to (quietly) close popler database connections
+db_close = function(connection){
+    RPostgreSQL::dbDisconnect(connection$con,quiet=T)
+}
+
 # evaluate a string using the local environment, return the evaluation as string
 string_eval_local = function(x){
   deparse(eval(parse(text=paste0("local(",x,")"))))
 }
 
-# function to (quietly) close database connections
-db_close = function(connection, quiet=T){
-  if(quiet){
-    # silent disconnect from db
-    invisible(RPostgreSQL::dbDisconnect(connection$con,quiet=T))
-    
-    # silent garbage collect
-    invisible(suppressMessages(gc()))
-    
-  } else {
-    # silent disconnect from db
-    invisible(RPostgreSQL::dbDisconnect(connection$con))
-    
-    # silent garbage collect
-    invisible(gc())
+# changes a column name from one name to another
+colname_change = function(from, to, x){
+  names(x) <- gsub(from,to,names(x))
+  return(x)
+}
+
+# a function to pull sql queries and return dataframes
+query_get = function(connection, query){
+  # accepts a connection and a string query input
+  # outputs a dataframe
+  return(tbl(connection,sql(query)) %>% data.frame())
+}
+
+#' @noRd
+## these functions should be masked from the user but available in popler
+
+# a (very slightly) modified version of dplyr::src_postgres() to connect to the
+# popler database and enable a silent disconnect
+popler_connector = function (dbname=NULL, host=NULL, port=NULL, user=NULL, password=NULL, silent=TRUE) {
+  
+  if (!requireNamespace("RPostgreSQL", quietly = TRUE)) {
+    stop("RPostgreSQL package required to connect to postgres db", call. = FALSE)
   }
+  user <- if(is.null(user)){
+    if(identical(Sys.getenv("TRAVIS"), "true")){"postgres"} else {""} 
+    } else user
+  con <- dbConnect(RPostgreSQL::PostgreSQL(), 
+                   host     = if(is.null(host))     "" else host, 
+                   dbname   = if(is.null(dbname))   "" else dbname, 
+                   user     = user, 
+                   password = if(is.null(password)) "" else password, 
+                   port     = if(is.null(port))     "" else port)
+  info <- dbGetInfo(con)
+  src_sql("postgres", con, info=info, disco=popler_disconnector(con,"postgres",silent))
+}
+
+# a (very slightly) modified version of dplyr::db_disconnector() to enable
+# silent disconnect
+popler_disconnector = function (con, name, silent = TRUE) 
+{
+  reg.finalizer(environment(), function(...) {
+    if (!silent) {
+      message("Auto-disconnecting ", name, " connection to popler database ", 
+              "(", paste(con@Id, collapse = ", "), ")")
+    }
+    dbDisconnect(con)
+  })
+  environment()
+}
+
+# Converts factor columns into character format
+factor_to_character <- function(x, full_tbl = FALSE){
+  
+  for(i in 1:ncol(x)){
+    if(class(x[,i])=="factor") x[,i]=as.character(x[,i])
+  }
+  return(x)
+  
 }
