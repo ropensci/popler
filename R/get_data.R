@@ -32,40 +32,41 @@ get_data <- function(..., #browsed_data = NULL, subset = NULL,
   # define possible variables ---------------------------------------------------------------
   
   # possible variables 
-  potential_vars  <- query_vars(conn)
+  possible_vars  <- vars_query(conn)
   # all potential variables in a query
-  all_columns     <- potential_vars$all_vars
+  all_vars       <- possible_vars$all_vars
   # default variables 
-  default_columns <- potential_vars$default_vars
+  default_vars   <- possible_vars$default_vars
   
   
   # selected variables --------------------------------------------------------------------
   
-  # extract the variables contained in the logical expressions contained in '...'
+  # extract the variables contained in the logical expressions specified in '...'
   
-  # concatenate logical expressions explicitly or implicitly (through browse()) declared in the '...' argument
+  # concatenate logical expressions specified in the '...' argument
+  # expressions can be specified explicitly, implicitly (through an object produced by browse()), or both 
   c_calls       <- concatenate_queries(...)
   # update the concatenated calls, in case c_calls contains "structure" or "treatment"
-  all_calls     <- popler:::call_update( c_calls )
-  # extract the variables specified in the calls
-  # this is done to prevent querying variables database
-  inherit_vars  <- inherit_search(all_columns, all_calls)
+  updated_calls <- call_update( c_calls )
+  # extract the variables specified in the calls' expressions
+  # this is done to include `expr_vars` in the query, if some of `expr_vars` do not match `default_vars`.
+  expr_vars     <- expr_vars_get(all_vars, updated_calls)
   
   
   # variables that appear either as default, added manually, or inherited from a logical operation
-  actual_vars     <- unique( c(default_columns, add_vars, inherit_vars) )
-  # 'actual_vars' minus variables subtracted manually via argument 'subtract_vars' 
-  select_vars     <- paste( setdiff(actual_vars, subtract_vars), collapse = ", ")
+  subset_vars   <- unique( c(default_vars, add_vars, expr_vars) )
+  # 'subset_vars' minus variables subtracted manually via argument 'subtract_vars' 
+  vars_select   <- paste( setdiff(subset_vars, subtract_vars), collapse = ", ")
   
   
   # translate R logical expressions in '...' into SQL --------------------------------------------------------------------
-  search_arg      <- parse_to_sql_search( all_calls )
+  sql_condition <- parse_to_sql_search( updated_calls )
   
   
   # query ---------------------------------------------------------------------------------
   
   # query popler online
-  output_data <- query_popler(conn, select_vars, search_arg)
+  output_data <- popler_query(conn, vars_select, sql_condition)
   
   # Change "ordr" and "clss" to "order" and "class"
   output_data <- colname_change("clss", "class", output_data)
@@ -95,7 +96,7 @@ get_data <- function(..., #browsed_data = NULL, subset = NULL,
 
 #' @noRd
 # obtain all potential columns 
-query_vars <- function(conn){
+vars_query <- function(conn){
   
   #list variables from the 6 tables relevant to standard popler queries  
   proj_vars     <- query_get(conn, "SELECT column_name FROM information_schema.columns WHERE table_name = 'project_table'")[,1]
@@ -109,7 +110,7 @@ query_vars <- function(conn){
   all_vars      <- c(proj_vars,lter_vars,site_vars, s_i_p_vars, taxa_vars, abund_vars)
   
   # a vector of "default" variables
-  default_vars  <- c("year","day","month","genus","species","datatype",         
+  default_vars  <- c("year","day","month","sppcode","genus","species","datatype",         
                      "spatial_replication_level_1","spatial_replication_level_2",
                      "spatial_replication_level_3","spatial_replication_level_4","spatial_replication_level_5",
                      "authors","authors_contact","proj_metadata_key",
@@ -155,7 +156,7 @@ concatenate_queries = function(...){
       }
       
       # store search argument as output
-      out[[i]] <- attributes(tmp)$search_argument
+      out[[i]] <- attributes(tmp)$search_expression
       
       # update counter
       browse_calls <- browse_calls + 1
@@ -165,7 +166,7 @@ concatenate_queries = function(...){
       if(grepl("browse[(]",deparse(Q[[i]]$expr))) {
         
         # if the call is to browse(), evaluate is and then get the search arg
-        out[[i]] <- attributes(eval(Q[[i]]$expr))$search_argument
+        out[[i]] <- attributes(eval(Q[[i]]$expr))$search_expression
         
         # update browse_calls counter
         browse_calls <- browse_calls + 1
@@ -193,8 +194,8 @@ concatenate_queries = function(...){
   )
 }
 
-# Identify which "search_arguments" belong to "all_columns"
-inherit_search <- function(all_cols, inherit_logical){
+# Identify which "search_expressions" belong to "all_vars"
+expr_vars_get <- function(all_cols, inherit_logical){
   
   inherit_elem <- as.character(inherit_logical)
   
@@ -213,17 +214,17 @@ inherit_search <- function(all_cols, inherit_logical){
 
 
 # query popler
-query_popler <- function(conn, select_vars, search_arg){
+popler_query <- function(conn, vars_select, sql_condition){
   
-  if(length(search_arg) == 0) stop( "No logical expression specified. Please specify what data you wish to download from popler" )
+  if(length(sql_condition) == 0) stop( "No logical expression specified. Please specify what data you wish to download from popler" )
   
   # table specific variables
   vars                     <- list()
-  vars$count_table         <- gsub("treatment_type_","count_table.treatment_type_",select_vars)
-  vars$biomass_table       <- gsub("treatment_type_","biomass_table.treatment_type_",select_vars)
-  vars$percent_cover_table <- gsub("treatment_type_","percent_cover_table.treatment_type_",select_vars)
-  vars$density_table       <- gsub("treatment_type_","density_table.treatment_type_",select_vars)
-  vars$individual_table    <- gsub("treatment_type_","individual_table.treatment_type_",select_vars)
+  vars$count_table         <- gsub("treatment_type_","count_table.treatment_type_",vars_select)
+  vars$biomass_table       <- gsub("treatment_type_","biomass_table.treatment_type_",vars_select)
+  vars$percent_cover_table <- gsub("treatment_type_","percent_cover_table.treatment_type_",vars_select)
+  vars$density_table       <- gsub("treatment_type_","density_table.treatment_type_",vars_select)
+  vars$individual_table    <- gsub("treatment_type_","individual_table.treatment_type_",vars_select)
   
   output_data <- query_get(conn, paste(
     # Count data
@@ -238,7 +239,7 @@ query_popler <- function(conn, select_vars, search_arg){
     "study_site_table.study_site_key",
     "JOIN lter_table ON study_site_table.lter_table_fkey =",
     "lter_table.lterid",
-    "WHERE", search_arg,
+    "WHERE", sql_condition,
     
     "UNION ALL",
     # Biomass data
@@ -253,7 +254,7 @@ query_popler <- function(conn, select_vars, search_arg){
     "study_site_table.study_site_key",
     "JOIN lter_table ON study_site_table.lter_table_fkey =",
     "lter_table.lterid",
-    "WHERE", search_arg,
+    "WHERE", sql_condition,
     
     "UNION ALL",
     # percent cover data
@@ -268,7 +269,7 @@ query_popler <- function(conn, select_vars, search_arg){
     "study_site_table.study_site_key",
     "JOIN lter_table ON study_site_table.lter_table_fkey =",
     "lter_table.lterid",
-    "WHERE", search_arg,
+    "WHERE", sql_condition,
     
     "UNION ALL",
     # individual data
@@ -283,7 +284,7 @@ query_popler <- function(conn, select_vars, search_arg){
     "study_site_table.study_site_key",
     "JOIN lter_table ON study_site_table.lter_table_fkey =",
     "lter_table.lterid",
-    "WHERE", search_arg,
+    "WHERE", sql_condition,
     
     "UNION ALL",
     # density data
@@ -298,7 +299,7 @@ query_popler <- function(conn, select_vars, search_arg){
     "study_site_table.study_site_key",
     "JOIN lter_table ON study_site_table.lter_table_fkey =",
     "lter_table.lterid",
-    "WHERE", search_arg
+    "WHERE", sql_condition
   ))
   
   return(output_data)
