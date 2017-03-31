@@ -19,16 +19,16 @@ dictionary <- function(..., full_tbl = FALSE){
   # main table ------------------------------------------------------------
   
   # Load main data table and convert factors to characters
-  main_t        <- factor_to_character(main_popler)
+  #main_t        <- factor_to_character(main_popler)
   # Case insensitive matching ("lower" everything)
-  names(main_t) <- tolower( names(main_t) )
+  #names(main_t) <- tolower( names(main_t) )
   # variable name change: clss to class and ordr to order
-  main_t        <- class_order_names(main_t)
+  #main_t        <- class_order_names(main_t)
   
   # variables ------------------------------------------------
 
   # variables of default (full_tbl=F) main table  
-  possible_arg  <- possible_vars()
+  possible_vars  <- possible_vars()
   # variables of which user defined wishes to know the content 
   vars          <- vars_dict(...)
   
@@ -37,11 +37,11 @@ dictionary <- function(..., full_tbl = FALSE){
   # if no column specified, return ALL column names
   if( is.null(vars) ){
     # select data based on 
-    tmp   <- table_select(main_t, full_tbl, possible_arg)
+    tmp   <- if(full_tbl){summary_table} else {summary_table[,possible_vars]}
     out   <- dictionary_explain(tmp)
   # if colums specified.
   } else {
-    out   <- dict_list(main_t, vars)
+    out   <- dict_list(summary_table, vars)
   }
   
   return(out)
