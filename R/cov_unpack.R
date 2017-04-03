@@ -8,11 +8,11 @@
 #' 
 #' # get author names and email from studies containing data from the genus Poa
 #' demo_d <- get_data(proj_metadata_key == 8)
-#' as.tbl( unpack_cov( demo_d ) )
+#' as.tbl( cov_unpack( demo_d ) )
 
 
 # function to unpack covariates
-unpack_cov <- function(x){
+cov_unpack <- function(x){
   
   # Extract all characters between the brackets and split the string on each comma (',')
   # followed by a space ('\\s')
