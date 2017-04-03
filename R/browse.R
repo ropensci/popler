@@ -81,7 +81,7 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
   
   
   # collapse taxonomic information for each project into a list 
-  nested_data  <- nest_taxa(out_vars, full_tbl)
+  nested_data  <- taxa_nest(out_vars, full_tbl)
   
   # trim output
   out_form <- trim_display(nested_data, trim)
@@ -189,7 +189,7 @@ vars_spell <- function(select_columns,columns_full_tab,possibleargs){
 }
 
 # expand table (to nest/unnest taxonomic info) 
-nest_taxa <- function(x, full_tbl){
+taxa_nest <- function(x, full_tbl){
   
   # select taxonomic information (based on full_ or standard_table)
   if( full_tbl == FALSE){
