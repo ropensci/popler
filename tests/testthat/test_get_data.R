@@ -4,13 +4,15 @@ context("get_data() utility functions")
 
 
 # Does query_cols() return the expected number of columns?
-test_that("query_cols", {
+test_that("vars_query", {
   
+  conn <- db_open()
+
   # possible columns 
-  potential_vars  <- query_cols()
+  potential_vars  <- vars_query(conn)
   # tests
-  expect_equal( length(potential_vars$all_cols), 110)
-  expect_equal( length(potential_vars$default_cols), 20)
+  expect_equal( length(potential_vars$all_vars), 111)
+  expect_equal( length(potential_vars$default_vars), 23)
 
 })
 
@@ -28,7 +30,7 @@ test_that("concatenate_queries", {
   # expected outputs --------------------------------------------------
   
   # expected output - a call
-  expect_equal( class( concatenate_queries(poa_d) ), "call")
+  expect_equal( class( concatenate_queries( poa_d )), "call")
   expect_equal( class( concatenate_queries(browse(genus == "Poa")) ), "call")
   expect_equal( class( concatenate_queries(poa_d, year == 2000) ), "call")
   expect_equal( class( concatenate_queries(browse(genus == "Poa"), year == 2000) ), "call")
