@@ -15,10 +15,10 @@
 study_names <- function(browsed, width = 60){
   
   # re-browse data, with trim OFF
-  if( is.null(attributes(browsed)$search_argument) ){
+  if( is.null(attributes(browsed)$search_expr) ){
     new_browsed <- browse(trim = F)
   } else {
-    new_browsed <- browse(eval(attributes(browsed)$search_argument), trim = F)
+    new_browsed <- browse(eval(attributes(browsed)$search_expr), trim = F)
   }
   
   tmp = lapply(new_browsed$title,strwrap, width = width)

@@ -156,7 +156,7 @@ concatenate_queries = function(...){
       }
       
       # store search argument as output
-      out[[i]] <- attributes(tmp)$search_expression
+      out[[i]] <- attributes(tmp)$search_expr
       
       # update counter
       browse_calls <- browse_calls + 1
@@ -166,7 +166,7 @@ concatenate_queries = function(...){
       if(grepl("browse[(]",deparse(Q[[i]]$expr))) {
         
         # if the call is to browse(), evaluate is and then get the search arg
-        out[[i]] <- attributes(eval(Q[[i]]$expr))$search_expression
+        out[[i]] <- attributes(eval(Q[[i]]$expr))$search_expr
         
         # update browse_calls counter
         browse_calls <- browse_calls + 1
@@ -194,7 +194,7 @@ concatenate_queries = function(...){
   )
 }
 
-# Identify which "search_expressions" belong to "all_vars"
+# Identify which "search_expr" belong to "all_vars"
 expr_vars_get <- function(all_cols, inherit_logical){
   
   inherit_elem <- as.character(inherit_logical)

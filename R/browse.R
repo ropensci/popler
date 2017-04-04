@@ -92,7 +92,7 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
   # attribute class "popler"
   out            <- structure(out_form, 
                               class = c("popler", class(out_form) ),
-                              search_argument = c(logic_expr,keyword_expr)[[1]]
+                              search_expr = c(logic_expr,keyword_expr)[[1]]
   )
   
   return(out)
