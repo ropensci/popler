@@ -9,8 +9,8 @@
 #' #tmp = browse()
 #' #study_names(tmp)
 #' vcr_dat = browse(lterid == "VCR")
-#' study_names(vcr_dat)
-#' study_names(vcr_dat, width = 30)
+#' #study_names(vcr_dat)
+#' #study_names(vcr_dat, width = 30)
 
 study_names <- function(browsed, width = 60){
   
