@@ -48,25 +48,51 @@ context("browse(): taxa_nest")
 # Select By Criteria function
 test_that("taxa_nest", {
   
-  # Data
-  main_t <- summary_table
-  
   # limit yourself to one/two studies
-  # 1 full tab = TRUE
-  shrinked_tab <- taxa_nest(main_t, full_tbl = TRUE)
+  # 1 full tab = TRUE, vars = NULL
+  shrinked_tab <- taxa_nest(summary_table, full_tbl = TRUE)
   # test 1a: taxas variables
   expect_equal(ncol(shrinked_tab$taxas[[1]]), 18)
   # test 1b: number of projects
-  expect_equal(nrow(shrinked_tab), length(unique(main_t$proj_metadata_key)))
+  expect_equal(nrow(shrinked_tab), length(unique(summary_table$proj_metadata_key)))
   
-  # 2 full tab = TRUE
-  shrinked_tab <- taxa_nest(main_t, full_tbl = TRUE)
+  # 2 full tab = TRUE, vars = NULL
+  shrinked_tab <- taxa_nest(summary_table[,possible_vars()], full_tbl = F)
   # test 2a: taxas variables
-  expect_equal(ncol(shrinked_tab$taxas[[1]]), 18)
+  expect_equal(ncol(shrinked_tab$taxas[[1]]), 7)
   # test 2b: number of projects
-  expect_equal(nrow(shrinked_tab), length(unique(main_t$proj_metadata_key)))
+  expect_equal(nrow(shrinked_tab), length(unique(summary_table$proj_metadata_key)))
   
-  rm(list=c("x","main_t","shrinked_tab"))
+  # 4. vars = "proj_metadata_key" (not a taxonomic variable)
+  shrinked_tab <- taxa_nest(summary_table[,vars_check("proj_metadata_key"),drop=F], full_tbl = F)
+  # no taxa list
+  expect_true( is.null(shrinked_tab$taxas) )
+  # name of list column is "genus"
+  expect_equal(ncol(shrinked_tab), 1)
+  
+  # 5. vars = c("proj_metadata_key","lterid") (no taxonomic variables)
+  shrinked_tab <- taxa_nest(summary_table[,vars_check(c("proj_metadata_key","lterid")),drop=F], full_tbl = F)
+  # no taxa list
+  expect_true( is.null(shrinked_tab$taxas) )
+  # name of list column is "genus"
+  expect_equal(ncol(shrinked_tab), 2)
+  
+  # 5. vars = "genus" (only one taxonomic variable)
+  shrinked_tab <- taxa_nest(summary_table[,vars_check("genus")], full_tbl = F)
+  # two columns: "proj_metadata_key", and "genus"
+  expect_equal(ncol(shrinked_tab), 2)
+  # name of list column is "genus"
+  expect_equal(names(shrinked_tab)[2], "genus")
+  
+  # 6. vars = c("genus","species") (two taxonomic variables)
+  shrinked_tab <- taxa_nest(summary_table[,vars_check(c("genus","species"))], full_tbl = F)
+  # two columns: "proj_metadata_key", and "taxas"
+  expect_equal(ncol(shrinked_tab), 2)
+  # name of list column is now "taxas"
+  expect_equal(names(shrinked_tab)[2], "taxas")
+  
+  
+  rm("shrinked_tab")
   
 })
 
