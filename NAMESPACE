@@ -2,10 +2,10 @@
 
 export(authors)
 export(browse)
+export(cov_unpack)
 export(dictionary)
 export(get_data)
 export(metadata_url)
 export(parse_to_sql_search)
 export(study_names)
 export(summary_popler)
-export(unpack_cov)
