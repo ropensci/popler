@@ -46,8 +46,9 @@ plant_data = browse(kingdom == "Plantae")
 three_columns = browse(vars = c("title","proj_metadata_key","genus","species"))
 
 # Select only the data you need
-study_21 = browse( proj_metadata_key == 21)
+study_21 = browse( proj_metadata_key == 25)
 
 # Select studies that contain word "parasite"
 parasite_studies = browse( keyword = "parasite")
 }
+

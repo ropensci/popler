@@ -7,11 +7,11 @@
 get_data(..., add_vars = NULL, subtract_vars = NULL)
 }
 \arguments{
-\item{...}{A list of one or two objects: an object produced by browse, a logical statement, or both.}
+\item{...}{A list of one or two objects: an object produced by browse, a logical expression, or both.}
 
-\item{add_vars}{A string to specify which columns the user wants to add in queries to the database}
+\item{add_vars}{A string to specify which variables the user wants to add to the default variables used in a query.}
 
-\item{subtract_vars}{A string to specify which, among the default columns, the user wishes to discard in queries to the database}
+\item{subtract_vars}{A string to specify which, among the default variables, the user wishes to discard in queries to the database}
 }
 \value{
 A data frame of the selected data.
@@ -22,15 +22,16 @@ This function browses LTER studies contained in the popler database. The user ca
 \examples{
 
 # browse a study, then get the data associated with it
-grasshop = browse(proj_metadata_key == 21)
-gh_data = get_data(grasshop)
+parasite = browse(proj_metadata_key == 25)
+gh_data = get_data(parasite)
 
 # further subset this data set, based on year
-gh_data_96_99 = get_data(grasshop, year > 1995 & year < 2000)
+gh_data_96_99 = get_data(parasite, year > 1995 & year < 2000)
 
 # insect data sets from the SEV lter site
 insect_sev = browse(class == "Insecta" & lterid == "SEV")
-insect_21_yrs96_99 = get_data(insect_sev, year > 1995 & year < 2000 & proj_metadata_key == 21)
+insect_25_yrs96_99 = get_data(insect_sev, year > 1995 & year < 2000 & proj_metadata_key == 25)
 
-insect_21_25 = get_data((proj_metadata_key == 21 | proj_metadata_key == 25) & year < 1995 )
+insect_21_25 = get_data((proj_metadata_key == 43 | proj_metadata_key == 25) & year < 1995 )
 }
+

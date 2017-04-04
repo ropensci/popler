@@ -22,3 +22,4 @@ vcr_dat = browse(lterid == "VCR")
 study_names(vcr_dat)
 study_names(vcr_dat, width = 30)
 }
+

@@ -24,3 +24,4 @@ dictionary_lter <- dictionary(lterid, full_tbl = FALSE)
 # multiple columns
 dictionary_lter_lat <- dictionary(lterid,lat_lter, full_tbl = FALSE)
 }
+
