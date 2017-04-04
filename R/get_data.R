@@ -4,6 +4,7 @@
 #' @param ... A list of one or two objects: an object produced by browse, a logical expression, or both.
 #' @param add_vars A string to specify which variables the user wants to add to the default variables used in a query. 
 #' @param subtract_vars A string to specify which, among the default variables, the user wishes to discard in queries to the database 
+#' @param cov_unpack Should covariates be unpacked? This argument uses function `cov_unpack` to extract the variables contained in the variable `covariates`, and combine the new columns with the default output.
 #' @return A data frame of the selected data.
 #' @export
 #' @examples
@@ -23,8 +24,8 @@
 
 
 # Function that connects and gathers the information from the database
-get_data <- function(..., #browsed_data = NULL, subset = NULL,
-                     add_vars = NULL, subtract_vars = NULL){
+get_data <- function(..., add_vars = NULL, subtract_vars = NULL,
+                     cov_unpack = FALSE){
   
   # open connection to database
   conn <- db_open()
@@ -81,6 +82,14 @@ get_data <- function(..., #browsed_data = NULL, subset = NULL,
   output_data <- colname_change("clss", "class", output_data)
   output_data <- colname_change("ordr", "order", output_data)
   
+  # unpack the covariates?
+  if( cov_unpack == TRUE) {
+    
+    output_data <-  output_data %>%
+                      select(-covariates) %>%
+                      cbind( cov_unpack(output_data))
+                      
+  }
   
   # outputs -------------------------------------------------------------------------------
   
