@@ -68,6 +68,15 @@ get_data <- function(..., #browsed_data = NULL, subset = NULL,
   # query popler online
   output_data <- popler_query(conn, vars_select, sql_condition)
   
+  # format output -------------------------------------------------------------------------
+  
+  # replace -99999, but only for numeric variables
+  num_repl                <- sapply(output_data, is.numeric) %>% as.vector()
+  output_data[,num_repl]  <- as.data.frame(lapply(output_data[,num_repl], function(x){replace(x, x == -99999,NA)}))
+  
+  # remove variables that whose content is just "NA"
+  output_data             <- Filter(function(x) !all(x == "NA"), output_data)
+  
   # Change "ordr" and "clss" to "order" and "class"
   output_data <- colname_change("clss", "class", output_data)
   output_data <- colname_change("ordr", "order", output_data)
@@ -110,9 +119,17 @@ vars_query <- function(conn){
   all_vars      <- c(proj_vars,lter_vars,site_vars, s_i_p_vars, taxa_vars, abund_vars)
   
   # a vector of "default" variables
-  default_vars  <- c("year","day","month","sppcode","genus","species","datatype",         
-                     "spatial_replication_level_1","spatial_replication_level_2",
-                     "spatial_replication_level_3","spatial_replication_level_4","spatial_replication_level_5",
+  default_vars  <- c("year","day","month","sppcode","genus","species","datatype",
+                     "spatial_replication_level_1_label",
+                     "spatial_replication_level_1",
+                     "spatial_replication_level_2_label",
+                     "spatial_replication_level_2",
+                     "spatial_replication_level_3_label",
+                     "spatial_replication_level_3",
+                     "spatial_replication_level_4_label",
+                     "spatial_replication_level_4",
+                     "spatial_replication_level_5_label",
+                     "spatial_replication_level_5",
                      "authors","authors_contact","proj_metadata_key",
                      "structure_type_1","structure_type_2","structure_type_3","structure_type_4",
                      "treatment_type_1","treatment_type_2","treatment_type_3",
