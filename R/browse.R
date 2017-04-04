@@ -49,7 +49,7 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
   
   # update user query to account for actual database variable names
   logic_expr   <- call_update(substitute(...))
-
+  
   
   # subset rows: if keyword is not NULL ---------------------------
   if( !is.null(keyword) ){ 
@@ -57,8 +57,8 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
     keyword_data   <- keyword_subset(popler::summary_table, keyword)
     subset_data    <- keyword_data$tab
     keyword_expr   <- keyword_data$s_arg
-  
-  # subset rows: if logic_expr is not NULL
+    
+    # subset rows: if logic_expr is not NULL
   } else {  
     
     subset_data   <- select_by_criteria(popler::summary_table, logic_expr)
@@ -72,11 +72,11 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
     
     # select columns based on whether or not the full table should be returned
     out_vars <- if(full_tbl==T){subset_data} else {subset_data[,possible_vars()]}
-  
+    
   } else { # if variables are declared explicitly
-      
+    
     # select cols based on vars, including 'proj_metadata_key' if not in vars
-    out_vars <- subset_data[,vars_check(vars)]
+    out_vars <- subset_data[,vars_check(vars), drop = F] # drop=F in case only length(var)==1 
   }
   
   
@@ -93,7 +93,7 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
   out            <- structure(out_form, 
                               class = c("popler", class(out_form) ),
                               search_argument = c(logic_expr,keyword_expr)[[1]]
-                              )
+  )
   
   return(out)
   
@@ -104,7 +104,7 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
 #' @noRd
 # implements the 'keyword' argument ANd operator in browse() 
 keyword_subset <- function(x, keyword){
-
+  
   #function: index of keywords
   i_keyw <- function(x,keyword) {
     ind <- which( grepl(keyword,x,ignore.case = T) )
@@ -202,13 +202,36 @@ taxa_nest <- function(x, full_tbl){
                'common_name','authority')
   }
   
-  # nest data set
-  out  <- x %>% 
-    group_by_(.dots = setdiff(names(x),taxas) ) %>%
-    nest(.key = taxas)
-  # Names of taxonomic lists
-  names(out$taxas)  <- paste0("taxa_project_#_",out$proj_metadata_key)
-
+  # check "x" variable names
+  
+  # if no taxonomy information provided 
+  if( any(names(x) %in% taxas) == FALSE ) out <- unique(summary_table[])
+  
+  # if only ONE of the taxonomic variables is provided
+  if( sum(names(x) %in% taxas) == 1 ){
+    
+    nested_var <- taxas[which( taxas %in% names(x) )]
+    out  <- x %>% 
+      group_by_(.dots = setdiff(names(x),taxas) ) %>%
+      nest_(key_col = nested_var, nest_cols = nested_var )
+    # Names of taxonomic lists
+    names(out[,nested_var][[1]]) <- paste0(nested_var,"_project_#_",out$proj_metadata_key)
+    
+  }
+  
+  # if more than ONE of the taxonomic variables is provided,
+  # then these multiple taxonomic variables are group under "taxas"
+  if( sum(names(x) %in% taxas) > 1 ){
+    
+    # nest data set
+    out  <- x %>% 
+      group_by_(.dots = setdiff(names(x),taxas) ) %>%
+      nest(.key = taxas)
+    # Names of taxonomic lists
+    names(out$taxas)  <- paste0("taxa_project_#_",out$proj_metadata_key)
+    
+  }
+  
   return(out)
   
 }
