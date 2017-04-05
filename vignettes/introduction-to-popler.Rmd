@@ -89,3 +89,19 @@ get_data(proj_metadata_key == 25)
 get_data(browse(genus == "Poa" & species == "fendleriana"), proj_metadata_key == 35)
 
 ```
+
+## Using obtaining extra covariates
+
+Most data sets provided by the USA LTER network contain more data than the standard variables accounted for by the standard schema of popler. In order not to loose the original data, popler stored all of the extra information in a character variable named `covariates`. The popler package provides two ways to format these covariates into a data frame: the `cov_unpack` argument in `get data`, and the `cov_unpack` function in popler.
+Setting the `cov_unpack` argument to TRUE returns a data frame that combines the variables of a default query to popler, and the covariates contained in each particular study downloaded through popler.
+
+```
+get_data(proj_metadata_key == 47, cov_unpack = TRUE)
+```
+
+Using the `cov_unpack` function on a data frame downloaded using `get_data` returns a data frame of the covariates contained in the downloaded object.
+
+```
+d_47 <- get_data(proj_metadata_key == 47)
+head( cov_unpack(d_47) )
+```
