@@ -128,7 +128,8 @@ vars_query <- function(conn){
   all_vars      <- c(proj_vars,lter_vars,site_vars, s_i_p_vars, taxa_vars, abund_vars)
   
   # a vector of "default" variables
-  default_vars  <- c("year","day","month","sppcode","genus","species","datatype",
+  default_vars  <- c("authors","authors_contact",
+                     "year","day","month","sppcode","genus","species","datatype",
                      "spatial_replication_level_1_label",
                      "spatial_replication_level_1",
                      "spatial_replication_level_2_label",
@@ -139,7 +140,7 @@ vars_query <- function(conn){
                      "spatial_replication_level_4",
                      "spatial_replication_level_5_label",
                      "spatial_replication_level_5",
-                     "authors","authors_contact","proj_metadata_key",
+                     "proj_metadata_key",
                      "structure_type_1","structure_type_2","structure_type_3","structure_type_4",
                      "treatment_type_1","treatment_type_2","treatment_type_3",
                      "covariates" 
