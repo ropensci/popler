@@ -193,7 +193,7 @@ taxa_nest <- function(x, full_tbl){
   
   # select taxonomic information (based on full_ or standard_table)
   if( full_tbl == FALSE){
-    taxas <- c("species","kingdom","phylum","class","order","family","genus")
+    taxas <- c("sppcode","species","kingdom","phylum","class","order","family","genus")
   } else {
     taxas <- c('sppcode','kingdom','subkingdom','infrakingdom',
                'superdivision','division','subdivision',
