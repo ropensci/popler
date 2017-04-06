@@ -9,23 +9,28 @@
 #' #tmp = browse()
 #' #study_names(tmp)
 #' vcr_dat = browse(lterid == "VCR")
-#' #study_names(vcr_dat)
+#' study_names(vcr_dat)
 #' #study_names(vcr_dat, width = 30)
 
 study_names <- function(browsed, width = 60){
   
   # re-browse data, with trim OFF
   if( is.null(attributes(browsed)$search_expr) ){
-    new_browsed <- browse(trim = F)
+    new_browsed <- browse(trim = FALSE)
   } else {
-    new_browsed <- browse(eval(attributes(browsed)$search_expr), trim = F)
+    call        <- attributes(browsed)$search_expr
+    new_browsed <- subset(summary_table, eval(call) )
   }
   
-  tmp = lapply(new_browsed$title,strwrap, width = width)
-  for(i in 1:length(tmp)){
+  # extract titles from object
+  titles  <- unique( new_browsed$title )
+  # Store 'wrapped' titles in a list 
+  title_l <- lapply(titles,strwrap, width = width)
+  
+  for(i in 1:length(title_l)){
     
-    tmp[[i]] = c(tmp[[i]],"\n")
-    writeLines(tmp[[i]])
+    title_l[[i]] <- c(title_l[[i]],"\n")
+    writeLines(title_l[[i]])
     
   }
 
