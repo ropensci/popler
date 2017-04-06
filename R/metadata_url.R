@@ -7,19 +7,40 @@
 #' @examples
 #' 
 #' # Load the metadata webpages of the projects that contain data from the Poa genus.
-#' poa_data = get_data(subset = genus == "Poa")
-#' metadata_url( poa_data )
+#' fes_d <- browse(genus == "Festuca")
+#' metadata_url( fes_d )
 
 # function definition 
 metadata_url <- function( data_object ){
-  # study id(s)
-  ids       <- attributes( data_object )$unique_projects
-  # main table
-  main_t    <- factor_to_character(main_popler)
-  main_t    <- select(main_t, proj_metadata_key, metalink)
   
-  for(i in 1:length(ids)){
-    link <- unique(subset(main_t, proj_metadata_key == ids[i])$metalink)
-    browseURL(link)
-  }
+  # study id(s)
+  proj_ids  <- attributes( data_object )$unique_projects
+  # main table
+  main_t    <- select(summary_table, proj_metadata_key, metalink)
+  
+  
+  # test whether object is produced by `browse` or `get_data` --------------------------------
+  if( is.null(proj_ids) ){
+    
+    ids <- unique(data_object$proj_metadata_key)
+    
+  } else ids <- proj_ids
+  
+  
+  # if length(ids) > 5, ask readers if they want to open all ## browsers ---------------------   
+  if( length(ids) > 5)  {
+    n <- readline(prompt=paste0("These are ",length(ids)," different projects. Do you want 
+to open a browser for each one of them? 
+Print 'N' if you want to refine the search(Y/N):") )
+    n <- tolower(n)
+  } else n <- "y"
+  
+  # open browsers --------------------------------------------------------------------
+  if( n == "y" ){
+    for(i in 1:length(ids)){
+      link <- unique(subset(main_t, proj_metadata_key == ids[i])$metalink)
+      browseURL(link)
+    }
+  } 
+
 }
