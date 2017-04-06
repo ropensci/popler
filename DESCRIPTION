@@ -13,6 +13,7 @@ Depends:
     dplyr,
     tidyr,
     RPostgreSQL,
+    DBI,
     stringr
 License: MIT
 Encoding: UTF-8
