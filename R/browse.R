@@ -162,7 +162,7 @@ possible_vars = function(){
            "structured_type_1","structured_type_2","structured_type_3","structured_type_4",
            "treatment_type_1","treatment_type_2","treatment_type_3",
            "lat_lter","lng_lter",
-           "species","kingdom","phylum","class","order","family","genus"))
+           "sppcode","species","kingdom","phylum","class","order","family","genus"))
            #"taxonomy")
 }
 
