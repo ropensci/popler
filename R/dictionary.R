@@ -234,6 +234,10 @@ dict_list <- function(x, select_columns){
   out[i_spec] <- out_spc
   out         <- setNames(out, names_out)
   
+  # remove NAs or "NA"
+  out         <- lapply(out, function(x) x <- x[!is.na(x)])
+  out         <- lapply(out, function(x) x <- x[x != "NA"])
+  
   return(out) 
   
 }
