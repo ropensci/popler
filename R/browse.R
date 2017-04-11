@@ -41,7 +41,12 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
   summary_table_check()
   
   # load summary table
+  
+  message("can we find the file?")
+  print(system.file("extdata","summary_table.rda",package="popler"))
+  message("can we load the file?")
   summary_table <- load(system.file("extdata","summary_table.rda",package="popler"))
+  print(dim(summary_table))
   
   # stop if user supplies both criteria and a keyword
   if( !is.null(substitute(...)) & !is.null(keyword)){
