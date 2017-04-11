@@ -64,6 +64,8 @@ lter_maps = function(input){
   }
   sbreaks <- c(s1, s2, s3)
   if(s3==1){ sbreaks <- 1}
+  if(s3==2){ sbreaks <- c(1,2)}
+  if(s3==3){ sbreaks <- c(1,2,3)}
   
   # draw Alaska-based locations
   ak = map_data('world', region='USA')
