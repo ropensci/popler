@@ -75,6 +75,36 @@ call_update = function(query){
   )
 }
 
+# given a browse() object or a get_data() object, returns an identical browse
+# object with full_tbl=T and trim=F
+rebrowse = function(input){
+  
+  # determine whether there's a get_data() object or a browse() object
+  
+  # if it's not a browse object...
+  if(is.null(input$proj_metadata_key)){
+    
+    # and if it's not a get_data object
+    if(is.null(attributes(input)$unique_projects)){
+      
+      stop("Input must be a browse() object or a get_data() object.")
+      
+    } else {
+      
+      # get unique proj_metadata_keys from get_data object
+      pmk <- paste0(attributes(input)$unique_projects,collapse=",")
+    }
+    
+  }  else {
+    
+    #get unique proj_metadata_keys from browse object
+    pmk <- paste0(input$proj_metadata_key,collapse=",")
+  }
+  
+  # re-run browse to get full table and untrimmed output
+  return(eval(parse(text=paste0("browse(proj_metadata_key %in% c(", pmk,"), full_tbl=T, trim=F)"))))
+}
+
 # generate main data table summary ---------------------------------------------
 summary_table_update = function(){
   
