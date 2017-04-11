@@ -1,24 +1,8 @@
+## need to add number of taxa
+
 fancy_browse=function(input, md_file="./browse.Rmd", html_file="./browse.html"){
   
-  # determine whether there's a get_data() object or a browse() object; get the
-  # appropriate full_tbl browse() object
-  
-  # if it's not a browse object...
-  if(is.null(input$proj_metadata_key)){
-    # and if it's not a get_data object
-    if(is.null(attributes(input)$unique_projects)){
-      stop("Input must be a browse() object or a get_data() object.")
-    } else {
-      # get unique proj_metadata_keys from get_data object
-      pmk <- paste0(attributes(input)$unique_projects,collapse=",")
-    }
-  }  else {
-    #get unique proj_metadata_keys from browse object
-    pmk <- paste0(input$proj_metadata_key,collapse=",")
-  }
-  
-  # re-run browse to get full table and untrimmed output
-  input <- eval(parse(text=paste0("browse(proj_metadata_key %in% c(", pmk,"), full_tbl=T, trim=F)")))
+  input <- rebrowse(input)
   
   # build the .Rmd file piecewise
   header <- c(
@@ -100,8 +84,12 @@ suppressWarnings(map <- lter_maps(A))
 
 ##### Project overview  
 
+```{r echo=FALSE}
+su <- gsub("m2","m$^{2}$",A$samplingunits[N])
+```
+
 * **study years:** `r A$studystartyr[N]` - `r A$studyendyr[N]` (`r A$duration_years[N]` years total)  
-* **data type:** `r A$datatype[N]` `r if(A$samplingunits[N]!="NA"){paste0(" (",A$samplingunits[N],")")}`  
+* **data type:** `r A$datatype[N]` `r if(su!="NA"){paste0(" (",su,")")}`  
 * **community data?:** `r A$community[N]`  
 * **is data derived?:** `r A$derived[N]`
 * **popler project ID:** `r A$proj_metadata_key[N]`  
