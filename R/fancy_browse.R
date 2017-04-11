@@ -1,5 +1,3 @@
-#W <- browse(community=="no" & datatype=="count", full_tbl=T, trim=F)
-
 fancy_browse=function(input){
   
   p0 <- c(
@@ -115,7 +113,7 @@ if(length(st_t)==0){st_t <- "none recorded"}
 
 # get control information
 st_c <- c(A$control_group)
-st_c <- st_c[!st_C %in% c("NA",NA)]
+st_c <- st_c[!st_c %in% c("NA",NA)]
 if(length(st_c)==0){st_c <- "none recorded"}
 ```
 * **treatment(s):** `r paste0(paste(st_t),collapse=", ")`  
@@ -142,7 +140,7 @@ if(length(st_c)==0){st_c <- "none recorded"}
 '  
   )
   
-  p1_new <- gsub("BROWSE_QUERY",deparse(attributes(input)$search_argument),p1)
+  p1_new <- gsub("BROWSE_QUERY",deparse(attributes(input)$search_expr),p1)
   
   p2_new <- rep(NA,nrow(input))
   for(i in 1:nrow(input)){
@@ -152,6 +150,7 @@ if(length(st_c)==0){st_c <- "none recorded"}
   sink("test.Rmd")
   cat(p0,p1_new,p2_new,p3)
   sink()
-  rmarkdown::render(file.path(path.to.file, paste0(file.name, ".Rmd")),quiet=T)
-  browseURL( file.path(path.to.file, paste0(file.name, ".html")))
+  
+  rmarkdown::render("./test.Rmd",quiet=T)
+  browseURL("./test.html")
 }
