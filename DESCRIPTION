@@ -8,20 +8,21 @@ Authors@R: c(
   person("Ochocki", "Brad", email = "brad.ochocki@rice.edu", role= c("aut")),
   person("Miller", "Tom", email = "tom.miller@rice.edu", role= c("aut")))
 Description: This package allows to browse and query the popler database.
-Depends:
+Imports:
     R (>= 3.0.0),
     dplyr,
     tidyr,
     RPostgreSQL,
+    DBI,
     stringr,
-    testthat,
     knitr,
     rmarkdown,
     maps,
     mapdata
 License: MIT
 Encoding: UTF-8
-Suggests:
+Suggests: 
+    testthat
 LazyData: true
 RoxygenNote: 5.0.1
 VignetteBuilder: knitr
