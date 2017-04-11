@@ -20,7 +20,7 @@ output: html_document
 <a name="contents"></a>  
 
 ### Table of Contents
-[Geographic overview](#geo)  
+[Geographic overview of sites](#geo)  
 [Project list](#projects)  
 [References](#refs)  
 
@@ -39,8 +39,7 @@ library(maps)
 library(mapdata)
 A <- browse(BROWSE_QUERY, full_tbl=T, trim=F)
 NN <- nrow(A)
-map("worldHires","usa", xlim=c(-125,-66.6),ylim=c(24.5,49.9), col="grey90", fill=TRUE, boundary=F)
-points(A$lng_lter, A$lat_lter, pch=19, col="dodgerblue", cex=1.2)
+suppressWarnings(map <- lter_maps(A))
 ```  
 
 <div style="text-align: right"> *[back to Table of Contents](#contents)* </div>  
