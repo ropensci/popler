@@ -45,7 +45,7 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
   }
   
   # error message if variable names are incorrect
-  vars_spell( vars, c(names(popler::summary_table),"taxonomy"), possible_vars() )
+  vars_spell( vars, c(names(popler:::summary_table),"taxonomy"), possible_vars() )
   
   # update user query to account for actual database variable names
   logic_expr   <- call_update(substitute(...))
@@ -54,14 +54,14 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
   # subset rows: if keyword is not NULL ---------------------------
   if( !is.null(keyword) ){ 
     
-    keyword_data   <- keyword_subset(popler::summary_table, keyword)
+    keyword_data   <- keyword_subset(popler:::summary_table, keyword)
     subset_data    <- keyword_data$tab
     keyword_expr   <- keyword_data$s_arg
     
     # subset rows: if logic_expr is not NULL
   } else {  
     
-    subset_data   <- select_by_criteria(popler::summary_table, logic_expr)
+    subset_data   <- select_by_criteria(popler:::summary_table, logic_expr)
     keyword_expr  <- NULL 
     
   }

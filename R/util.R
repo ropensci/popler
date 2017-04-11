@@ -170,8 +170,9 @@ summary_table_update = function(){
   summary_table <- colname_change("ordr", "order", summary_table)
   
   # store main data table--------------------------------------------------
-  suppressMessages(devtools::use_data(summary_table, overwrite=TRUE))
-  devtools::load_data()
+  st_file <- paste0(system.file("extdata", "", package = "popler"),"/summary_table.rda")
+  save(summary_table, file=st_file)
+  load(st_file, envir=parent.env(environment()), verbose=FALSE)
   
   # close database connection
   db_close(conn)
@@ -182,11 +183,12 @@ summary_table_update = function(){
 # check if the main table needs to be updated
 summary_table_check = function(){
   # if summary_table.rda does not exist, add it
-  if(!file.exists("./data/summary_table.rda")){
+  if(system.file("extdata", "summary_table.rda", package = "popler")==""){
     summary_table_update()
   } else {
+    
     wks_passed <- floor(as.numeric(difftime(Sys.time(),
-                                            file.mtime("./data/summary_table.rda"), 
+                                            file.mtime(system.file("extdata", "summary_table.rda", package = "popler")), 
                                             units=c("weeks"))))
     # if summary_table.rda does exist, but was created more than 6 weeeks ago,
     # prompt user to update the table.
