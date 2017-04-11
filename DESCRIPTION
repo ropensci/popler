@@ -19,8 +19,7 @@ Depends:
     knitr,
     rmarkdown,
     maps,
-    mapdata,
-    devtools
+    mapdata
 License: MIT
 Encoding: UTF-8
 Suggests:

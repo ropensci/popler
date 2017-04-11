@@ -171,19 +171,7 @@ summary_table_update = function(){
   
   # store main data table--------------------------------------------------
   st_file <- paste0(system.file("extdata", package = "popler"),"/summary_table.rda")
-  print(st_file)
   save(summary_table, file=st_file)
-  print("saved")
-  
-  #env <- parent.env(environment())
-  #print(bindingIsLocked(st_file,env))
-  #print(bindingIsLocked("summary_table",env))
-  #unlockBinding("summary_table",env)
-  #assign("summary_table", load(st_file, verbose=FALSE), envir = e)
-  
-  #load(st_file, envir=parent.env(environment()), verbose=FALSE)
-  
-  #print("loaded")
   
   # close database connection
   db_close(conn)
