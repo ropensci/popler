@@ -8,7 +8,7 @@ Authors@R: c(
   person("Ochocki", "Brad", email = "brad.ochocki@rice.edu", role= c("aut")),
   person("Miller", "Tom", email = "tom.miller@rice.edu", role= c("aut")))
 Description: This package allows to browse and query the popler database.
-Imports:
+Depends:
     R (>= 3.0.0),
     dplyr,
     tidyr,
