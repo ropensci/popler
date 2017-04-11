@@ -13,7 +13,6 @@ Depends:
     dplyr,
     tidyr,
     RPostgreSQL,
-    DBI,
     stringr,
     testthat,
     knitr,
