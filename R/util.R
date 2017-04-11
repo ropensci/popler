@@ -170,7 +170,7 @@ summary_table_update = function(){
   summary_table <- colname_change("ordr", "order", summary_table)
   
   # store main data table--------------------------------------------------
-  st_file <- paste0(system.file("extdata", "", package = "popler"),"/summary_table.rda")
+  st_file <- paste0(system.file("extdata", package = "popler"),"/summary_table.rda")
   print(st_file)
   save(summary_table, file=st_file)
   print("saved")

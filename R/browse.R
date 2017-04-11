@@ -37,6 +37,9 @@
 # The browse popler function
 browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE, keyword = NULL){
   
+  # check if the summary table exists or needs to be updated
+  summary_table_check()
+  
   # stop if user supplies both criteria and a keyword
   if( !is.null(substitute(...)) & !is.null(keyword)){
     stop("
