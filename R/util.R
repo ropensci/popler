@@ -183,7 +183,7 @@ db_close = function(connection){
 
 # evaluate a string using the local environment, return the evaluation as string
 string_eval_local = function(x){
-  deparse(eval(parse(text=paste0("local(",x,")"))))
+  paste0(deparse(eval(parse(text=paste0("local(",x,")")))),collapse="")
 }
 
 # changes a column name from one name to another
