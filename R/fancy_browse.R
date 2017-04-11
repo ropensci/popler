@@ -1,3 +1,5 @@
+#The main difference between library() and require() is what happens if a package isn’t found. While library() throws an error, require() prints a warning message and returns FALSE. In practice, this distinction isn’t important because when building a package you should NEVER use either inside a package. See package dependencies for what you should do instead.
+
 ## need to add number of taxa
 
 fancy_browse=function(input, md_file="./browse.Rmd", html_file="./browse.html"){
@@ -7,11 +9,6 @@ fancy_browse=function(input, md_file="./browse.Rmd", html_file="./browse.html"){
   # build the .Rmd file piecewise
   header <- c(
     '
----
-title: 
-author: 
-output: html_document
----
 <br>
 <img src="icon_leaf.png" alt="Drawing" style="height: 110px; float: right"/><br>
 
@@ -37,6 +34,10 @@ library(maps)
 library(mapdata)
 A <- browse(BROWSE_QUERY, full_tbl=T, trim=F)
 NN <- nrow(A)
+n_taxa <- rep(NA,NN)
+for(i in 1:NN){
+n_taxa[i] <- nrow(A$taxas[[i]])
+}
 ```
 
 '
@@ -90,8 +91,7 @@ su <- gsub("m2","m$^{2}$",A$samplingunits[N])
 
 * **study years:** `r A$studystartyr[N]` - `r A$studyendyr[N]` (`r A$duration_years[N]` years total)  
 * **data type:** `r A$datatype[N]` `r if(su!="NA"){paste0(" (",su,")")}`  
-* **community data?:** `r A$community[N]`  
-* **is data derived?:** `r A$derived[N]`
+* **number of unique taxa:** `r n_taxa[N]`  
 * **popler project ID:** `r A$proj_metadata_key[N]`  
 * [**citation**](#c`r N`)  
 * [**metadata link**](`r A$metalink[N]`)  
