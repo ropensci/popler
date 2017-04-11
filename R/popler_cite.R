@@ -1,7 +1,5 @@
-library("urlshorteneR")
-
 # returns a bibentry object
-popler_cite = function(input, short_links=F, bibtex_path=NULL){
+popler_cite = function(input, bibtex_path=NULL){
   
   input <- rebrowse(input)
   
@@ -36,13 +34,6 @@ popler_cite = function(input, short_links=F, bibtex_path=NULL){
     
     # if the et al flag was triggered, add an "et al" person
     if(etal){ new_aut <- c(new_aut,person(given="et al")) }
-    
-    # shorten metadata links?
-    if(short_links==T){
-      link <- isgd_LinksShorten(input$metalink[i])
-    } else {
-      link <- input$metalink[i]
-    }
     
     # create a bibentry for each proj_metadata_key
     bib <- c(bib,bibentry(
