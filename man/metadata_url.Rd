@@ -16,7 +16,7 @@ This is a wrapper of function browseURL in base.
 \examples{
 
 # Load the metadata webpages of the projects that contain data from the Poa genus.
-poa_data = get_data(subset = genus == "Poa")
-metadata_url( poa_data )
+fes_d <- browse(genus == "Festuca")
+metadata_url( fes_d )
 }
 

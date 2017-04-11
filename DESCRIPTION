@@ -17,7 +17,10 @@ Depends:
     stringr,
     testthat,
     knitr,
-    rmarkdown
+    rmarkdown,
+    maps,
+    mapdata,
+    devtools
 License: MIT
 Encoding: UTF-8
 Suggests:

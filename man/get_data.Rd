@@ -4,7 +4,7 @@
 \alias{get_data}
 \title{Browse the popler database}
 \usage{
-get_data(..., add_vars = NULL, subtract_vars = NULL)
+get_data(..., add_vars = NULL, subtract_vars = NULL, cov_unpack = FALSE)
 }
 \arguments{
 \item{...}{A list of one or two objects: an object produced by browse, a logical expression, or both.}
@@ -12,6 +12,8 @@ get_data(..., add_vars = NULL, subtract_vars = NULL)
 \item{add_vars}{A string to specify which variables the user wants to add to the default variables used in a query.}
 
 \item{subtract_vars}{A string to specify which, among the default variables, the user wishes to discard in queries to the database}
+
+\item{cov_unpack}{Should covariates be unpacked? This argument uses function `cov_unpack` to extract the variables contained in the variable `covariates`, and combine the new columns with the default output.}
 }
 \value{
 A data frame of the selected data.

@@ -20,6 +20,6 @@ Prints the names of popler studies as paragraphs of known width. This is a wrapp
 #study_names(tmp)
 vcr_dat = browse(lterid == "VCR")
 study_names(vcr_dat)
-study_names(vcr_dat, width = 30)
+#study_names(vcr_dat, width = 30)
 }
 
