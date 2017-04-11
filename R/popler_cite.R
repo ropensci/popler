@@ -42,7 +42,7 @@ popler_cite = function(input, bibtex_path=NULL){
       author = new_aut,
       year = input$studyendyr[i],
       note = input$lter_name[i],
-      url = link))
+      url = input$metalink[i]))
   }
   
   # write a bibtex file if path is specified
