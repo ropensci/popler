@@ -7,5 +7,5 @@
   #summary_table_check()
   
   # load the summary table into the namespace
-  devtools::load_data()
+  #devtools::load_data()
 }
