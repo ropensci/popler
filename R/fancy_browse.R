@@ -1,6 +1,27 @@
-fancy_browse=function(input){
+fancy_browse=function(input, md_file="./browse.Rmd", html_file="./browse.html"){
   
-  p0 <- c(
+  # determine whether there's a get_data() object or a browse() object; get the
+  # appropriate full_tbl browse() object
+  
+  # if it's not a browse object...
+  if(is.null(input$proj_metadata_key)){
+    # and if it's not a get_data object
+    if(is.null(attributes(input)$unique_projects)){
+      stop("Input must be a browse() object or a get_data() object.")
+    } else {
+      # get unique proj_metadata_keys from get_data object
+      pmk <- paste0(attributes(input)$unique_projects,collapse=",")
+    }
+  }  else {
+    #get unique proj_metadata_keys from browse object
+    pmk <- paste0(input$proj_metadata_key,collapse=",")
+  }
+  
+  # re-run browse to get full table and untrimmed output
+  input <- eval(parse(text=paste0("browse(proj_metadata_key %in% c(", pmk,"), full_tbl=T, trim=F)")))
+  
+  # build the .Rmd file piecewise
+  header <- c(
     '
 ---
 title: 
@@ -20,47 +41,58 @@ output: html_document
 <a name="contents"></a>  
 
 ### Table of Contents
-[Geographic overview of sites](#geo)  
-[Project list](#projects)  
-[References](#refs)  
+* [Geographic overview of sites](#geo)  
+* [Project list](#projects)  
+* [Data type descriptions](#dat)  
+* [References](#refs)  
 
-***  
-<a name="geo"></a>  
-
-### Geographic overview of sites
-'
-  )
-  
-  p1 <- c(
-    '
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
+# required calculations
 library(popler)
 library(maps)
 library(mapdata)
 A <- browse(BROWSE_QUERY, full_tbl=T, trim=F)
 NN <- nrow(A)
-suppressWarnings(map <- lter_maps(A))
-```  
+```
 
+'
+  )
+
+  # geographic overview of sites  
+  geo <- c(
+'
+***  
+<a name="geo"></a>  
+    
+### Geographic overview of sites
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+suppressWarnings(map <- lter_maps(A))
+```
 <div style="text-align: right"> *[back to Table of Contents](#contents)* </div>  
   
-***  
-<a name="projects"></a>  
-    
-### Project list
-`r paste0("<br>",1:NN,". [",A$title,"](#",1:NN,")", collapse="")`  
-  
-***  
 '
   )
   
-  p2 <- c(
-    '
+  # project list
+  proj_list <- c(
+'
+***  
+<a name="projects"></a>  
+
+### Project list
+`r paste0("<br>",1:NN,". [",A$title,"](#",1:NN,")", collapse="")`  
+
+***  
+'    
+  )
+  
+  # project descriptions
+  proj <- c(
+'
 `r N<-X`
 <a name="`r N`"></a>  
 
 #### `r N`. `r A$title[N]` <a name="`r N`"></a>  
-*[metadata link](`r A$metalink[N]`)*  
 
 ##### LTER site overview  
 * **Site name:** `r A$lter_name[N]` (`r A$lterid[N]`)  
@@ -69,11 +101,12 @@ suppressWarnings(map <- lter_maps(A))
 ##### Project overview  
 
 * **study years:** `r A$studystartyr[N]` - `r A$studyendyr[N]` (`r A$duration_years[N]` years total)  
-* **data type:** `r A$datatype[N]`  
+* **data type:** `r A$datatype[N]` `r if(A$samplingunits[N]!="NA"){paste0(" (",A$samplingunits[N],")")}`  
 * **community data?:** `r A$community[N]`  
 * **is data derived?:** `r A$derived[N]`
 * **popler project ID:** `r A$proj_metadata_key[N]`  
 * [**citation**](#c`r N`)  
+* [**metadata link**](`r A$metalink[N]`)  
 
 ##### Study design information  
 
@@ -83,6 +116,7 @@ st_p <- c(A$structured_type_1[N],A$structured_type_2[N],A$structured_type_3[N],A
 un_p <- c(A$structured_type_1_units[N], A$structured_type_2_units[N], A$structured_type_3_units[N], A$structured_type_4_units[N])
 st_p <- st_p[!st_p %in% "NA"]
 un_p <- paste0("(",un_p[!un_p %in% "NA"],")")
+un_p <- gsub("m2","m$^{2}$",un_p)
 if(length(st_p)==0){st_p <- "none recorded"; un_p <- ""}
 
 # get spatial structure information
@@ -99,6 +133,7 @@ rp_s <- as.character(rp_s)
 la_s[la_s %in% "NA"]     <- ""
 ex_s[ex_s %in% "-99999"] <- ""
 un_s[un_s %in% "NA"]     <- ""
+un_s <- gsub("m2","m$^{2}$",un_s)
 rp_s[rp_s %in% NA]       <- ""
 spat <- paste(la_s," (",ex_s," ",un_s," , _N_ = ",rp_s,")",sep="")
 spat <- spat[!la_s == ""]
@@ -110,26 +145,43 @@ st_t <- c(A$treatment_type_1[N],A$treatment_type_2[N],A$treatment_type_3[N])
 st_t <- st_t[!st_t %in% c("NA",NA)]
 if(length(st_t)==0){st_t <- "none recorded"}
 
-# get control information
-st_c <- c(A$control_group)
-st_c <- st_c[!st_c %in% c("NA",NA)]
-if(length(st_c)==0){st_c <- "none recorded"}
 ```
 * **treatment(s):** `r paste0(paste(st_t),collapse=", ")`  
-* **control:** `r st_c`  
 * **poplulation structure:** `r paste0(paste(st_p,un_p),collapse=", ")`  
-* **sampling frequency:** `r A$samplefreq[N]`  
+* **sampling frequency:** `r gsub("yr","year",A$samplefreq[N])`  
 * **spatial replication levels:**  `r spat`  
-* **total spatial replication:**  `r A$tot_spat_rep[N]`  
 
 <div style="text-align: right"> *[back to Project list](#projects)* </div>
 
 ***  
 '
   )
+
+  # datatype descriptions
+  dat <- c(
+'
+<a name="dat"></a>  
+
+### Data type descriptions  
+
+* **count:** An integer count of individuals.  
+* **cover:** A measure of the area occupied by individuals. Cover can be recorded as any of the following:  
+    + a *categotical variable;* for example, “1” if individuals cover between 0 and 5% of surface, “2” if they cover 5-20% of surface, etc.  
+    + a *percentage;* for example, 0-100% of a sampled area is covered.  
+    + a *count;* for example, in the case of a line transect with 40 observations, cover could be an integer from 0 to 40.  
+* **biomass:** A measure of the biomass of sampled individuals.  
+* **density:** A derived quantity obtained by dividing a count of individuals over a line, an area, or a volume.  
+* **individual:** Each observation refers to an individual. This individual will be characterized by a measure of structure (see `structured_type`, and `structured_type_units`)  
+
+<div style="text-align: right"> *[back to Project list](#projects)* </div>  
+
+***  
+'    
+  )  
   
-  p3 <- c(
-    '
+  # references  
+  refs <- c(
+'
 <a name="refs"></a>  
 
 ### References
@@ -138,18 +190,22 @@ if(length(st_c)==0){st_c <- "none recorded"}
 <div style="text-align: right"> *[back to Project list](#projects)* </div>
 '  
   )
+
+  # change browse query  in header
+  header <- gsub("BROWSE_QUERY",paste0(deparse(attributes(input)$search_expr),collapse=""),header)
   
-  p1_new <- gsub("BROWSE_QUERY",deparse(attributes(input)$search_expr),p1)
-  
-  p2_new <- rep(NA,nrow(input))
+  # update project block
+  proj_new <- rep(NA,nrow(input))
   for(i in 1:nrow(input)){
-    p2_new[i] <- gsub("`r N<-X",paste0("`r N<-",i),p2)
+    proj_new[i] <- gsub("`r N<-X",paste0("`r N<-",i),proj)
   }
   
-  sink("test.Rmd")
-  cat(p0,p1_new,p2_new,p3)
+  # make markdown file
+  sink(md_file)
+  cat(header, geo, proj_list, proj_new, dat, refs)
   sink()
   
-  rmarkdown::render("./test.Rmd",quiet=T)
-  browseURL("./test.html")
+  # launch browser window
+  rmarkdown::render(md_file,quiet=T)
+  browseURL(html_file)
 }

@@ -42,7 +42,7 @@ lter_maps = function(input){
   input <- eval(parse(text=paste0("browse(proj_metadata_key %in% c(", pmk,"), full_tbl=T, trim=F)")))
   
   B <- table(input$lng_lter,input$lat_lter)
-  latlon_count <- data.frame(lat=NA,lon=NA,count=NA)
+  latlon_count <- data.frame(lat=NA,lon=NA,count=-0.1)
   for(i in 1:nrow(B)){
     for(j in 1:ncol(B)){
       if(B[i,j]>0){
@@ -54,6 +54,17 @@ lter_maps = function(input){
     }
   }
   
+  # circle sizes for scale_size_area()
+  s1 <- 1
+  s3 <- max(latlon_count$count,na.rm=T)
+  if(s3 %% 2){
+    s2 <- (s3 - 1) / 2
+  } else {
+    s2 <- s3 / 2
+  }
+  sbreaks <- c(s1, s2, s3)
+  if(s3==1){ sbreaks <- 1}
+  
   # draw Alaska-based locations
   ak = map_data('world', region='USA')
   ak = ak[which(ak$subregion == 'Alaska'),]
@@ -64,6 +75,7 @@ lter_maps = function(input){
     geom_point(data = latlon_count, aes(x=lon, y=lat, size=count), alpha=0.5) + 
     scale_x_continuous(limits = c(-180,-129), expand = c(0, 0)) +
     scale_y_continuous(limits = c(50,72), expand = c(0, 0)) +
+    ylab("Latitude") +
     coord_map()
   
   # draw US-based locations
@@ -76,6 +88,7 @@ lter_maps = function(input){
     geom_point(data = latlon_count, aes(x=lon, y=lat, size=count), alpha=0.5) + 
     scale_x_continuous(limits = c(-126,-66.6), expand = c(0, 0)) +
     scale_y_continuous(limits = c(24.5,50), expand = c(0, 0)) +
+    scale_size_area(breaks=sbreaks, guide=guide_legend(title = "Number of\nprojects")) + 
     coord_map()
   
   # draw Antarctica-based locations
@@ -88,6 +101,7 @@ lter_maps = function(input){
     geom_point(data = latlon_count, aes(x=lon, y=lat, size=count), alpha=0.5) + 
     scale_x_continuous(limits = c(-180,180), expand = c(0, 0)) +
     scale_y_continuous(limits = c(-85,-60), expand = c(0, 0)) +
+    xlab("Longitude") +
     coord_map()
   
   # print it all on a panel
