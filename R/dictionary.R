@@ -16,14 +16,13 @@
 
 dictionary <- function(..., full_tbl = FALSE){
   
-  # main table ------------------------------------------------------------
+  # summary table ------------------------------------------------------------
   
-  # Load main data table and convert factors to characters
-  #main_t        <- factor_to_character(main_popler)
-  # Case insensitive matching ("lower" everything)
-  #names(main_t) <- tolower( names(main_t) )
-  # variable name change: clss to class and ordr to order
-  #main_t        <- class_order_names(main_t)
+  ## check if the summary table exists or needs to be updated
+  summary_table_check()
+  
+  # load summary table
+  load(system.file("extdata","summary_table.rda",package="popler"))
   
   # variables ------------------------------------------------
 

@@ -2,7 +2,6 @@ lter_maps = function(input){
   
   # a function for making panel plots
   multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
-    library(grid)
     
     # Make a list from the ... arguments and plotlist
     plots <- c(list(...), plotlist)
@@ -23,24 +22,24 @@ lter_maps = function(input){
       
     } else {
       # Set up the page
-      grid.newpage()
-      pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+      grid::grid.newpage()
+      grid::pushViewport(grid::viewport(layout = grid::grid.layout(nrow(layout), ncol(layout))))
       
       # Make each plot, in the correct location
       for (i in 1:numPlots) {
         # Get the i,j matrix positions of the regions that contain this subplot
         matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
         
-        print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+        print(plots[[i]], vp = grid::viewport(layout.pos.row = matchidx$row,
                                         layout.pos.col = matchidx$col))
       }
     }
   }
   
   # re-run browse to get full table and untrimmed output
-  pmk <- paste0(input$proj_metadata_key,collapse=",")
-  input <- eval(parse(text=paste0("browse(proj_metadata_key %in% c(", pmk,"), full_tbl=T, trim=F)")))
+  input <- rebrowse(input)
   
+  # get lat-long counts for each site
   B <- table(input$lng_lter,input$lat_lter)
   latlon_count <- data.frame(lat=NA,lon=NA,count=-0.1)
   for(i in 1:nrow(B)){

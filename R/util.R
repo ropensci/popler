@@ -31,10 +31,10 @@ call_update = function(query){
   LHS_RHS <- matrix(unlist(strsplit(query_arg,f_compn)),ncol=2,byrow=T)
   
   # find logical operators in the query by searching query_str
-  logic <- c(str_extract_all(query_str,f_logic)[[1]],"")
+  logic <- c(stringr::str_extract_all(query_str,f_logic)[[1]],"")
   
   # find comparison operators in each argument by searching query_arg
-  comps <- unlist(str_extract_all(query_arg,f_compn))
+  comps <- unlist(stringr::str_extract_all(query_arg,f_compn))
   
   # make a list where each element is an argument in the query, updating LHS of
   # an argument when necessary
@@ -80,27 +80,23 @@ call_update = function(query){
 rebrowse = function(input){
   
   # determine whether there's a get_data() object or a browse() object
-  
-  # if it's not a browse object...
-  if(is.null(input$proj_metadata_key)){
+  if(class(input)[1]=="popler" & length(class(input))==4){
     
-    # and if it's not a get_data object
-    if(is.null(attributes(input)$unique_projects)){
-      
-      stop("Input must be a browse() object or a get_data() object.")
-      
-    } else {
-      
-      # get unique proj_metadata_keys from get_data object
-      pmk <- paste0(attributes(input)$unique_projects,collapse=",")
-    }
-    
-  }  else {
-    
-    #get unique proj_metadata_keys from browse object
+    # if it's a browse() object, get unique proj_metadata_keys
     pmk <- paste0(input$proj_metadata_key,collapse=",")
+    
+  } else if(class(input)[1]=="popler" & length(class(input))==2) {
+    
+    # if it's a get_data() object get unique_projects
+    pmk <- paste0(attributes(input)$unique_projects,collapse=",")
+    
+  } else {
+    
+    # otherwise throw an error
+    stop("Input must be a browse() object or a get_data() object.")
+    
   }
-  
+
   # re-run browse to get full table and untrimmed output
   return(eval(parse(text=paste0("browse(proj_metadata_key %in% c(", pmk,"), full_tbl=T, trim=F)"))))
 }
@@ -243,13 +239,13 @@ popler_connector = function (dbname=NULL, host=NULL, port=NULL, user=NULL, passw
   user <- if(is.null(user)){
     if(identical(Sys.getenv("TRAVIS"), "true")){"postgres"} else {""} 
     } else user
-  con <- dbConnect(RPostgreSQL::PostgreSQL(), 
+  con <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(), 
                    host     = if(is.null(host))     "" else host, 
                    dbname   = if(is.null(dbname))   "" else dbname, 
                    user     = user, 
                    password = if(is.null(password)) "" else password, 
                    port     = if(is.null(port))     "" else port)
-  info <- dbGetInfo(con)
+  info <- RPostgreSQL::dbGetInfo(con)
   src_sql("postgres", con, info=info, disco=popler_disconnector(con,"postgres",silent))
 }
 
@@ -262,7 +258,7 @@ popler_disconnector = function (con, name, silent = TRUE)
       message("Auto-disconnecting ", name, " connection to popler database ", 
               "(", paste(con@Id, collapse = ", "), ")")
     }
-    dbDisconnect(con)
+    RPostgreSQL::dbDisconnect(con)
   })
   environment()
 }

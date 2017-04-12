@@ -156,7 +156,7 @@ select_by_criteria <- function(x,criteria){
           2. the values you are looking for are not contained in the variable(s) you specified")
   }
   
-  return(tbl_df(out))
+  return(dplyr::tbl_df(out))
 }
 
 
@@ -232,7 +232,7 @@ taxa_nest <- function(x, full_tbl){
     # nest data set
     out  <- x %>% 
       group_by_(.dots = setdiff(names(x),taxas) ) %>%
-      nest(.key = taxas)
+      tidyr::nest(.key = taxas)
     # Names of taxonomic lists
     names(out$taxas)  <- paste0("taxa_project_#_",out$proj_metadata_key)
     
