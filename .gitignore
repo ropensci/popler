@@ -1,5 +1,7 @@
 .Rbuildignore
 .Rhistory
 .Rproj.user
+browse.html
+browse.Rmd
 inst/doc
 *#
