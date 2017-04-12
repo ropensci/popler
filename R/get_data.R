@@ -99,7 +99,7 @@ get_data <- function(..., add_vars = NULL, subtract_vars = NULL,
                            unique_authors  = unique(output_data[,c("proj_metadata_key",
                                                                    "authors",
                                                                    "authors_contact")]),
-                           class = c("popler", class(output_data)) 
+                           class = c("popler", "get_data", class(output_data)) 
   )
   
   # Informational message
