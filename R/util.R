@@ -77,28 +77,18 @@ call_update = function(query){
 
 # given a browse() object or a get_data() object, returns an identical browse
 # object with full_tbl=T and trim=F
-rebrowse = function(input){
-  
-  # determine whether there's a get_data() object or a browse() object
-  if(class(input)[1]=="popler" & length(class(input))==4){
-    
-    # if it's a browse() object, get unique proj_metadata_keys
-    pmk <- paste0(input$proj_metadata_key,collapse=",")
-    
-  } else if(class(input)[1]=="popler" & length(class(input))==2) {
-    
-    # if it's a get_data() object get unique_projects
-    pmk <- paste0(attributes(input)$unique_projects,collapse=",")
-    
-  } else {
-    
-    # otherwise throw an error
-    stop("Input must be a browse() object or a get_data() object.")
-    
-  }
+rebrowse <- function(popler, ...){
+  UseMethod("rebrowse")
+}
 
-  # re-run browse to get full table and untrimmed output
-  return(eval(parse(text=paste0("browse(proj_metadata_key %in% c(", pmk,"), full_tbl=T, trim=F)"))))
+rebrowse.browse <- function(popler, ...) {
+  pmk <- paste0(popler$proj_metadata_key, collapse=",")
+  return(browse(proj_metadata_key %in% pmk, full_tbl=TRUE, trim=FALSE))
+}
+
+rebrowse.get_data <- function(popler, ...) {
+  pmk <- paste0(attributes(popler)$unique_projects, collapse=",")
+  return(browse(proj_metadata_key %in% pmk, full_tbl=TRUE, trim=FALSE))
 }
 
 # generate main data table summary ---------------------------------------------
