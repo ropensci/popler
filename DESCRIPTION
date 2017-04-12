@@ -9,12 +9,12 @@ Authors@R: c(
   person("Miller", "Tom", email = "tom.miller@rice.edu", role= c("aut")))
 Description: This package allows to browse and query the popler database.
 Depends:
-    R (>= 3.0.0)
+    R (>= 3.0.0), dplyr, ggplot2
 Imports:
-    tibble, dplyr, stringi, lazyeval, magrittr, Rcpp, methods,
+    tibble, stringi, lazyeval, magrittr, Rcpp, methods,
     evaluate, digest, highr, markdown, stringr, yaml, tools, utils, knitr,
     htmltools, caTools, base64enc, jsonlite, rprojroot, grid, gtable, MASS,
-    plyr, reshape2, scales, stats, ggplot2, proto, RgoogleMaps, png, rjson,
+    plyr, reshape2, scales, stats, maps, proto, RgoogleMaps, png, rjson,
     mapproj, jpeg, geosphere
 License: MIT
 Encoding: UTF-8
