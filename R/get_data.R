@@ -127,6 +127,10 @@ vars_query <- function(conn){
   # a vector containing all variables
   all_vars      <- c(proj_vars,lter_vars,site_vars, s_i_p_vars, taxa_vars, abund_vars)
   
+  # remove some variables that are in the database but we don't want to return
+  # this is a temporary fix until we remove those columns from the database.
+  all_vars[!all_vars %in% c("currently_funded","homepage")]
+  
   # a vector of "default" variables
   default_vars  <- c("authors","authors_contact",
                      "year","day","month","sppcode","genus","species","datatype",
