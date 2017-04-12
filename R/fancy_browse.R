@@ -26,12 +26,11 @@ fancy_browse=function(input, md_file="./browse.Rmd", html_file="./browse.html"){
 * [Project list](#projects)  
 * [Data type descriptions](#dat)  
 * [References](#refs)  
+* [Acknowledgments](#ack)  
+* [Code to reproduce this search](#code)  
 
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
 # required calculations
-library(popler)
-library(maps)
-library(mapdata)
 A <- browse(BROWSE_QUERY, full_tbl=T, trim=F)
 NN <- nrow(A)
 n_taxa <- rep(NA,NN)
@@ -42,10 +41,10 @@ n_taxa[i] <- nrow(A$taxas[[i]])
 
 '
   )
-
+  
   # geographic overview of sites  
   geo <- c(
-'
+    '
 ***  
 <a name="geo"></a>  
     
@@ -161,7 +160,7 @@ if(length(st_t)==0){st_t <- "none recorded"}
 * **density:** A derived quantity obtained by dividing a count of individuals over a line, an area, or a volume.  
 * **individual:** Each observation refers to an individual. This individual will be characterized by a measure of structure (see `structured_type`, and `structured_type_units`)  
 
-<div style="text-align: right"> *[back to Project list](#projects)* </div>  
+<div style="text-align: right"> *[back to Table of Contents](#contents)* </div>  
 
 ***  
 '    
@@ -175,8 +174,51 @@ if(length(st_t)==0){st_t <- "none recorded"}
 ### References
 `r paste(paste0("<br><a name=c",1:NN,"></a>[",1:NN,".](#",1:NN,") ",format(popler_cite(A)$bibliography),collapse="<br>"))`  
 
-<div style="text-align: right"> *[back to Project list](#projects)* </div>
+<div style="text-align: right"> *[back to Table of Contents](#contents)* </div> 
+
+*** 
 '  
+  )
+  
+  # acknowledgements  
+  ack <- c(
+'
+<a name="ack"></a>  
+
+### Acknowledgements
+`r popler:::popler_cite(A)$acknowledgement`  
+
+<div style="text-align: right"> *[back to Table of Contents](#contents)* </div> 
+
+*** 
+'  
+  )
+  
+  code <- c(
+    '
+<a name="code"></a>  
+
+### Code to reproduce this search  
+```r
+# store the unique project metadata keys
+pmk <- c(`r A$proj_metadata_key`)
+
+# make a browse object and view the metadata
+metadata <- browse(proj_metadata_key %in% pmk, full_tbl=TRUE, trim=FALSE, interact=TRUE)
+
+# download the data
+data <- get_data(metadata)
+
+# cite the projects
+cite <- popler_cite(metadata)
+
+# cite$bibliography          # the bibliography
+# cite$Bibtex                # Bibtex entries for each dataset
+# cite$acknowledgement       # acknowledgement template
+```  
+<div style="text-align: right"> *[back to Table of Contents](#contents)* </div>  
+
+'    
   )
 
   # change browse query  in header
@@ -190,7 +232,7 @@ if(length(st_t)==0){st_t <- "none recorded"}
   
   # make markdown file
   sink(md_file)
-  cat(header, geo, proj_list, proj_new, dat, refs)
+  cat(header, geo, proj_list, proj_new, dat, refs, ack, code)
   sink()
   
   # launch browser window
