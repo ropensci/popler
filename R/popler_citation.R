@@ -1,5 +1,5 @@
 # returns a bibentry object
-popler_cite = function(input, bibtex_path=NULL){
+popler_citation = function(input, bibtex_path=NULL){
   
   input <- rebrowse(input)
   

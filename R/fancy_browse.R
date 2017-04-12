@@ -172,7 +172,7 @@ if(length(st_t)==0){st_t <- "none recorded"}
 <a name="refs"></a>  
 
 ### References
-`r paste(paste0("<br><a name=c",1:NN,"></a>[",1:NN,".](#",1:NN,") ",format(popler_cite(A)$bibliography),collapse="<br>"))`  
+`r paste(paste0("<br><a name=c",1:NN,"></a>[",1:NN,".](#",1:NN,") ",format(popler_citation(A)$bibliography),collapse="<br>"))`  
 
 <div style="text-align: right"> *[back to Table of Contents](#contents)* </div> 
 
@@ -186,7 +186,7 @@ if(length(st_t)==0){st_t <- "none recorded"}
 <a name="ack"></a>  
 
 ### Acknowledgements
-`r popler:::popler_cite(A)$acknowledgement`  
+`r popler:::popler_citation(A)$acknowledgement`  
 
 <div style="text-align: right"> *[back to Table of Contents](#contents)* </div> 
 
@@ -210,7 +210,7 @@ metadata <- browse(proj_metadata_key %in% pmk, full_tbl=TRUE, trim=FALSE, intera
 data <- get_data(metadata)
 
 # cite the projects
-cite <- popler_cite(metadata)
+cite <- popler_citation(metadata)
 
 # cite$bibliography          # the bibliography
 # cite$Bibtex                # Bibtex entries for each dataset
