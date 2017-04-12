@@ -52,9 +52,11 @@ popler_cite = function(input, bibtex_path=NULL){
     sink()
   }
   
+  lter_names <- sort(unique(input$lter_name))
   # generate an acknowledgement template
   acknowledgement = paste0("The data in this study were collected by the following NSF LTER research programs: ", 
-                           paste0(unique(input$lter_name),collapse=", "),".")
+                           paste0(lter_names[-length(lter_names)],collapse=", "),
+                           " and ", lter_names[length(lter_names)],".")
   
   # return a list
   return(list(bibliography    = bib,
