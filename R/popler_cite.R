@@ -56,43 +56,10 @@ popler_cite = function(input, bibtex_path=NULL){
   # generate an acknowledgement template
   acknowledgement = paste0("The data in this study were collected by the following NSF LTER research programs: ", 
                            paste0(lter_names[-length(lter_names)],collapse=", "),
-                           " and ", lter_names[length(lter_names)],".")
+                           ", and ", lter_names[length(lter_names)],".")
   
   # return a list
   return(list(bibliography    = bib,
               Bibtex          = toBibtex(bib),
               acknowledgement = acknowledgement))
 }
-
-# A <- browse(community=="no" & datatype=="count",trim=F, full_tbl = T)
-# B <- browse(community=="no" & datatype=="density")
-# C <- get_data(B)
-# 
-# bib1 <- popler_cite(A, bibtex_path = "./test.bib")
-# bib1$bibliography
-# bib1$Bibtex
-# bib1$acknowledgement
-# 
-# bib2 <- popler_cite(B)
-# bib2$bibliography
-# bib2$Bibtex
-# bib2$acknowledgement
-# 
-# bib3 <- popler_cite(C)
-# bib3$bibliography
-# bib3$Bibtex
-# bib3$acknowledgement
-# 
-# bib4 <- popler_cite(A, short_links=T)
-# bib4$bibliography
-# bib4$Bibtex
-# bib3$acknowledgement
-# 
-# i <- 4
-# bib <- bibentry(
-#   bibtype = "Misc",
-#   title = A$title[i],
-#   author = A$authors[i],
-#   year = A$studyendyr[i],
-#   note = A$lter_name[i],
-#   url = link)
