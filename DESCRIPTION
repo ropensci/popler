@@ -9,13 +9,42 @@ Authors@R: c(
   person("Miller", "Tom", email = "tom.miller@rice.edu", role= c("aut")))
 Description: This package allows to browse and query the popler database.
 Depends:
-    R (>= 3.0.0), dplyr, ggplot2
+    R (>= 3.0.0), 
+    dplyr (>= 0.5.0), 
+    ggplot2 (>= 2.2.1)
 Imports:
-    tibble, stringi, lazyeval, magrittr, Rcpp, methods, RPostgreSQL,
-    evaluate, digest, highr, markdown, stringr, yaml, tools, utils, knitr,
-    htmltools, caTools, base64enc, jsonlite, rprojroot, grid, gtable, MASS,
-    plyr, reshape2, scales, stats, maps, proto, RgoogleMaps, png, rjson,
-    mapproj, jpeg, geosphere
+    base64enc (>= 0.1.3),
+    caTools (>= 1.17.1),
+    digest (>= 0.6.12),
+    geosphere (>= 1.5.5),
+    grid (>= 3.3.0),
+    gtable (>= 0.2.0),
+    highr (>= 0.6),
+    jsonlite (>= 1.4),
+    knitr (>= 1.15.1),
+    htmltools (>= 0.3.5),
+    lazyeval (>= 0.2.0),
+    magrittr (>= 1.5),
+    mapproj (>= 1.2.4),
+    maps (>= 3.1.1),
+    markdown (>= 0.7.7),
+    plyr (>= 1.8.4),
+    proto (>= 1.0.0),
+    Rcpp (>= 0.12.10),
+    reshape2 (>= 1.4.2),
+    RgoogleMaps (>= 1.4.1),
+    rjson (>= 0.2.15),
+    RPostgreSQL (>= 0.4.1),
+    evaluate (>= 0.10),
+    rprojroot (>= 1.2),
+    scales (>= 0.4.1),
+    stats (>= 3.3.0),
+    stringi (>= 1.1.5),
+    stringr (>= 1.2.0),
+    tibble (>= 1.3.0),
+    tools (>= 3.3.0),
+    utils (>= 3.3.0),
+    yaml (>= 2.1.14)
 License: MIT
 Encoding: UTF-8
 Suggests: 
