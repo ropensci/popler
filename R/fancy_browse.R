@@ -10,7 +10,7 @@ fancy_browse=function(input, md_file="./browse.Rmd", html_file="./browse.html"){
   header <- c(
     '
 <br>
-<img src="icon_leaf.png" alt="Drawing" style="height: 110px; float: right"/><br>
+<img src= `r system.file("icon.png",package="popler")` alt="Drawing" style="height: 110px; float: right"/><br>
 
 # Metadata Summary  
 
