@@ -83,12 +83,12 @@ rebrowse <- function(popler, ...){
 
 rebrowse.browse <- function(popler, ...) {
   pmk <- paste0(popler$proj_metadata_key, collapse=",")
-  return(browse(proj_metadata_key %in% pmk, full_tbl=TRUE, trim=FALSE))
+  return(eval(parse(text=paste0("browse(proj_metadata_key %in% c(", pmk,"), full_tbl=T, trim=F)"))))
 }
 
 rebrowse.get_data <- function(popler, ...) {
   pmk <- paste0(attributes(popler)$unique_projects, collapse=",")
-  return(browse(proj_metadata_key %in% pmk, full_tbl=TRUE, trim=FALSE))
+  return(eval(parse(text=paste0("browse(proj_metadata_key %in% c(", pmk,"), full_tbl=T, trim=F)"))))
 }
 
 # generate main data table summary ---------------------------------------------
@@ -105,6 +105,7 @@ summary_table_update = function(){
   taxa_cols   <- query_get(conn, "SELECT column_name FROM information_schema.columns WHERE table_name = 'taxa_table'")[,1]
   search_cols <- paste( c(proj_cols,lter_cols,taxa_cols), collapse = ", ")
   
+  search_cols[!search_cols %in% c("currently_funded","homepage","current_principle_investigator")]
   # open database connection, query result
   out <- query_get(conn, 
                    paste("SELECT", search_cols,
