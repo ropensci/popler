@@ -129,7 +129,7 @@ vars_query <- function(conn){
   
   # remove some variables that are in the database but we don't want to return
   # this is a temporary fix until we remove those columns from the database.
-  all_vars[!all_vars %in% c("currently_funded","homepage","current_principle_investigator")]
+  all_vars      <- all_vars[!all_vars %in% c("currently_funded","homepage","current_principle_investigator")]
   
   # a vector of "default" variables
   default_vars  <- c("authors","authors_contact",
