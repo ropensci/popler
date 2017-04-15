@@ -72,7 +72,7 @@ lter_maps = function(input){
   p_ak <- ggplot() + theme_bw() + ggtitle("Alaska") +
     theme(axis.title.x=element_blank(),
           legend.position="none") +
-    geom_polygon(data = ak, aes(x=long, y = lat, group = group), fill="#fec44f") + 
+    geom_polygon(data = ak, aes(x=long, y = lat, group = group), fill="#FF9D60") + 
     geom_point(data = latlon_count, aes(x=lon, y=lat, size=count), alpha=0.5) + 
     scale_x_continuous(limits = c(-180,-129), expand = c(0, 0)) +
     scale_y_continuous(limits = c(50,72), expand = c(0, 0)) +
@@ -85,7 +85,7 @@ lter_maps = function(input){
     theme(axis.title.x=element_blank(),
           axis.title.y=element_blank(),
           legend.position="right") +
-    geom_polygon(data = us, aes(x=long, y = lat, group = group), fill="#fec44f") + 
+    geom_polygon(data = us, aes(x=long, y = lat, group = group), fill="#FF9D60") + 
     geom_point(data = latlon_count, aes(x=lon, y=lat, size=count), alpha=0.5) + 
     scale_x_continuous(limits = c(-126,-66.6), expand = c(0, 0)) +
     scale_y_continuous(limits = c(24.5,50), expand = c(0, 0)) +
@@ -98,7 +98,7 @@ lter_maps = function(input){
   p_an <- ggplot() + theme_bw() + ggtitle("Antarctica") +
     theme(axis.title.y=element_blank(),
           legend.position="none") +
-    geom_polygon(data = an, aes(x=long, y = lat, group = group), fill="#fec44f") + 
+    geom_polygon(data = an, aes(x=long, y = lat, group = group), fill="#FF9D60") + 
     geom_point(data = latlon_count, aes(x=lon, y=lat, size=count), alpha=0.5) + 
     scale_x_continuous(limits = c(-180,180), expand = c(0, 0)) +
     scale_y_continuous(limits = c(-85,-60), expand = c(0, 0)) +
