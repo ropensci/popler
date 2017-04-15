@@ -1,7 +1,18 @@
-#The main difference between library() and require() is what happens if a package isn’t found. While library() throws an error, require() prints a warning message and returns FALSE. In practice, this distinction isn’t important because when building a package you should NEVER use either inside a package. See package dependencies for what you should do instead.
-
-## need to add number of taxa
-
+#' A user-friendly description of the browse() metadata
+#'
+#' Provides information on the columns of metadata contained in the popler database, and the kind of data contained in those columns. Also provides citations and example code for the object.
+#' @param input a popler object returned from browse() or get_data()
+#' @param md_file Specify the filename and location for the generated markdown file (optional)
+#' @param html_file Specify the filename and location for the generated html file (optional)
+#' @export
+#' @examples
+#' # Full dictionary
+#' search <- browse(community=="no" & duration_years > 15)
+#' fancy_browse(search)
+#' 
+#' data <- get_data(search)
+#' fancy_browse(data) # same as above
+#' 
 fancy_browse=function(input, md_file="./browse.Rmd", html_file="./browse.html"){
   
   input <- rebrowse(input)
@@ -76,7 +87,7 @@ suppressWarnings(map <- lter_maps(A))
 `r N<-X`
 <a name="`r N`"></a>  
 
-#### `r N`. `r A$title[N]` <a name="`r N`"></a>  
+#### `r N`. `r A$title[N]`
 
 ##### LTER site overview  
 * **Site name:** `r A$lter_name[N]` (`r A$lterid[N]`)  
