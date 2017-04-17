@@ -19,7 +19,13 @@ fancy_browse=function(input, md_file="./browse.Rmd", html_file="./browse.html"){
   
   # build the .Rmd file piecewise
   header <- c(
-    '
+'
+---  
+output:  
+  html_document:  
+    self_contained: no  
+---  
+
 <br>
 <img src= `r system.file("icon.png",package="popler")` alt="Drawing" style="height: 110px; float: right"/><br>
 

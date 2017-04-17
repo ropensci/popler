@@ -12,7 +12,7 @@
 #' # "Abridged" version
 #' fancy_dictionary()
 
-fancy_dictionary <- function(full_tbl=FALSE, md_file="./dictionary.Rmd", html_file="./dictionary.html"){
+fancy_dictionary <- function(full_tbl=FALSE, md_file=NULL, html_file=NULL){
   
   # store explanations as table of contents
   if(full_tbl){
@@ -23,6 +23,14 @@ fancy_dictionary <- function(full_tbl=FALSE, md_file="./dictionary.Rmd", html_fi
     
   } else {
     TOC <- popler:::explain_short
+  }
+  
+  if(is.null(md_file)){
+    md_file <- paste0(system.file("",package="popler"),"./dictionary.Rmd")
+  }
+  
+  if(is.null(html_file)){
+    html_file <- paste0(system.file("",package="popler"),"./dictionary.html")
   }
   
   # which entries should not be expanded?
@@ -41,14 +49,22 @@ fancy_dictionary <- function(full_tbl=FALSE, md_file="./dictionary.Rmd", html_fi
   # store entries
   entries <- eval(parse(text=paste0("dictionary(", paste0(TOC[,1] , collapse=" , "),")")))
   
-  
   # build the .Rmd file piecewise
   header <- c(
-    '
-<br>
-<img src= `r system.file("icon.png",package="popler")` alt="Drawing" style="height: 110px; float: right"/><br>
+'
+---  
+output:  
+  html_document:  
+    self_contained: no  
+---  
 
-# *popler* Dictionary
+<br>  
+
+<img src= (\"C:/Program Files/R/R-3.3.0/library/popler/icon\".png) alt="Drawing" style="height: 110px; float: right"/>  
+
+<br>  
+  
+# *popler* Dictionary  
 
 ***  
 
@@ -114,6 +130,6 @@ _ENTRY_
   sink()
   
   # launch browser window
-  rmarkdown::render(md_file,quiet=T)
+  rmarkdown::render(md_file, quiet=TRUE)
   browseURL(html_file)
 }
