@@ -8,12 +8,12 @@
 #' @examples
 #' # Full dictionary
 #' search <- browse(community=="no" & duration_years > 15)
-#' fancy_browse(search)
+#' report_browse(search)
 #' 
 #' data <- get_data(search)
-#' fancy_browse(data) # same as above
+#' report_browse(data) # same as above
 #' 
-fancy_browse=function(input, md_file="./browse.Rmd", html_file="./browse.html"){
+report_browse=function(input, md_file="./browse.Rmd", html_file="./browse.html"){
   
   input <- rebrowse(input)
   

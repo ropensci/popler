@@ -7,12 +7,12 @@
 #' @export
 #' @examples
 #' # Full dictionary
-#' fancy_dictionary(full_tbl = TRUE)
+#' report_dictionary(full_tbl = TRUE)
 #' 
 #' # "Abridged" version
-#' fancy_dictionary()
+#' report_dictionary()
 
-fancy_dictionary <- function(full_tbl=FALSE, md_file=NULL, html_file=NULL){
+report_dictionary <- function(full_tbl=FALSE, md_file=NULL, html_file=NULL){
   
   # store explanations as table of contents
   if(full_tbl){
