@@ -9,10 +9,10 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-The popler R package allows browsing and querying population data collected at `Long Term Ecological Research (LTER) network` sites located across the United States of America. A subset of the population data from the LTER network is now contained in an online database called popler. The popler R package is an interface with this online database, allowing users to:
+The popler R package is an interface that allows browsing and querying population data collected at `Long Term Ecological Research (LTER) network` sites located across the United States of America. A subset of the population data from the LTER network is contained in an online database called `popler`. The popler R package is an interface that this online database, allowing users to:
 
-- explore *what* type and *how much* population data is contained in the popler database
-- download data contained in the popler database
+- explore *what* type of population data is contained in the `popler` database
+- download data contained in the `popler` database
 
 
 ## Installation
@@ -24,11 +24,9 @@ The popler R package is currently in the development phase, and it should be dow
 library(popler)
 ```
 
-library("popler")
+## Metadata: *what* type of data is contained in the popler database?
 
-## Metadata: *what* type of data and *how much* data is contained in the popler database?
-
-The LTER network provides data from thousands of research projects. The metadata of these projects allow understanding *what* and *how much* population data is provided by each project. The popler R package provides three functions to explore these metadata.
+The LTER network provides data from thousands of research projects. The metadata of these projects allow understanding *what* population data is provided by each project. The popler R package provides three functions to explore these metadata.
 
 ### dictionary()
 
@@ -46,8 +44,12 @@ dictionary()
 To show what data each variable actually contains, specify one or more variable:
 
 ```{r}
-dictionary(phylum)
 dictionary(lterid, duration_years)
+```
+Finally, use `report_dictionary` to a readable report and open it as an html page. 
+
+```
+report_dictionary()
 ```
 
 ### browse()
@@ -65,10 +67,18 @@ poa_metadata   <- browse(genus == "Poa" & species == "fendleriana")
 poa_metadata
 ```
 
-#### The keyword argument
+Moreover, akin to `report_dictionary`, browse can generate a report and open it as an html page. To do so, set the `report` variable to TRUE:   
 
 ```
-browse(keyword == "parasite")
+browse(lterid == "SEV", report = TRUE)
+```
+
+#### The keyword argument
+
+The keyword argument searches metadata variables for a particular keyword 
+
+```
+browse(keyword == "parasite", report = TRUE)
 ```
 
 ## Download data
@@ -86,13 +96,20 @@ poa_metadata <- browse(genus == "Poa" & species == "fendleriana")
 get_data(poa_metadata)
 get_data(poa_metadata, year > 2008)
 get_data(proj_metadata_key == 25)
-get_data(browse(genus == "Poa" & species == "fendleriana"), proj_metadata_key == 35)
+poa_d <- get_data(browse(genus == "Poa" & species == "fendleriana"), proj_metadata_key == 35)
 
 ```
 
-## Using obtaining extra covariates
+Finally, `report_metadata` generated a report from data object produced by `get_data`:
 
-Most data sets provided by the USA LTER network contain more data than the standard variables accounted for by the standard schema of popler. In order not to loose the original data, popler stored all of the extra information in a character variable named `covariates`. The popler package provides two ways to format these covariates into a data frame: the `cov_unpack` argument in `get data`, and the `cov_unpack` function in popler.
+```
+report_metadata(poa_d)
+
+```
+
+## Extra covariates
+
+Most data sets provided by the USA LTER network contain more data than the standard variables accounted for by the standard schema of `popler`. In order not to loose the original data, popler stored all of the extra information in a character variable named `covariates`. The popler package provides two ways to format these covariates into a data frame: the `cov_unpack` argument in `get data`, and the `cov_unpack` function in popler.
 Setting the `cov_unpack` argument to TRUE returns a data frame that combines the variables of a default query to popler, and the covariates contained in each particular study downloaded through popler.
 
 ```
