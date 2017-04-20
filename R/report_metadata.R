@@ -1,19 +1,19 @@
-#' A user-friendly description of the browse() metadata
+#' Open a report of the metadata of project(s) as an html page
 #'
-#' Provides information on the columns of metadata contained in the popler database, and the kind of data contained in those columns. Also provides citations and example code for the object.
-#' @param input a popler object returned from browse() or get_data()
+#' Generates a readable report of the metadata describing data sets contained in popler. The report contains citations, the links to the original URL of each data set, and example code to obtain the metadata and data of the projects represented in the html page. 
+#' @param input A popler object returned from browse() or get_data()
 #' @param md_file Specify the filename and location for the generated markdown file (optional)
 #' @param html_file Specify the filename and location for the generated html file (optional)
 #' @export
 #' @examples
 #' # Full dictionary
-#' search <- browse(community=="no" & duration_years > 15)
-#' report_browse(search)
+#' one_spp <- browse(community=="no" & duration_years > 15)
+#' report_metadata(one_spp)
 #' 
-#' data <- get_data(search)
-#' report_browse(data) # same as above
+#' data <- get_data(one_spp)
+#' report_metadata(data) # same as above
 #' 
-report_browse=function(input, md_file="./browse.Rmd", html_file="./browse.html"){
+report_metadata=function(input, md_file="./browse.Rmd", html_file="./browse.html"){
   
   input <- rebrowse(input)
   
