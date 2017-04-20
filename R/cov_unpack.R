@@ -16,20 +16,20 @@ cov_unpack <- function(x){
   
   # Extract all characters between the brackets and split the string on each comma (',')
   # followed by a space ('\\s')
-  key_value_pair_dictionary_list <- str_split(
-    trimws(str_match(x$covariates, "\\{(.*)\\}"))[,2], ",\\s", simplify = T)
+  key_value_pair_dictionary_list <- stringr::str_split(
+    trimws(stringr::str_match(x$covariates, "\\{(.*)\\}"))[,2], ",\\s", simplify = T)
   
   # Extract values from dictionary syntax (key: value)
   value_data <- data.frame(apply(
     gsub("\\'", "", key_value_pair_dictionary_list), 2, function(x) {
-      str_match(x, "\\:\\s(.*)")[,2]}))
+      stringr::str_match(x, "\\:\\s(.*)")[,2]}))
   colnames(value_data) <- paste0(colnames(value_data) , '_value')
   
   
   # Extract keys from dicitonary
   key_data <- data.frame(apply(
     gsub("\\'", "", key_value_pair_dictionary_list), 2, function(x) {
-      str_match(x, "(.*)\\:")[,2]}))
+      stringr::str_match(x, "(.*)\\:")[,2]}))
   colnames(key_data) <- paste0(colnames(key_data) , '_label')
   
   # combing them into a dataframe
