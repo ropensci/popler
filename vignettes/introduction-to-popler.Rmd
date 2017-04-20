@@ -9,7 +9,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-The popler R package is an interface that allows browsing and querying population data collected at `Long Term Ecological Research (LTER) network` sites located across the United States of America. A subset of the population data from the LTER network is contained in an online database called `popler`. The popler R package is an interface that this online database, allowing users to:
+The popler R package is an interface that allows browsing and querying population data collected at Long Term Ecological Research (LTER) network sites located across the United States of America. A subset of the population data from the LTER network is contained in an online database called `popler`. The popler R package is an interface to this online database, allowing users to:
 
 - explore *what* type of population data is contained in the `popler` database
 - download data contained in the `popler` database
@@ -32,7 +32,7 @@ The LTER network provides data from thousands of research projects. The metadata
 
 `dictionary()` shows:
 
-- what are the variables contained in the metadata of each project, and their meaning 
+- what are the variables contained in the metadata of each project and their meaning 
 - what data these variables contain.
 
 To see metadata variables and their meaning:  
@@ -46,7 +46,7 @@ To show what data each variable actually contains, specify one or more variable:
 ```{r}
 dictionary(lterid, duration_years)
 ```
-Finally, use `report_dictionary` to a readable report and open it as an html page. 
+Last, but not least, the same information provided by `dictionary` can be visualized in an html page containing hyperlinks. To open such html page, execute the `report_dictionary` function. 
 
 ```
 report_dictionary()
@@ -54,13 +54,13 @@ report_dictionary()
 
 ### browse()
 
-`browse()` accesses and subsets the popler metadata table directly. Calling the function returns the raw metadata table:
+`browse()` accesses and subsets the popler metadata table directly. Calling the function returns a table that contains the metadata of all the projects in `popler`:
 
 ```{r}
 browse()
 ```
 
-This metadata table can be subset by specifying a logical statement. This is useful to focus on datasets of interest.
+This metadata table can be subset by specifying a logical expression. This is useful to focus on datasets of interest.
 
 ```{r}
 poa_metadata   <- browse(genus == "Poa" & species == "fendleriana")
@@ -75,7 +75,7 @@ browse(lterid == "SEV", report = TRUE)
 
 #### The keyword argument
 
-The keyword argument searches metadata variables for a particular keyword 
+`browse` can also single out projects based on partial matching of all of the variables that are made of strings. Specify the string you want to search using the `keyword` argument: 
 
 ```
 browse(keyword == "parasite", report = TRUE)
@@ -85,7 +85,7 @@ browse(keyword == "parasite", report = TRUE)
 
 Once you identified one or more datasets of interest, download their raw data using `get_data()`. You can download data in three ways:
 
-1. By providing an object created subsetting the metadata table using `browse()` 
+1. By providing `get_data` with an object created subsetting the metadata table using `browse()` 
 1. By further subsetting an object created through `browse()`
 1. By subsetting the popler database directly through `get_data()`
 
@@ -93,19 +93,29 @@ A few examples on how to the use of `get_data()` are:
 
 ```
 poa_metadata <- browse(genus == "Poa" & species == "fendleriana")
-get_data(poa_metadata)
-get_data(poa_metadata, year > 2008)
-get_data(proj_metadata_key == 25)
-poa_d <- get_data(browse(genus == "Poa" & species == "fendleriana"), proj_metadata_key == 35)
+poa_d        <- get_data(poa_metadata)
+poa_d_09     <- get_data(poa_metadata, year > 2008)
+parasite_d   <- get_data(proj_metadata_key == 25)
 
 ```
 
-Finally, `report_metadata` generated a report from data object produced by `get_data`:
+### Carefully vet the methods of downloaded data sets.
+
+We urge the user to carefully read the documentation of each project before using it for research purposes. Data sets downloaded with `popler` share data structure, but each project has its peculiarities. To show the *metadata* of the downloaded data sets, use `report_metadata` on the data object produced by `get_data`. To read the *methods* of each project, click on  the 'metadata link' hyperlink provided in the html page.
 
 ```
 report_metadata(poa_d)
 
 ```
+
+### Data structure
+
+All objects produced by `get_data` have the same structure. Most variable names are intuitive, but there are at least two nonintuitive variable types.
+
+1. Variable names that match the pattern `spatial_replication_level_` refers to *nested* levels of spatial replication. For example, `spatial_replication_level_1` can represent a site, and `spatial_replication_level_2` represents a plot. In this specific case, `spatial_replication_level_1_label` will contain the string 'site', and `spatial_replication_level_2_label` will contain the string 'plot'.
+
+1. For data sets that contain data on multiple species, data on `genus` and `species` are not always available. In cases when the `genus` and `species` variables are not available, taxonomic identifiers will be contained in the `sppcode` variable. This variable contains codes for species or other higher taxonomic unit. These codes are string of usually a few characters.
+
 
 ## Extra covariates
 
