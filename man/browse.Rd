@@ -5,7 +5,7 @@
 \title{Browse the project metadata contained in the popler database}
 \usage{
 browse(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE,
-  keyword = NULL)
+  keyword = NULL, report = FALSE)
 }
 \arguments{
 \item{...}{A logical expression to subset popler's main table}
@@ -19,6 +19,8 @@ browse(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE,
 \item{view}{If TRUE, opens up a spreadsheet-style data viewer.}
 
 \item{keyword}{A string that selects}
+
+\item{report}{If TRUE, function produces a markdown report about each study's metadata, and opens it as a html page.}
 }
 \value{
 A data frame combining the metadata of each project and the taxonomic units associated with each project.
@@ -36,8 +38,8 @@ default_vars = browse()
 # full.table==T returns the full table
 all_vars = browse(full_tbl = TRUE)
 
-# subset only data from the sevilleta LTER 
-sev_data = browse(lterid == "SEV")
+# subset only data from the sevilleta LTER, and open the relative report in a html page
+sev_data = browse(lterid == "SEV", report = TRUE)
 
 # consider only plant data sets 
 plant_data = browse(kingdom == "Plantae")
@@ -50,5 +52,7 @@ study_21 = browse( proj_metadata_key == 25)
 
 # Select studies that contain word "parasite"
 parasite_studies = browse( keyword = "parasite")
+
+
 }
 
