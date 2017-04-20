@@ -8,6 +8,7 @@
 #' @param trim If TRUE, strings are truncated at the 50th character. Default is TRUE.
 #' @param view If TRUE, opens up a spreadsheet-style data viewer.
 #' @param keyword A string that selects 
+#' @param report If TRUE, function produces a markdown report about each study's metadata, and opens it as a html page.
 #' @return A data frame combining the metadata of each project and the taxonomic units associated with each project.
 #' @return This data frame is of class "popler", "data.frame", "tbl_df", and "tbl".  
 #' @export
@@ -18,8 +19,8 @@
 #' # full.table==T returns the full table
 #' all_vars = browse(full_tbl = TRUE)
 #' 
-#' # subset only data from the sevilleta LTER 
-#' sev_data = browse(lterid == "SEV")
+#' # subset only data from the sevilleta LTER, and open the relative report in a html page
+#' sev_data = browse(lterid == "SEV", report = TRUE)
 #' 
 #' # consider only plant data sets 
 #' plant_data = browse(kingdom == "Plantae")
@@ -32,10 +33,13 @@
 #' 
 #' # Select studies that contain word "parasite"
 #' parasite_studies = browse( keyword = "parasite")
+#' 
+#' 
 
 
 # The browse popler function
-browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE, keyword = NULL){
+browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE, keyword = NULL,
+                   report = FALSE){
   
   # check if the summary table exists or needs to be updated
   summary_table_check()
@@ -101,6 +105,8 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
                               search_expr = c(logic_expr,keyword_expr)[[1]]
   )
   
+  if(report == TRUE) report_metadata(out) 
+
   return(out)
   
 }
