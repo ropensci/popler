@@ -81,6 +81,7 @@ get_data <- function(..., add_vars = NULL, subtract_vars = NULL,
   # Change "ordr" and "clss" to "order" and "class"
   output_data <- colname_change("clss", "class", output_data)
   output_data <- colname_change("ordr", "order", output_data)
+  output_data <- colname_change("count_observation", "abundance_observation", output_data)
   
   # unpack the covariates?
   if( cov_unpack == TRUE) {
