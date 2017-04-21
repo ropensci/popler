@@ -1,7 +1,7 @@
-#' Browse the project metadata contained in the popler database
+#' Browse the metadata of projects contained in the popler database
 #'
 #' browse() reports the metadata of LTER studies contained in the popler database. 
-#' The user can subset what data and what columns to visualize.  
+#' The user can subset what data, and which variables to visualize.  
 #' @param ... A logical expression to subset popler's main table
 #' @param full_tbl Should the function return the standard columns, or the full main table?
 #' @param vars A vector of characters: which variables of popler's main table should be selected?
