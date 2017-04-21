@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_data.R
 \name{get_data}
 \alias{get_data}
-\title{Browse the popler database}
+\title{Download data from the popler database}
 \usage{
 get_data(..., add_vars = NULL, subtract_vars = NULL, cov_unpack = FALSE)
 }
@@ -17,9 +17,11 @@ get_data(..., add_vars = NULL, subtract_vars = NULL, cov_unpack = FALSE)
 }
 \value{
 A data frame of the selected data.
+
+This data fame is of class "popler", "get_data", and "data.frame".
 }
 \description{
-This function browses LTER studies contained in the popler database. The user can group, tally, and subset the data sets based on a number of the factors (or columns) of the database.
+This function downloads LTER studies contained in the popler database. The user can download data directly, using a logical expression, or using objects created by `browse`.
 }
 \examples{
 

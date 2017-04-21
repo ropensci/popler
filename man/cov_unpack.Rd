@@ -2,7 +2,7 @@
 % Please edit documentation in R/cov_unpack.R
 \name{cov_unpack}
 \alias{cov_unpack}
-\title{Unpack the covariates for a data set}
+\title{Unpack the covariates contained in downloaded data sets}
 \usage{
 cov_unpack(x)
 }
@@ -13,11 +13,10 @@ cov_unpack(x)
 A data frame whose columns represent the covariates of the data set.
 }
 \description{
-Obtain author name and email from a data object downloaded from popler.
+Create a data frame by "extracting" the `covariates`` column contained in an object downloaded with the `get_data` function.
 }
 \examples{
 
-# get author names and email from studies containing data from the genus Poa
 demo_d <- get_data(proj_metadata_key == 8)
 as.tbl( cov_unpack( demo_d ) )
 }

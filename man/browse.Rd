@@ -2,7 +2,7 @@
 % Please edit documentation in R/browse.R
 \name{browse}
 \alias{browse}
-\title{Browse the project metadata contained in the popler database}
+\title{Browse the metadata of projects contained in the popler database}
 \usage{
 browse(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE,
   keyword = NULL, report = FALSE)
@@ -29,7 +29,7 @@ This data frame is of class "popler", "data.frame", "tbl_df", and "tbl".
 }
 \description{
 browse() reports the metadata of LTER studies contained in the popler database. 
-The user can subset what data and what columns to visualize.
+The user can subset what data, and which variables to visualize.
 }
 \examples{
 # No arguments return the standard 16 columns of popler's main table

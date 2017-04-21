@@ -7,12 +7,12 @@
 dictionary(..., full_tbl = FALSE)
 }
 \arguments{
-\item{...}{A sequence of (unquoted) variables specifying one or more columns of popler's main table for which dictionary information is needed}
+\item{...}{A sequence of (unquoted) variables specifying one or more variables of popler's main table for which dictionary information is needed}
 
 \item{full_tbl}{Should the function return the standard columns, or the full main table?}
 }
 \description{
-Provides information on the columns of metadata contained in the popler database, and the kind of data contained in those columns.
+Provides information on the metadata variables contained in the popler database, and the kind of data contained in those variables.
 }
 \examples{
 # Column names
