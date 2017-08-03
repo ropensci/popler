@@ -186,17 +186,18 @@ summary_table_check = function(){
 
 # open a connection to the popler database
 db_open = function(){
-  popler_connector(dbname="popler_3", 
-                    host="ec2-54-214-212-101.us-west-2.compute.amazonaws.com",
-                    port=5432,
-                    user="other_user",
-                    password="bigdata",
+  popler_connector(dbname="popler_3" , 
+                    host="ec2-54-214-212-101.us-west-2.compute.amazonaws.com" ,
+                    port=5432 ,
+                    user="other_user" ,
+                    password="bigdata" ,
                     silent=TRUE)
 }
 
 # a wrapper function to (quietly) close popler database connections
 db_close = function(connection){
-    RPostgreSQL::dbDisconnect(connection$con,quiet=T)
+    # RPostgreSQL::dbDisconnect(connection$con,quiet=T)
+  RPostgreSQL::dbDisconnect(connection,quiet=T)
 }
 
 # evaluate a string using the local environment, return the evaluation as string
@@ -236,8 +237,9 @@ popler_connector = function (dbname=NULL, host=NULL, port=NULL, user=NULL, passw
                    user     = user, 
                    password = if(is.null(password)) "" else password, 
                    port     = if(is.null(port))     "" else port)
-  info <- RPostgreSQL::dbGetInfo(con)
-  src_sql("postgres", con, info=info, disco=popler_disconnector(con,"postgres",silent))
+  #info <- RPostgreSQL::dbGetInfo(con)
+  #dbplyr::src_sql("postgres", con, info=info, disco=popler:::popler_disconnector(con,"postgres",silent))
+  #src_sql("postgres", con, info=info, disco=popler:::popler_disconnector(con,"postgres",silent))
 }
 
 # a (very slightly) modified version of dplyr::db_disconnector() to enable

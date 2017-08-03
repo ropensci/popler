@@ -12,12 +12,14 @@ parse_to_sql_search = function(...,lazy=F){
   
   #Use Hadley's translate_sql
   if(lazy == T){ # with lazy evaluation
-    sqlTranslated=translate_sql(...)
+    #sqlTranslated=translate_sql(...)
+    sqlTranslated <- dbplyr::translate_sql(...)
     
     # Remove quotation marks
     sqlPaste=gsub('"',"",sqlTranslated)
   } else { # without lazy evaluation
-    sqlTranslated=translate_sql_(...)
+    #sqlTranslated=translate_sql_(...)
+    sqlTranslated <- dbplyr::translate_sql_( list(...) )
     
     # Remove quotation marks
     sqlPaste=gsub('"','',sqlTranslated)
