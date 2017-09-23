@@ -1,5 +1,7 @@
 # function updates "treatment" and "structure" in a user's query to match the
 # appropriate columns in the database.
+
+#' @importFrom stringr str_extract_all 
 call_update = function(query){
   
   # query is some user's input (i.e. a query) to the browse() function
@@ -63,7 +65,8 @@ call_update = function(query){
     } else{
       
       # for any other LHS, just put the query back together
-      query_list[i] = paste(LHS_RHS[i,1], comps[i], string_eval_local(LHS_RHS[i,2]), logic[i])
+      query_list[i] = paste(LHS_RHS[i,1], comps[i], 
+                            string_eval_local(LHS_RHS[i,2]), logic[i])
       
     }
   }
@@ -83,15 +86,31 @@ rebrowse <- function(popler, ...){
 
 rebrowse.browse <- function(popler, ...) {
   pmk <- paste0(popler$proj_metadata_key, collapse=",")
-  return(eval(parse(text=paste0("browse(proj_metadata_key %in% c(", pmk,"), full_tbl=T, trim=F)"))))
+  return(eval(parse(text=paste0("browse(proj_metadata_key %in% c(", pmk,
+                                "), full_tbl=T, trim=F)"))))
 }
 
 rebrowse.get_data <- function(popler, ...) {
   pmk <- paste0(attributes(popler)$unique_projects, collapse=",")
-  return(eval(parse(text=paste0("browse(proj_metadata_key %in% c(", pmk,"), full_tbl=T, trim=F)"))))
+  return(eval(parse(text=paste0("browse(proj_metadata_key %in% c(", 
+                                pmk,"), full_tbl=T, trim=F)"))))
 }
 
 # generate main data table summary ---------------------------------------------
+
+#' Automaticcaly retrieve most up to date version of \code{popler}
+#' summary table
+#' 
+#' @return Updates the data object \code{summary_table}. 
+#' 
+#' @notes This object is often
+#' called internally by popler functions,
+#'  but can also be accessed by calling
+#' \code{data(summary_table)}. 
+#' 
+#' @seealso \code{\link{summary_table_check}}
+#' 
+#' @export
 summary_table_update = function(){
   
   message("Please wait while popler updates its summary table... this may take several minutes.")
@@ -166,22 +185,26 @@ summary_table_update = function(){
   message("Finished.")
 }
 
-# check if the main table needs to be updated
+#' check if the main table needs to be updated
+#' 
+#' Checks the main table's age. If it's more than 6 weeks old, 
+#' returns a message suggesting an update
+#' 
+#' @seealso \code{\link{summary_table_update}}
+#' 
 summary_table_check = function(){
-  # if summary_table.rda does not exist, add it
-  if(system.file("extdata", "summary_table.rda", package = "popler")==""){
-    summary_table_update()
-  } else {
-    
-    wks_passed <- floor(as.numeric(difftime(Sys.time(),
-                                            file.mtime(system.file("extdata", "summary_table.rda", package = "popler")), 
-                                            units=c("weeks"))))
-    # if summary_table.rda does exist, but was created more than 6 weeeks ago,
-    # prompt user to update the table.
-    if(wks_passed >= 6){
-      message("It's been ", wks_passed, " weeks since popler's summary table has been updated.\nWe recommend running 'summary_table_update()' to make sure your summary table is up to date with the latest database changes.")
-    }
+  
+  wks_passed <- floor(as.numeric(difftime(Sys.time(),
+                                          file.mtime(system.file("extdata", 
+                                                                 "summary_table.rda",
+                                                                 package = "popler")), 
+                                          units=c("weeks"))))
+  # if summary_table.rda does exist, but was created more than 6 weeeks ago,
+  # prompt user to update the table.
+  if(wks_passed >= 6){
+    message("It's been ", wks_passed, " weeks since popler's summary table has been updated.\nWe recommend running 'summary_table_update()' to make sure your summary table is up to date with the latest database changes.")
   }
+  
 }
 
 # open a connection to the popler database
@@ -195,6 +218,9 @@ db_open = function(){
 }
 
 # a wrapper function to (quietly) close popler database connections
+
+#' @importFrom RPostgreSQL dbDisconnect
+#' 
 db_close = function(connection){
     # RPostgreSQL::dbDisconnect(connection$con,quiet=T)
   RPostgreSQL::dbDisconnect(connection,quiet=T)
@@ -212,6 +238,10 @@ colname_change = function(from, to, x){
 }
 
 # a function to pull sql queries and return dataframes
+
+#' @importFrom dplyr %>% tbl
+#' @importFrom dbplyr sql
+
 query_get = function(connection, query){
   # accepts a connection and a string query input
   # outputs a dataframe
@@ -219,6 +249,8 @@ query_get = function(connection, query){
 }
 
 #' @noRd
+#' @importFrom RPostgreSQL dbConnect PostgreSQL
+#' 
 ## these functions should be masked from the user but available in popler
 
 # a (very slightly) modified version of dplyr::src_postgres() to connect to the
@@ -244,6 +276,8 @@ popler_connector = function (dbname=NULL, host=NULL, port=NULL, user=NULL, passw
 
 # a (very slightly) modified version of dplyr::db_disconnector() to enable
 # silent disconnect
+
+#' @importFrom RPostgreSQL dbDisconnect
 popler_disconnector = function (con, name, silent = TRUE) 
 {
   reg.finalizer(environment(), function(...) {
