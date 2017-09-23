@@ -1,7 +1,14 @@
+#' @import grid
+#' @import ggplot2
+
 lter_maps = function(input){
+  
   
   # a function for making panel plots
   multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
+    
+    # function source: 
+    # http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_(ggplot2)/
     
     # Make a list from the ... arguments and plotlist
     plots <- c(list(...), plotlist)
@@ -17,13 +24,14 @@ lter_maps = function(input){
                        ncol = cols, nrow = ceiling(numPlots/cols))
     }
     
-    if (numPlots==1) {
+    if (numPlots == 1) {
       print(plots[[1]])
       
     } else {
       # Set up the page
       grid::grid.newpage()
-      grid::pushViewport(grid::viewport(layout = grid::grid.layout(nrow(layout), ncol(layout))))
+      grid::pushViewport(grid::viewport(layout = grid::grid.layout(nrow(layout),
+                                                                   ncol(layout))))
       
       # Make each plot, in the correct location
       for (i in 1:numPlots) {
@@ -62,51 +70,82 @@ lter_maps = function(input){
     s2 <- s3 / 2
   }
   sbreaks <- c(s1, s2, s3)
-  if(s3==1){ sbreaks <- 1}
-  if(s3==2){ sbreaks <- c(1,2)}
-  if(s3==3){ sbreaks <- c(1,2,3)}
+  if(s3 == 1){ 
+    sbreaks <- 1
+  }
+  if(s3 == 2){
+    sbreaks <- c(1,2)
+  }
+  if(s3 == 3){ 
+    sbreaks <- c(1,2,3)
+  }
   
   # draw Alaska-based locations
-  ak = map_data('world', region='USA')
-  ak = ak[which(ak$subregion == 'Alaska'),]
-  p_ak <- ggplot() + theme_bw() + ggtitle("Alaska") +
-    theme(axis.title.x=element_blank(),
-          legend.position="none") +
-    geom_polygon(data = ak, aes(x=long, y = lat, group = group), fill="#FF9D60") + 
-    geom_point(data = latlon_count, aes(x=lon, y=lat, size=count), alpha=0.5) + 
-    scale_x_continuous(limits = c(-180,-129), expand = c(0, 0)) +
-    scale_y_continuous(limits = c(50,72), expand = c(0, 0)) +
-    ylab("Latitude") +
-    coord_map()
+  ak = ggplot2::map_data('world', region='USA')
+  ak = ak[which(ak$subregion == 'Alaska'), ]
+  p_ak <- ggplot2::ggplot() + ggplot2::theme_bw() + 
+    ggplot2::ggtitle("Alaska") +
+    ggplot2::theme(axis.title.x = element_blank(),
+          legend.position = "none") +
+    ggplot2::geom_polygon(data = ak,
+                          ggplot2::aes(x=long, y = lat, 
+                                       group = group),
+                          fill="#FF9D60") + 
+    ggplot2::geom_point(data = latlon_count,
+                        ggplot2::aes(x=lon, 
+                                     y=lat, 
+                                     size=count),
+                        alpha=0.5) + 
+    ggplot2::scale_x_continuous(limits = c(-180,-129),
+                                expand = c(0, 0)) +
+    ggplot2::scale_y_continuous(limits = c(50,72),
+                                expand = c(0, 0)) +
+    ggplot2::ylab("Latitude") +
+    ggplot2::coord_map()
   
   # draw US-based locations
-  us <- map_data("usa")
-  p_us <- ggplot() + theme_bw() + ggtitle("Contiguous United States") +
-    theme(axis.title.x=element_blank(),
-          axis.title.y=element_blank(),
-          legend.position="right") +
-    geom_polygon(data = us, aes(x=long, y = lat, group = group), fill="#FF9D60") + 
-    geom_point(data = latlon_count, aes(x=lon, y=lat, size=count), alpha=0.5) + 
-    scale_x_continuous(limits = c(-126,-66.6), expand = c(0, 0)) +
-    scale_y_continuous(limits = c(24.5,50), expand = c(0, 0)) +
-    scale_size_area(breaks=sbreaks, guide=guide_legend(title = "Number of\nprojects")) + 
-    coord_map()
+  us <- ggplot2::map_data("usa")
+  p_us <- ggplot2::ggplot() + 
+    ggplot2::theme_bw() + 
+    ggplot2::ggtitle("Contiguous United States") +
+    ggplot2::theme(axis.title.x = element_blank(),
+          axis.title.y = element_blank(),
+          legend.position = "right") +
+    ggplot2::geom_polygon(data = us, ggplot2::aes(x=long, y = lat,
+                                                  group = group),
+                          fill="#FF9D60") + 
+    ggplot2::geom_point(data = latlon_count, ggplot2::aes(x=lon, y=lat, 
+                                                          size=count),
+                        alpha=0.5) + 
+    ggplot2::scale_x_continuous(limits = c(-126,-66.6), expand = c(0, 0)) +
+    ggplot2::scale_y_continuous(limits = c(24.5,50), expand = c(0, 0)) +
+    ggplot2::scale_size_area(breaks=sbreaks, 
+                             guide=guide_legend(title = "Number of\nprojects")) + 
+    ggplot2::coord_map()
   
   # draw Antarctica-based locations
-  an <- map_data("world")
+  an <- ggplot2::map_data("world")
   an <- an[an$region=="Antarctica",]
-  p_an <- ggplot() + theme_bw() + ggtitle("Antarctica") +
-    theme(axis.title.y=element_blank(),
-          legend.position="none") +
-    geom_polygon(data = an, aes(x=long, y = lat, group = group), fill="#FF9D60") + 
-    geom_point(data = latlon_count, aes(x=lon, y=lat, size=count), alpha=0.5) + 
-    scale_x_continuous(limits = c(-180,180), expand = c(0, 0)) +
-    scale_y_continuous(limits = c(-85,-60), expand = c(0, 0)) +
-    xlab("Longitude") +
-    coord_map()
+  p_an <- ggplot2::ggplot() + 
+    ggplot2::theme_bw() + 
+    ggplot2::ggtitle("Antarctica") +
+    ggplot2::theme(axis.title.y = element_blank(),
+          legend.position = "none") +
+    ggplot2::geom_polygon(data = an, ggplot2::aes(x=long, y = lat,
+                                                  group = group),
+                          fill="#FF9D60") + 
+    ggplot2::geom_point(data = latlon_count, ggplot2::aes(x=lon, y=lat, 
+                                                          size=count),
+                        alpha=0.5) + 
+    ggplot2::scale_x_continuous(limits = c(-180,180), expand = c(0, 0)) +
+    ggplot2::scale_y_continuous(limits = c(-85,-60), expand = c(0, 0)) +
+    ggplot2::xlab("Longitude") +
+    ggplot2::coord_map()
   
   # print it all on a panel
-  multiplot(p_ak,p_us,p_an, layout=matrix(c(1,2,2,3,3,3), nrow = 2, byrow = TRUE))
+  multiplot(p_ak,  p_us,p_an, 
+            layout = matrix(c(1,2,2,3,3,3),
+                            nrow = 2, byrow = TRUE))
   
   return(latlon_count)
 }

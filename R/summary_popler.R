@@ -2,13 +2,20 @@
 #'
 #' summary_popler() counts the number of observations (e.g. number of species) contained in one or more of the popler database variables.
 #' "Counts" refer to the number of unique occurrences in each field.  
-#' Observations can be counted one by one, or by grouping them based on other variables (e.g. number of species, grouped by study) 
+#' Observations can be counted one by one, or by grouping them 
+#' based on other variables (e.g. number of species, grouped by study) 
+#' 
 #' @param group_vars Variables used to group observation counts.
-#' @param count_vars Names of variables whose observations will be counted. If no group variables defined, the function counts unique fields contained in the specified variable(s)
+#' @param count_vars Names of variables whose observations will be counted.
+#' If no group variables defined, the function counts unique fields 
+#' contained in the specified variable(s)
 #' @param trim If TRUE, strings are truncated at the 25th character.
+#' 
 #' @return An object of class "tbl_df", "tbl", and "data.frame". 
+#' 
 #' @export
 #' @examples
+#' \dontrun{
 #' # Tallies without grouping factor
 #' summary_popler(count_vars = "title", trim = TRUE)
 #'          
@@ -19,6 +26,7 @@
 #' # Number of studies by LTER site
 #' summary_popler(group_vars = "lterid", 
 #'                count_vars = "title", trim = TRUE)
+#' }       
 
 # The summary_popler function
 summary_popler <- function(group_vars = NULL, count_vars = "title", trim = TRUE){
@@ -31,6 +39,8 @@ summary_popler <- function(group_vars = NULL, count_vars = "title", trim = TRUE)
 }
 
 # Calculate tallies
+#' @importFrom dplyr select one_of as.tbl group_by_ summarise_ n %>%
+#' @importFrom stats setNames
 tallies=function(browsed_data,tally_columns,group_factors,trim){
   
   df_list=list()
@@ -47,7 +57,9 @@ tallies=function(browsed_data,tally_columns,group_factors,trim){
     
     #lower case of grouping factors (should get rid of doubles such as "yes" "Yes")
     tally_data=as.data.frame(tally_data)
-    for(co in 1:ncol(tally_data)) { tally_data[,co]=tolower(tally_data[,co])}
+    for(co in 1:ncol(tally_data)) { 
+      tally_data[,co]=tolower(tally_data[,co])
+    }
     tally_data=as.tbl(tally_data)
     
     #only unique values
@@ -59,10 +71,13 @@ tallies=function(browsed_data,tally_columns,group_factors,trim){
     if(!is.null(group_factors)){ 
       df_list[[i]] <- tally_data %>%
         group_by_(.dots=group_factors) %>%
-        summarise_(.dots=setNames(list(~n()), tally_name))
+        summarise_(.dots=setNames(list(~n()),
+                                  tally_name))
       #No grouping factor
     } else {
-      df_list[[i]] <- tally_data %>% summarise_(.dots=setNames(list(~n()),tally_name))
+      df_list[[i]] <- tally_data %>% 
+        summarise_(.dots=setNames(list(~n()),
+                                  tally_name))
     }
     
   }
@@ -75,9 +90,11 @@ tallies=function(browsed_data,tally_columns,group_factors,trim){
 # function converts entries to multiple columns - if need be
 multiple_columns=function(x) {
   
-  taxonomy            <-  c("kingdom","phylum","clss","ordr","family","genus","species")
+  taxonomy            <-  c("kingdom","phylum","clss","ordr",
+                            "family","genus","species")
   species             <-  c("genus","species")
-  spatialLevels       <-  c("sp_rep1_ext","sp_rep2_ext","sp_rep3_ext","sp_rep4_ext")
+  spatialLevels       <-  c("sp_rep1_ext","sp_rep2_ext",
+                            "sp_rep3_ext","sp_rep4_ext")
   wrapperNames        <-  c("taxonomy","species","spatialLevels") #list of multiple columns entries (the above threee)
   
   if( any(x %in% wrapperNames) ){
@@ -86,5 +103,7 @@ multiple_columns=function(x) {
     eval(parse(n=1,text=paste0("newArg=",wrapperNames[newIds])))
     columnNames=c(x[-oldIds],newArg)
     return(columnNames)
-  } else(return(x))
+  } else {
+    return(x)
+  }
 }

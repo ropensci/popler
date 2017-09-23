@@ -7,9 +7,11 @@
 #' @param cov_unpack Should covariates be unpacked? This argument uses function `cov_unpack` to extract the variables contained in the variable `covariates`, and combine the new columns with the default output.
 #' @return A data frame of the selected data. 
 #' @return This data fame is of class "popler", "get_data", and "data.frame". 
+#' @importFrom dplyr %>% select
 #' @export
 #' @examples
 #' 
+#' \dontrun{
 #' # browse a study, then get the data associated with it
 #' parasite = browse(proj_metadata_key == 25)
 #' gh_data = get_data(parasite)
@@ -22,7 +24,7 @@
 #' insect_25_yrs96_99 = get_data(insect_sev, year > 1995 & year < 2000 & proj_metadata_key == 25)
 #' 
 #' insect_21_25 = get_data((proj_metadata_key == 43 | proj_metadata_key == 25) & year < 1995 )
-
+#'}
 
 # Function that connects and gathers the information from the database
 get_data <- function(..., add_vars = NULL, subtract_vars = NULL,
@@ -74,7 +76,10 @@ get_data <- function(..., add_vars = NULL, subtract_vars = NULL,
   
   # replace -99999, but only for numeric variables
   num_repl                <- sapply(output_data, is.numeric) %>% as.vector()
-  output_data[,num_repl]  <- as.data.frame(lapply(output_data[,num_repl], function(x){replace(x, x == -99999,NA)}))
+  output_data[,num_repl]  <- lapply(output_data[ ,num_repl],
+                                    function(x){
+                                      replace(x, x == -99999, NA)
+                                    }) %>% as.data.frame()
   
   # remove variables that whose content is just "NA"
   output_data             <- Filter(function(x) !all(x == "NA"), output_data)
@@ -127,11 +132,14 @@ vars_query <- function(conn){
   abund_vars    <- query_get(conn, "SELECT column_name FROM information_schema.columns WHERE table_name = 'count_table'")[,1]
   
   # a vector containing all variables
-  all_vars      <- c(proj_vars,lter_vars,site_vars, s_i_p_vars, taxa_vars, abund_vars)
+  all_vars      <- c(proj_vars,lter_vars,site_vars, s_i_p_vars,
+                     taxa_vars, abund_vars)
   
   # remove some variables that are in the database but we don't want to return
   # this is a temporary fix until we remove those columns from the database.
-  all_vars      <- all_vars[!all_vars %in% c("currently_funded","homepage","current_principle_investigator")]
+  all_vars      <- all_vars[!all_vars %in% c("currently_funded",
+                                             "homepage",
+                                             "current_principle_investigator")]
   
   # a vector of "default" variables
   default_vars  <- c("authors","authors_contact",
@@ -147,8 +155,10 @@ vars_query <- function(conn){
                      "spatial_replication_level_5_label",
                      "spatial_replication_level_5",
                      "proj_metadata_key",
-                     "structure_type_1","structure_type_2","structure_type_3","structure_type_4",
-                     "treatment_type_1","treatment_type_2","treatment_type_3",
+                     "structure_type_1","structure_type_2",
+                     "structure_type_3","structure_type_4",
+                     "treatment_type_1","treatment_type_2",
+                     "treatment_type_3",
                      "covariates" 
   )
   
@@ -157,6 +167,7 @@ vars_query <- function(conn){
 }
 
 
+#' @importFrom lazyeval lazy_dots
 # a function to concatenate browse() outputs and new arguments
 concatenate_queries = function(...){
   
@@ -344,8 +355,11 @@ popler_query <- function(conn, vars_select, sql_condition){
 data_message <- function(x){
   
   if( length(unique(x$proj_metadata_key)) == 1)
-    message(paste0("You have downloaded data from ",length(unique(x$proj_metadata_key))," project. \nThe identification number of this project is: ",
-                   paste0(unique(x$proj_metadata_key),collapse=", "),"."),"\n
+    message(paste0("You have downloaded data from ",
+                   length(unique(x$proj_metadata_key)),
+                   " project. \nThe identification number of this project is: ",
+                   paste0(unique(x$proj_metadata_key),
+                          collapse=", "),"."),"\n
             IMPORTANT NOTICE: 
             If you are about to use this data in a formal publication, as courtesy, please:
             1) Contact the investigators of each project. 
@@ -354,7 +368,9 @@ data_message <- function(x){
             Access metadata by using function metadata_url() on this object. \n")
   
   else {
-    message("\n",paste0("You have downloaded data from ",length(unique(x$proj_metadata_key))," projects. \nThe identification numbers of these projects are: ",
+    message("\n",paste0("You have downloaded data from ",
+                        length(unique(x$proj_metadata_key)),
+                        " projects. \nThe identification numbers of these projects are: ",
                         paste0(unique(x$proj_metadata_key),collapse=", "),"."),"\n
             IMPORTANT NOTICE: 
             If you are about to use this data in a formal publication, as courtesy, please:

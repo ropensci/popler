@@ -17,8 +17,9 @@ Obtain author name and email from a data object downloaded from popler.
 }
 \examples{
 
+\dontrun{
 # get author names and email from studies containing data from the genus Poa
 poa_data = get_data(subset = genus == "Poa")
 authors( poa_data )
 }
-
+}

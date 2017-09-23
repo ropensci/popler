@@ -1,14 +1,19 @@
 #' Unpack the covariates contained in downloaded data sets
 #'
-#' Create a data frame by "extracting" the `covariates`` column contained in an object downloaded with the `get_data` function.
-#' @param An object produced by the function get_data(). NOTE: temporarily, data can come from 1 study only. 
+#' Create a data frame by "extracting" the \code{covariates} column
+#' contained in an object downloaded with the \code{get_data} function.
+#' @param x object produced by the function get_data(). \emph{NOTE}: temporarily, 
+#' data can come from 1 study only. 
 #' @return A data frame whose columns represent the covariates of the data set.
+#'
+#' @importFrom stringr str_split str_match
+#' @importFrom dplyr %>%
 #' @export
 #' @examples
-#' 
+#' \dontrun{
 #' demo_d <- get_data(proj_metadata_key == 8)
 #' as.tbl( cov_unpack( demo_d ) )
-
+#' }
 
 # function to unpack covariates
 cov_unpack <- function(x){
@@ -19,9 +24,12 @@ cov_unpack <- function(x){
     trimws(stringr::str_match(x$covariates, "\\{(.*)\\}"))[,2], ",\\s", simplify = T)
   
   # Extract values from dictionary syntax (key: value)
-  value_data <- data.frame(apply(
+  value_data <- apply(
     gsub("\\'", "", key_value_pair_dictionary_list), 2, function(x) {
-      stringr::str_match(x, "\\:\\s(.*)")[,2]}))
+      stringr::str_match(x, "\\:\\s(.*)")[,2]
+      }
+    ) %>% data.frame()
+  
   colnames(value_data) <- paste0(colnames(value_data) , '_value')
   
   
@@ -34,6 +42,6 @@ cov_unpack <- function(x){
   # combing them into a dataframe
   covariate_data <- cbind(value_data, key_data)
   # And ordering the columns by alphabetical order
-  covariate_data <- covariate_data[, order(names(covariate_data))] ### END PRODUCT ####
+  covariate_data <- covariate_data[ ,order(names(covariate_data))] ### END PRODUCT ####
   return(covariate_data)
 }

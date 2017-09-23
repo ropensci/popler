@@ -10,28 +10,36 @@ browse(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE,
 \arguments{
 \item{...}{A logical expression to subset popler's main table}
 
-\item{full_tbl}{Should the function return the standard columns, or the full main table?}
+\item{full_tbl}{Should the function return the standard 
+columns, or the full main table?}
 
-\item{vars}{A vector of characters: which variables of popler's main table should be selected?}
+\item{vars}{A vector of characters: which variables 
+of popler's main table should be selected?}
 
-\item{trim}{If TRUE, strings are truncated at the 50th character. Default is TRUE.}
+\item{trim}{If TRUE, strings are truncated at the 50th character.
+Default is TRUE.}
 
 \item{view}{If TRUE, opens up a spreadsheet-style data viewer.}
 
 \item{keyword}{A string that selects}
 
-\item{report}{If TRUE, function produces a markdown report about each study's metadata, and opens it as a html page.}
+\item{report}{If TRUE, function produces a markdown 
+report about each study's metadata, and opens it as a html page.}
 }
 \value{
-A data frame combining the metadata of each project and the taxonomic units associated with each project.
+A data frame combining the metadata of each project 
+and the taxonomic units associated with each project.
 
-This data frame is of class "popler", "data.frame", "tbl_df", and "tbl".
+This data frame is of class \code{popler}, \code{data.frame},
+\code{tbl_df}, and \code{tbl}.
 }
 \description{
 browse() reports the metadata of LTER studies contained in the popler database. 
 The user can subset what data, and which variables to visualize.
 }
 \examples{
+
+\dontrun{
 # No arguments return the standard 16 columns of popler's main table
 default_vars = browse()
 
@@ -52,7 +60,6 @@ study_21 = browse( proj_metadata_key == 25)
 
 # Select studies that contain word "parasite"
 parasite_studies = browse( keyword = "parasite")
-
-
 }
 
+}

@@ -4,6 +4,7 @@
 #' @param ... A logical expression that specifies which fields to keep.
 #' @param lazy should lazy evaluation of logical expression be used?
 #' @return A string with an SQL statement
+#' @importFrom dbplyr translate_sql_ translate_sql
 #' @export
 
 #This function procudes a string with an sql statement

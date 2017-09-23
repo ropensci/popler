@@ -9,7 +9,9 @@ summary_popler(group_vars = NULL, count_vars = "title", trim = TRUE)
 \arguments{
 \item{group_vars}{Variables used to group observation counts.}
 
-\item{count_vars}{Names of variables whose observations will be counted. If no group variables defined, the function counts unique fields contained in the specified variable(s)}
+\item{count_vars}{Names of variables whose observations will be counted.
+If no group variables defined, the function counts unique fields 
+contained in the specified variable(s)}
 
 \item{trim}{If TRUE, strings are truncated at the 25th character.}
 }
@@ -19,9 +21,11 @@ An object of class "tbl_df", "tbl", and "data.frame".
 \description{
 summary_popler() counts the number of observations (e.g. number of species) contained in one or more of the popler database variables.
 "Counts" refer to the number of unique occurrences in each field.  
-Observations can be counted one by one, or by grouping them based on other variables (e.g. number of species, grouped by study)
+Observations can be counted one by one, or by grouping them 
+based on other variables (e.g. number of species, grouped by study)
 }
 \examples{
+\dontrun{
 # Tallies without grouping factor
 summary_popler(count_vars = "title", trim = TRUE)
          
@@ -32,5 +36,5 @@ summary_popler(group_vars = "title",
 # Number of studies by LTER site
 summary_popler(group_vars = "lterid", 
                count_vars = "title", trim = TRUE)
+}       
 }
-

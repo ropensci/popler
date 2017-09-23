@@ -16,8 +16,8 @@ A data frame whose columns represent the covariates of the data set.
 Create a data frame by "extracting" the `covariates`` column contained in an object downloaded with the `get_data` function.
 }
 \examples{
-
+\dontrun{
 demo_d <- get_data(proj_metadata_key == 8)
 as.tbl( cov_unpack( demo_d ) )
 }
-
+}
