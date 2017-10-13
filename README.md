@@ -21,3 +21,5 @@
 1.  I have not actually fixed any of the functions or examples that fail due to the new `dbplyr` backend for the package. I am not sure I can fix them until discussing the structure of the database with current maintainers, so this will remain a problem until then (or one of them fixes it).
 
 2.  Technically, this version is still failing `R CMD check` because of non-ASCII characters in `report_metadata`. This *must* be resolved before submitting to CRAN.
+
+3.  This version is not passing `goodpractice::gp()` required by *ropensci*. Currently, the function itself fails on the package due to a malformed file error. I've traced this back to `R/report_metadata.R` and found that others have had [issues](https://github.com/jimhester/lintr/issues/252) with running **lintr**, so maybe we are having similar problem. I have not yet had time to scan through the function for the actual source of the error yet though.
