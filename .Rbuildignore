@@ -5,3 +5,4 @@
 ^CONDUCT\.md$
 ^\.travis\.yml$
 ^data-raw$
+^Pull_Req_Summary\.Rmd$
