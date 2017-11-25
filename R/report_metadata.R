@@ -174,7 +174,7 @@ if(length(st_t)==0){st_t <- "none recorded"}
 
 * **count:** An integer count of individuals.  
 * **cover:** A measure of the area occupied by individuals. Cover can be recorded as any of the following:  
-    + a *categotical variable;* for example, “1” if individuals cover between 0 and 5% of surface, “2” if they cover 5-20% of surface, etc.  
+    + a *categotical variable;* for example, "1" if individuals cover between 0 and 5% of surface, "2" if they cover 5-20% of surface, etc.  
     + a *percentage;* for example, 0-100% of a sampled area is covered.  
     + a *count;* for example, in the case of a line transect with 40 observations, cover could be an integer from 0 to 40.  
 * **biomass:** A measure of the biomass of sampled individuals.  
