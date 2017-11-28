@@ -2,17 +2,27 @@
 #'
 #' browse() reports the metadata of LTER studies contained in the popler database. 
 #' The user can subset what data, and which variables to visualize.  
+#' 
 #' @param ... A logical expression to subset popler's main table
-#' @param full_tbl Should the function return the standard columns, or the full main table?
-#' @param vars A vector of characters: which variables of popler's main table should be selected?
-#' @param trim If TRUE, strings are truncated at the 50th character. Default is TRUE.
+#' @param full_tbl Should the function return the standard 
+#' columns, or the full main table?
+#' @param vars A vector of characters: which variables 
+#' of popler's main table should be selected?
+#' @param trim If TRUE, strings are truncated at the 50th character.
+#'  Default is TRUE.
 #' @param view If TRUE, opens up a spreadsheet-style data viewer.
 #' @param keyword A string that selects 
-#' @param report If TRUE, function produces a markdown report about each study's metadata, and opens it as a html page.
-#' @return A data frame combining the metadata of each project and the taxonomic units associated with each project.
-#' @return This data frame is of class "popler", "data.frame", "tbl_df", and "tbl".  
+#' @param report If TRUE, function produces a markdown 
+#' report about each study's metadata, and opens it as a html page.
+#' @return A data frame combining the metadata of each project 
+#' and the taxonomic units associated with each project.
+#' @return This data frame is of class \code{popler}, \code{data.frame},
+#' \code{tbl_df}, and \code{tbl}. 
+#' @importFrom utils View 
 #' @export
 #' @examples
+#' 
+#' \dontrun{
 #' # No arguments return the standard 16 columns of popler's main table
 #' default_vars = browse()
 #' 
@@ -33,7 +43,7 @@
 #' 
 #' # Select studies that contain word "parasite"
 #' parasite_studies = browse( keyword = "parasite")
-#' 
+#' }
 #' 
 
 
@@ -45,8 +55,9 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
   summary_table_check()
   
   # load summary table
-  load(system.file("extdata","summary_table.rda",package="popler"))
-  
+  load(system.file("extdata", 
+                   "summary_table.rda",
+                   package = "popler"))
   # stop if user supplies both criteria and a keyword
   if( !is.null(substitute(...)) & !is.null(keyword)){
     stop("
@@ -81,12 +92,16 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
   if( is.null(vars) ){ # if variables not declared explicitly 
     
     # select columns based on whether or not the full table should be returned
-    out_vars <- if(full_tbl==T){subset_data} else {subset_data[,possible_vars()]}
+    out_vars <- if(full_tbl == TRUE) {
+      subset_data
+    } else {
+      subset_data[ ,possible_vars()]
+    }
     
   } else { # if variables are declared explicitly
     
     # select cols based on vars, including 'proj_metadata_key' if not in vars
-    out_vars <- subset_data[,vars_check(vars), drop = F] # drop=F in case only length(var)==1 
+    out_vars <- subset_data[ ,vars_check(vars), drop = FALSE] # drop=F in case only length(var)==1 
   }
   
   
@@ -97,15 +112,17 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
   out_form <- trim_display(nested_data, trim)
   
   # write output
-  if(view == TRUE) View(out_form)
-  
+  if(view == TRUE) {
+    utils::View(out_form)
+  }
   # attribute class "popler"
   out            <- structure(out_form, 
                               class = c("popler", "browse", class(out_form) ),
-                              search_expr = c(logic_expr,keyword_expr)[[1]]
-  )
+                              search_expr = c(logic_expr,keyword_expr)[[1]])
   
-  if(report == TRUE) report_metadata(out) 
+  if(report == TRUE){ 
+    report_metadata(out) 
+  }
 
   return(out)
   
@@ -114,41 +131,43 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
 
 
 #' @noRd
-# implements the 'keyword' argument ANd operator in browse() 
+# implements the 'keyword' argument And operator in browse() 
 keyword_subset <- function(x, keyword){
   
   #function: index of keywords
-  i_keyw <- function(x,keyword) {
-    ind <- which( grepl(keyword,x,ignore.case = T) )
+  i_keyw <- function(x, keyword) {
+    ind <- which(grepl(keyword, x, ignore.case = T) )
     return(ind)
   }
   
   # row numbers selected
   ind_list  <- lapply(x, i_keyw, keyword)
-  proj_i    <- unique( unlist(ind_list) )
+  proj_i    <- unique(unlist(ind_list))
   
   # projects selected
   if(length(proj_i) > 0){
     proj_n      <- unique( x$proj_metadata_key[proj_i] )
     statements  <- paste0("proj_metadata_key == ", proj_n)
-    src_arg     <- parse(text=paste0(statements, collapse = " | "))[[1]]
+    src_arg     <- parse(text = paste0(statements, collapse = " | "))[[1]]
   } else { 
     src_arg     <- NULL
   }
   
   # return values
-  out <- list(tab=x[proj_i,],s_arg=src_arg) 
+  out <- list(tab = x[proj_i, ],
+              s_arg = src_arg) 
   return(out)
   
 }
 
 
 # function to subset dataframe by criteria and do error checking
-select_by_criteria <- function(x,criteria){
+#' @importFrom dplyr tbl_df
+select_by_criteria <- function(x, criteria){
   
   if(!is.null(criteria)) {
     # if criteria are specified, subset the dataframe accordingly
-    out <- subset(x,eval(criteria))
+    out <- subset(x, eval(criteria))
     
   } else { 
     # if no criteria are specified, do nothing
@@ -182,13 +201,16 @@ possible_vars = function(){
 # check that at least proj_metadata_key is included in variables
 vars_check <- function(x){
   
-  if( !"proj_metadata_key" %in% x ) x = c("proj_metadata_key",x)
+  if( !"proj_metadata_key" %in% x ) {
+    x = c("proj_metadata_key",x)
+  }
+  
   return(x)
   
 }
 
 # Error for misspelled columns in full table
-vars_spell <- function(select_columns,columns_full_tab,possibleargs){
+vars_spell <- function(select_columns, columns_full_tab, possibleargs){
   
   #Check for spelling mistakes
   if( !all( is.element(select_columns,columns_full_tab) ) ) {
@@ -201,6 +223,9 @@ vars_spell <- function(select_columns,columns_full_tab,possibleargs){
 }
 
 # expand table (to nest/unnest taxonomic info) 
+
+#' @importFrom dplyr group_by_ %>% 
+#' @importFrom tidyr nest_
 taxa_nest <- function(x, full_tbl){
   
   # select taxonomic information (based on full_ or standard_table)
@@ -222,12 +247,20 @@ taxa_nest <- function(x, full_tbl){
   # if only ONE of the taxonomic variables is provided
   if( sum(names(x) %in% taxas) == 1 ){
     
+    # NOTE FROM SCL------------
+    # consider rewriting without underscored tidyverse verbs. These are no longer
+    # needed due to tidy evaluation and their forms are currently deprecated.
+    # I'm guessing they'll disappear soon so it may be worth while to rewrite now
+    # and avoid breaking once the deprecated verbs disappear
+    
     nested_var <- taxas[which( taxas %in% names(x) )]
     out  <- x %>% 
-      group_by_(.dots = setdiff(names(x),taxas) ) %>%
-      nest_(key_col = nested_var, nest_cols = nested_var )
+      dplyr::group_by_(.dots = setdiff(names(x),taxas) ) %>%
+      tidyr::nest_(key_col = nested_var, nest_cols = nested_var )
     # Names of taxonomic lists
-    names(out[,nested_var][[1]]) <- paste0(nested_var,"_project_#_",out$proj_metadata_key)
+    names(out[ ,nested_var][[1]]) <- paste0(nested_var,
+                                            "_project_#_",
+                                            out$proj_metadata_key)
     
   }
   
@@ -237,7 +270,7 @@ taxa_nest <- function(x, full_tbl){
     
     # nest data set
     out  <- x %>% 
-      group_by_(.dots = setdiff(names(x),taxas) ) %>%
+      dplyr::group_by_(.dots = setdiff(names(x),taxas) ) %>%
       tidyr::nest(.key = taxas)
     # Names of taxonomic lists
     names(out$taxas)  <- paste0("taxa_project_#_",out$proj_metadata_key)
@@ -252,8 +285,8 @@ taxa_nest <- function(x, full_tbl){
 # trim the display of character values. Mostly for project "titles"
 trim_display=function(x, trim){
   
-  if(trim==T){
-    tmp=as.data.frame(x)
+  if(trim == TRUE){
+    tmp = as.data.frame(x)
     for(i in 1:ncol(tmp)){
       if(is.character(tmp[,i])){ tmp[,i]=strtrim(tmp[,i],25) }
     }

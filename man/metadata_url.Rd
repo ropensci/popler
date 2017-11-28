@@ -15,8 +15,9 @@ This is a wrapper of function browseURL in base.
 }
 \examples{
 
+\dontrun{
 # Load the metadata webpages of the projects that contain data from the Poa genus.
 fes_d <- browse(genus == "Festuca")
 metadata_url( fes_d )
 }
-
+}

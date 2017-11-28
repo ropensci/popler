@@ -12,18 +12,19 @@ report_metadata(input, md_file = "./browse.Rmd",
 
 \item{md_file}{Specify the filename and location for the generated markdown file (optional)}
 
-\item{html_file}{Specify the filename and location for the generated html file (optional)}
+\item{html_file}{Specify the filename and location for
+the generated html file (optional)}
 }
 \description{
 Generates a readable report of the metadata describing data sets contained in popler. The report contains citations, the links to the original URL of each data set, and example code to obtain the metadata and data of the projects represented in the html page.
 }
 \examples{
+\dontrun{
 # Full dictionary
 one_spp <- browse(community=="no" & duration_years > 15)
 report_metadata(one_spp)
 
 data <- get_data(one_spp)
 report_metadata(data) # same as above
-
 }
-
+}

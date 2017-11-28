@@ -4,5 +4,6 @@ cache: packages
 
 notifications:
   email:
+    - levisc8@gmail.com
     - brad.ochocki@gmail.com 
-    - aldo.compagnoni@gmail.com
+    - aldo.compagnoni@gmail.com    

@@ -1,28 +1,37 @@
 #' A user-friendly dictionary of the popler metadata
 #'
-#' Provides information on the columns of metadata contained in the popler database, and the kind of data contained in those columns.
-#' @param full_tbl Should the function return the standard columns, or the full main table?
-#' @param md_file Specify the filename and location for the generated markdown file (optional)
-#' @param html_file Specify the filename and location for the generated html file (optional)
+#' Provides information on the columns of metadata contained 
+#' in the popler database, and the kind of data contained in those columns.
+#' 
+#' @param full_tbl Should the function return the standard 
+#' columns, or the full main table?
+#' @param md_file Specify the filename and location for 
+#' the generated markdown file (optional)
+#' @param html_file Specify the filename and location for the 
+#' generated html file (optional)
+#' @importFrom rmarkdown render
+#' @importFrom utils browseURL
 #' @export
 #' @examples
+#' \dontrun{
 #' # Full dictionary
 #' report_dictionary(full_tbl = TRUE)
 #' 
 #' # "Abridged" version
 #' report_dictionary()
-
+#' }
+#' 
 report_dictionary <- function(full_tbl=FALSE, md_file=NULL, html_file=NULL){
   
   # store explanations as table of contents
   if(full_tbl){
-    TOC <- popler:::explanations
+    TOC <- int.data$explanations
     
     # remove contents that do not work
-    TOC <- TOC[-76,]
+    TOC <- TOC[-76, ]
     
   } else {
-    TOC <- popler:::explain_short
+    TOC <- int.data$explain_short
   }
   
   if(is.null(md_file)){
@@ -47,7 +56,10 @@ report_dictionary <- function(full_tbl=FALSE, md_file=NULL, html_file=NULL){
             "duration_years")
   
   # store entries
-  entries <- eval(parse(text=paste0("dictionary(", paste0(TOC[,1] , collapse=" , "),")")))
+  entries <- eval(parse(text=paste0("dictionary(",
+                                    paste0(TOC[,1] , 
+                                           collapse=" , "),
+                                    ")")))
   
   # build the .Rmd file piecewise
   header <- c(

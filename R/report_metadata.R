@@ -3,16 +3,20 @@
 #' Generates a readable report of the metadata describing data sets contained in popler. The report contains citations, the links to the original URL of each data set, and example code to obtain the metadata and data of the projects represented in the html page. 
 #' @param input A popler object returned from browse() or get_data()
 #' @param md_file Specify the filename and location for the generated markdown file (optional)
-#' @param html_file Specify the filename and location for the generated html file (optional)
+#' @param html_file Specify the filename and location for
+#' the generated html file (optional)
+#' @importFrom utils browseURL
+#' @importFrom rmarkdown render
 #' @export
 #' @examples
+#' \dontrun{
 #' # Full dictionary
 #' one_spp <- browse(community=="no" & duration_years > 15)
 #' report_metadata(one_spp)
 #' 
 #' data <- get_data(one_spp)
 #' report_metadata(data) # same as above
-#' 
+#' }
 report_metadata=function(input, md_file="./browse.Rmd", html_file="./browse.html"){
   
   input <- rebrowse(input)
@@ -170,7 +174,7 @@ if(length(st_t)==0){st_t <- "none recorded"}
 
 * **count:** An integer count of individuals.  
 * **cover:** A measure of the area occupied by individuals. Cover can be recorded as any of the following:  
-    + a *categotical variable;* for example, “1” if individuals cover between 0 and 5% of surface, “2” if they cover 5-20% of surface, etc.  
+    + a *categotical variable;* for example, "1" if individuals cover between 0 and 5% of surface, "2" if they cover 5-20% of surface, etc.  
     + a *percentage;* for example, 0-100% of a sampled area is covered.  
     + a *count;* for example, in the case of a line transect with 40 observations, cover could be an integer from 0 to 40.  
 * **biomass:** A measure of the biomass of sampled individuals.  
@@ -239,7 +243,10 @@ cite <- popler_citation(metadata)
   )
 
   # change browse query  in header
-  header <- gsub("BROWSE_QUERY",paste0(deparse(attributes(input)$search_expr),collapse=""),header)
+  header <- gsub("BROWSE_QUERY",
+                 paste0(deparse(attributes(input)$search_expr),
+                        collapse=""),
+                 header)
   
   # update project block
   proj_new <- rep(NA,nrow(input))

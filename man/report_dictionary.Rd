@@ -7,16 +7,21 @@
 report_dictionary(full_tbl = FALSE, md_file = NULL, html_file = NULL)
 }
 \arguments{
-\item{full_tbl}{Should the function return the standard columns, or the full main table?}
+\item{full_tbl}{Should the function return the standard 
+columns, or the full main table?}
 
-\item{md_file}{Specify the filename and location for the generated markdown file (optional)}
+\item{md_file}{Specify the filename and location for 
+the generated markdown file (optional)}
 
-\item{html_file}{Specify the filename and location for the generated html file (optional)}
+\item{html_file}{Specify the filename and location for the 
+generated html file (optional)}
 }
 \description{
-Provides information on the columns of metadata contained in the popler database, and the kind of data contained in those columns.
+Provides information on the columns of metadata contained 
+in the popler database, and the kind of data contained in those columns.
 }
 \examples{
+\dontrun{
 # Full dictionary
 report_dictionary(full_tbl = TRUE)
 
@@ -24,3 +29,4 @@ report_dictionary(full_tbl = TRUE)
 report_dictionary()
 }
 
+}

@@ -9,12 +9,14 @@ popler_citation(input, bibtex_path = NULL)
 \arguments{
 \item{input}{a popler object returned from browse() or get_data()}
 
-\item{bibtex_path}{Specify the filename and location for the generated markdown file (optional)}
+\item{bibtex_path}{Specify the filename and location for 
+the generated markdown file (optional)}
 }
 \description{
 Returns a bibliography, Bibtex citations, and an acknowledgement template.
 }
 \examples{
+\dontrun{
 # make a browse object
 metadata <- browse(proj_metadata_key \%in\% c(17, 317, 494))
 
@@ -24,6 +26,6 @@ cite <- popler_citation(metadata)
 # cite$bibliography          # the bibliography
 # cite$Bibtex                # Bibtex entries for each dataset
 # cite$acknowledgement       # acknowledgement template
-
 }
 
+}

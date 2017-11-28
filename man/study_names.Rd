@@ -9,12 +9,15 @@ study_names(browsed, width = 60)
 \arguments{
 \item{browsed}{An object created by the function browse()}
 
-\item{width}{A positive integer giving the target column for wrapping lines in the output (from base function strwrap)}
+\item{width}{A positive integer giving the target column 
+for wrapping lines in the output (from base function strwrap)}
 }
 \description{
-Prints the names of popler studies as paragraphs of known width. This is a wrapper of the strwrap function in base.
+Prints the names of popler studies as paragraphs of known width.
+This is a wrapper of the strwrap function in base.
 }
 \examples{
+\dontrun{
 # Look up names
 #tmp = browse()
 #study_names(tmp)
@@ -22,4 +25,4 @@ vcr_dat = browse(lterid == "VCR")
 study_names(vcr_dat)
 #study_names(vcr_dat, width = 30)
 }
-
+}

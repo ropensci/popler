@@ -7,17 +7,19 @@
 cov_unpack(x)
 }
 \arguments{
-\item{An}{object produced by the function get_data(). NOTE: temporarily, data can come from 1 study only.}
+\item{x}{object produced by the function get_data(). \emph{NOTE}: temporarily, 
+data can come from 1 study only.}
 }
 \value{
 A data frame whose columns represent the covariates of the data set.
 }
 \description{
-Create a data frame by "extracting" the `covariates`` column contained in an object downloaded with the `get_data` function.
+Create a data frame by "extracting" the \code{covariates} column
+contained in an object downloaded with the \code{get_data} function.
 }
 \examples{
-
+\dontrun{
 demo_d <- get_data(proj_metadata_key == 8)
 as.tbl( cov_unpack( demo_d ) )
 }
-
+}

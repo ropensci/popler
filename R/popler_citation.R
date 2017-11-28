@@ -2,9 +2,12 @@
 #'
 #' Returns a bibliography, Bibtex citations, and an acknowledgement template.
 #' @param input a popler object returned from browse() or get_data()
-#' @param bibtex_path Specify the filename and location for the generated markdown file (optional)
+#' @param bibtex_path Specify the filename and location for 
+#' the generated markdown file (optional)
+#' @importFrom utils person toBibtex bibentry
 #' @export
 #' @examples
+#' \dontrun{
 #' # make a browse object
 #' metadata <- browse(proj_metadata_key %in% c(17, 317, 494))
 #'
@@ -14,6 +17,7 @@
 #' # cite$bibliography          # the bibliography
 #' # cite$Bibtex                # Bibtex entries for each dataset
 #' # cite$acknowledgement       # acknowledgement template
+#' }
 #' 
 popler_citation = function(input, bibtex_path=NULL){
   
@@ -49,7 +53,9 @@ popler_citation = function(input, bibtex_path=NULL){
     }
     
     # if the et al flag was triggered, add an "et al" person
-    if(etal){ new_aut <- c(new_aut,person(given="et al")) }
+    if(etal){
+      new_aut <- c(new_aut,person(given="et al")) 
+    }
     
     # create a bibentry for each proj_metadata_key
     bib <- c(bib,bibentry(

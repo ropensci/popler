@@ -4,7 +4,7 @@
 browse.html
 browse.Rmd
 inst/doc
-*#
+.RData
 
 dictionary\.html
 
