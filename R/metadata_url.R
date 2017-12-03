@@ -1,10 +1,9 @@
 #' Get metadata information from a data object
 #'
-#' Load the webpage containing the metadata of the data sets downloaded through get_data(). If you downloaded data from multiple projects, this function opens multiple webpages. 
+#' Load the webpage containing the metadata of the data sets downloaded through 
+#' get_data(). If you downloaded data from multiple projects, this function opens multiple webpages. 
 #' This is a wrapper of function browseURL in base. 
 #' @param data_object An object produced by the function get_data()
-#' @importFrom dplyr select 
-#' @export
 #' @examples
 #' 
 #' \dontrun{
@@ -12,13 +11,19 @@
 #' fes_d <- browse(genus == "Festuca")
 #' metadata_url( fes_d )
 #' }
+#' 
+#' @importFrom dplyr select filter
+#' @importFrom rlang .data
+#' @export
 # function definition 
 metadata_url <- function( data_object ){
   
   # study id(s)
   proj_ids  <- attributes( data_object )$unique_projects
+  # load summary_table
+  summary_table <- summary_table_import()
   # main table
-  main_t    <- select(summary_table, proj_metadata_key, metalink)
+  main_t    <- dplyr::select(summary_table, .data$proj_metadata_key, .data$metalink)
   
   
   # test whether object is produced by `browse` or `get_data` --------------------------------
@@ -42,7 +47,7 @@ Print 'N' if you want to refine the search(Y/N):") )
   # open browsers --------------------------------------------------------------------
   if( n == "y" ){
     for(i in 1:length(ids)){
-      link <- unique(subset(main_t, proj_metadata_key == ids[i])$metalink)
+      link <- unique(dplyr::filter(main_t, .data$proj_metadata_key == ids[i])$metalink)
       browseURL(link)
     }
   } 

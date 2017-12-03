@@ -7,13 +7,18 @@
 get_data(..., add_vars = NULL, subtract_vars = NULL, cov_unpack = FALSE)
 }
 \arguments{
-\item{...}{A list of one or two objects: an object produced by browse, a logical expression, or both.}
+\item{...}{A list of one or two objects: an object produced by browse,
+a logical expression, or both.}
 
-\item{add_vars}{A string to specify which variables the user wants to add to the default variables used in a query.}
+\item{add_vars}{A string to specify which variables the user wants to 
+add to the default variables used in a query.}
 
-\item{subtract_vars}{A string to specify which, among the default variables, the user wishes to discard in queries to the database}
+\item{subtract_vars}{A string to specify which, among the default 
+variables, the user wishes to discard in queries to the database}
 
-\item{cov_unpack}{Should covariates be unpacked? This argument uses function `cov_unpack` to extract the variables contained in the variable `covariates`, and combine the new columns with the default output.}
+\item{cov_unpack}{Should covariates be unpacked? This argument uses
+function `cov_unpack` to extract the variables contained in the 
+variable `covariates`, and combine the new columns with the default output.}
 }
 \value{
 A data frame of the selected data.
@@ -21,7 +26,9 @@ A data frame of the selected data.
 This data fame is of class "popler", "get_data", and "data.frame".
 }
 \description{
-This function downloads LTER studies contained in the popler database. The user can download data directly, using a logical expression, or using objects created by `browse`.
+This function downloads LTER studies contained in the popler database.
+The user can download data directly, using a logical expression, or using 
+objects created by `browse`.
 }
 \examples{
 

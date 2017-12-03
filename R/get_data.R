@@ -1,13 +1,21 @@
 #' Download data from the popler database
 #'
-#' This function downloads LTER studies contained in the popler database. The user can download data directly, using a logical expression, or using objects created by `browse`.
-#' @param ... A list of one or two objects: an object produced by browse, a logical expression, or both.
-#' @param add_vars A string to specify which variables the user wants to add to the default variables used in a query. 
-#' @param subtract_vars A string to specify which, among the default variables, the user wishes to discard in queries to the database 
-#' @param cov_unpack Should covariates be unpacked? This argument uses function `cov_unpack` to extract the variables contained in the variable `covariates`, and combine the new columns with the default output.
+#' This function downloads LTER studies contained in the popler database.
+#' The user can download data directly, using a logical expression, or using 
+#' objects created by `browse`.
+#' @param ... A list of one or two objects: an object produced by browse,
+#'  a logical expression, or both.
+#' @param add_vars A string to specify which variables the user wants to 
+#' add to the default variables used in a query. 
+#' @param subtract_vars A string to specify which, among the default 
+#' variables, the user wishes to discard in queries to the database 
+#' @param cov_unpack Should covariates be unpacked? This argument uses
+#'  function `cov_unpack` to extract the variables contained in the 
+#'  variable `covariates`, and combine the new columns with the default output.
 #' @return A data frame of the selected data. 
 #' @return This data fame is of class "popler", "get_data", and "data.frame". 
 #' @importFrom dplyr %>% select
+#' @importFrom rlang .data
 #' @export
 #' @examples
 #' 
@@ -93,7 +101,7 @@ get_data <- function(..., add_vars = NULL, subtract_vars = NULL,
   if( cov_unpack == TRUE) {
     
     output_data <-  output_data %>%
-                      select(-covariates) %>%
+                      dplyr::select(-.data$covariates) %>%
                       cbind( cov_unpack(output_data))
                       
   }
@@ -232,10 +240,15 @@ concatenate_queries = function(...){
     stop("You cannot enter more than one logical expression.\n  Please refer to the '...' argument in ?get_data.")
   }
   
+  # slight rewriting to avoid using the "." placeholder from magrittr.
+  # this should alleviate NOTES in check, even if it is slightly
+  # more verbose
+  LoopOut <- paste0(unlist(out), collapse="&") 
+  TextToParse <- paste0("substitute(", LoopOut ,")", collapse="")
+  
   # return a single logical call
-  return(eval(parse(text = paste0(unlist(out),    collapse="&") %>%
-                      paste0("substitute(", . ,")", collapse="")))
-  )
+  return(eval(parse(text = TextToParse)))
+  
 }
 
 # Identify which "search_expr" belong to "all_vars"

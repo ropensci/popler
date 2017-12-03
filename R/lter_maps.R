@@ -49,21 +49,23 @@ lter_maps = function(input){
   
   # get lat-long counts for each site
   B <- table(input$lng_lter,input$lat_lter)
-  latlon_count <- data.frame(lat=NA,lon=NA,count=-0.1)
+  latlon_count <- data.frame(lat = NA,
+                             lon = NA,
+                             count = -0.1)
   for(i in 1:nrow(B)){
     for(j in 1:ncol(B)){
-      if(B[i,j]>0){
+      if(B[i, j] > 0){
         latlon_count <- rbind(latlon_count,
-                              data.frame(lat=as.numeric(colnames(B)[j]),
-                                         lon=as.numeric(rownames(B)[i]),
-                                         count=B[i,j]))}
+                              data.frame(lat = as.numeric(colnames(B)[j]),
+                                         lon = as.numeric(rownames(B)[i]),
+                                         count=B[i, j]))}
       
     }
   }
   
   # circle sizes for scale_size_area()
   s1 <- 1
-  s3 <- max(latlon_count$count,na.rm=T)
+  s3 <- max(latlon_count$count, na.rm = T)
   if(s3 %% 2){
     s2 <- (s3 - 1) / 2
   } else {
@@ -88,13 +90,14 @@ lter_maps = function(input){
     ggplot2::theme(axis.title.x = element_blank(),
           legend.position = "none") +
     ggplot2::geom_polygon(data = ak,
-                          ggplot2::aes(x=long, y = lat, 
-                                       group = group),
+                          ggplot2::aes_(x = quote(long), 
+                                        y = quote(lat), 
+                                        group = quote(group)),
                           fill="#FF9D60") + 
     ggplot2::geom_point(data = latlon_count,
-                        ggplot2::aes(x=lon, 
-                                     y=lat, 
-                                     size=count),
+                        ggplot2::aes_(x = quote(lon), 
+                                      y = quote(lat), 
+                                      size = quote(count)),
                         alpha=0.5) + 
     ggplot2::scale_x_continuous(limits = c(-180,-129),
                                 expand = c(0, 0)) +
@@ -111,16 +114,20 @@ lter_maps = function(input){
     ggplot2::theme(axis.title.x = element_blank(),
           axis.title.y = element_blank(),
           legend.position = "right") +
-    ggplot2::geom_polygon(data = us, ggplot2::aes(x=long, y = lat,
-                                                  group = group),
+    ggplot2::geom_polygon(data = us, 
+                          ggplot2::aes_(x = quote(long), 
+                                        y = quote(lat), 
+                                        group = quote(group)),
                           fill="#FF9D60") + 
-    ggplot2::geom_point(data = latlon_count, ggplot2::aes(x=lon, y=lat, 
-                                                          size=count),
+    ggplot2::geom_point(data = latlon_count,
+                        ggplot2::aes_(x = quote(lon), 
+                                      y = quote(lat), 
+                                      size = quote(count)),
                         alpha=0.5) + 
     ggplot2::scale_x_continuous(limits = c(-126,-66.6), expand = c(0, 0)) +
     ggplot2::scale_y_continuous(limits = c(24.5,50), expand = c(0, 0)) +
-    ggplot2::scale_size_area(breaks=sbreaks, 
-                             guide=guide_legend(title = "Number of\nprojects")) + 
+    ggplot2::scale_size_area(breaks = sbreaks, 
+                             guide = guide_legend(title = "Number of\nprojects")) + 
     ggplot2::coord_map()
   
   # draw Antarctica-based locations
@@ -131,11 +138,15 @@ lter_maps = function(input){
     ggplot2::ggtitle("Antarctica") +
     ggplot2::theme(axis.title.y = element_blank(),
           legend.position = "none") +
-    ggplot2::geom_polygon(data = an, ggplot2::aes(x=long, y = lat,
-                                                  group = group),
+    ggplot2::geom_polygon(data = an,
+                          ggplot2::aes_(x = quote(long), 
+                                        y = quote(lat), 
+                                        group = quote(group)),
                           fill="#FF9D60") + 
-    ggplot2::geom_point(data = latlon_count, ggplot2::aes(x=lon, y=lat, 
-                                                          size=count),
+    ggplot2::geom_point(data = latlon_count,
+                        ggplot2::aes_(x = quote(lon), 
+                                      y = quote(lat), 
+                                      size = quote(count)),
                         alpha=0.5) + 
     ggplot2::scale_x_continuous(limits = c(-180,180), expand = c(0, 0)) +
     ggplot2::scale_y_continuous(limits = c(-85,-60), expand = c(0, 0)) +
@@ -143,7 +154,7 @@ lter_maps = function(input){
     ggplot2::coord_map()
   
   # print it all on a panel
-  multiplot(p_ak,  p_us,p_an, 
+  multiplot(p_ak,  p_us, p_an, 
             layout = matrix(c(1,2,2,3,3,3),
                             nrow = 2, byrow = TRUE))
   

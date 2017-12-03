@@ -10,7 +10,8 @@ metadata_url(data_object)
 \item{data_object}{An object produced by the function get_data()}
 }
 \description{
-Load the webpage containing the metadata of the data sets downloaded through get_data(). If you downloaded data from multiple projects, this function opens multiple webpages. 
+Load the webpage containing the metadata of the data sets downloaded through 
+get_data(). If you downloaded data from multiple projects, this function opens multiple webpages. 
 This is a wrapper of function browseURL in base.
 }
 \examples{
@@ -20,4 +21,5 @@ This is a wrapper of function browseURL in base.
 fes_d <- browse(genus == "Festuca")
 metadata_url( fes_d )
 }
+
 }
