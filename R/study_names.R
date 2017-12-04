@@ -20,6 +20,7 @@
 
 study_names <- function(browsed, width = 60){
   
+  summary_table <- summary_table_import()
   # re-browse data, with trim OFF
   if( is.null(attributes(browsed)$search_expr) ){
     new_browsed <- browse(trim = FALSE)

@@ -14,6 +14,10 @@ Updates the data object \code{summary_table}.
 Automaticcaly retrieve most up to date version of \code{popler}
 summary table
 }
+\note{
+This object is often called internally by popler functions,
+ but can also be accessed by calling \code{data(summary_table)}.
+}
 \seealso{
 \code{\link{summary_table_check}}
 }

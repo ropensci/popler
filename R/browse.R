@@ -51,13 +51,8 @@
 browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE, keyword = NULL,
                    report = FALSE){
   
-  # check if the summary table exists or needs to be updated
-  summary_table_check()
-  
   # load summary table
-  load(system.file("extdata", 
-                   "summary_table.rda",
-                   package = "popler"))
+  summary_table <- summary_table_import()
   # stop if user supplies both criteria and a keyword
   if( !is.null(substitute(...)) & !is.null(keyword)){
     stop("
@@ -224,13 +219,14 @@ vars_spell <- function(select_columns, columns_full_tab, possibleargs){
 
 # expand table (to nest/unnest taxonomic info) 
 
-#' @importFrom dplyr group_by_ %>% 
-#' @importFrom tidyr nest_
+#' @importFrom dplyr group_by %>% 
+#' @importFrom tidyr nest
 taxa_nest <- function(x, full_tbl){
   
   # select taxonomic information (based on full_ or standard_table)
   if( full_tbl == FALSE){
-    taxas <- c("sppcode","species","kingdom","phylum","class","order","family","genus")
+    taxas <- c("sppcode","species","kingdom","phylum",
+               "class","order","family","genus")
   } else {
     taxas <- c('sppcode','kingdom','subkingdom','infrakingdom',
                'superdivision','division','subdivision',
@@ -239,10 +235,12 @@ taxa_nest <- function(x, full_tbl){
                'common_name','authority')
   }
   
+  # load summary_table
+  summary_table <- summary_table_import()
   # check "x" variable names
   
   # if no taxonomy information provided 
-  if( any(names(x) %in% taxas) == FALSE ) out <- unique(summary_table[])
+  if(!any(names(x) %in% taxas)) out <- unique(summary_table[])
   
   # if only ONE of the taxonomic variables is provided
   if( sum(names(x) %in% taxas) == 1 ){
@@ -255,8 +253,8 @@ taxa_nest <- function(x, full_tbl){
     
     nested_var <- taxas[which( taxas %in% names(x) )]
     out  <- x %>% 
-      dplyr::group_by_(.dots = setdiff(names(x),taxas) ) %>%
-      tidyr::nest_(key_col = nested_var, nest_cols = nested_var )
+      dplyr::group_by(.dots = setdiff(names(x),taxas) ) %>%
+      tidyr::nest(key_col = nested_var, nest_cols = nested_var )
     # Names of taxonomic lists
     names(out[ ,nested_var][[1]]) <- paste0(nested_var,
                                             "_project_#_",
@@ -270,7 +268,7 @@ taxa_nest <- function(x, full_tbl){
     
     # nest data set
     out  <- x %>% 
-      dplyr::group_by_(.dots = setdiff(names(x),taxas) ) %>%
+      dplyr::group_by(.dots = setdiff(names(x),taxas) ) %>%
       tidyr::nest(.key = taxas)
     # Names of taxonomic lists
     names(out$taxas)  <- paste0("taxa_project_#_",out$proj_metadata_key)

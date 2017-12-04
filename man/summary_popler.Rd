@@ -19,7 +19,8 @@ contained in the specified variable(s)}
 An object of class "tbl_df", "tbl", and "data.frame".
 }
 \description{
-summary_popler() counts the number of observations (e.g. number of species) contained in one or more of the popler database variables.
+summary_popler() counts the number of observations (e.g. number of species)
+ contained in one or more of the popler database variables.
 "Counts" refer to the number of unique occurrences in each field.  
 Observations can be counted one by one, or by grouping them 
 based on other variables (e.g. number of species, grouped by study)

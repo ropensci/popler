@@ -70,12 +70,14 @@ call_update = function(query){
       
     }
   }
+  # slight rewriting to avoid using the "." placeholder from magrittr.
+  # this should alleviate NOTES in check, even if it is slightly
+  # more verbose
+  QueryOut <- paste0(unlist(query_list), collapse="") 
+  TextToParse <- paste0("substitute(", QueryOut ,")", collapse="")
   
   # collapse query_list to a single string, convert to expression, and return it
-  return(eval(parse(text=
-                      paste0(unlist(query_list),    collapse="") %>%
-                      paste0("substitute(", . ,")", collapse="")))
-  )
+  return(eval(parse(text = TextToParse)))
 }
 
 # given a browse() object or a get_data() object, returns an identical browse
@@ -103,10 +105,8 @@ rebrowse.get_data <- function(popler, ...) {
 #' 
 #' @return Updates the data object \code{summary_table}. 
 #' 
-#' @notes This object is often
-#' called internally by popler functions,
-#'  but can also be accessed by calling
-#' \code{data(summary_table)}. 
+#' @note This object is often called internally by popler functions,
+#'  but can also be accessed by calling \code{data(summary_table)}. 
 #' 
 #' @seealso \code{\link{summary_table_check}}
 #' 
@@ -298,4 +298,39 @@ factor_to_character <- function(x, full_tbl = FALSE){
   }
   return(x)
   
+}
+
+
+# Source for idea
+# https://stackoverflow.com/questions/30357330/r-cmd-check-no-visible-binding-for-global-variable-mypkgdata
+
+#' Imports the \code{summary_table} object to R
+#' @description Imports the \code{summary_table} object to the top level environment
+#' when called by the user.
+#' @return A table summarizing each type of data in the popler data base.
+#' 
+#' @details This function is often called internally to load the summary table
+#' and extract some metadata that is used in that functional context. Loading
+#' summary table may be useful for exploring what data is in popler in case
+#' the vignettes prove insufficiently graphic. However, be aware
+#' it is loaded by functions each time they are called, so any manipulations
+#' by the user at the top level will not be passed to those functions.
+#' 
+#' @export
+
+summary_table_import <- function() {
+  # create empty environment for loading
+  pkgEnv <- new.env(parent = emptyenv())
+  
+  # if this has not been called
+  if(!exists('summary_table', pkgEnv)) {
+    load(system.file("extdata", 
+                     "summary_table.rda",
+                     package = "popler"), envir = pkgEnv)
+  }
+  
+  # allow assignment so that R CMD check find global binding
+  summary_table <- pkgEnv[['summary_table']]
+  
+  return(summary_table)
 }

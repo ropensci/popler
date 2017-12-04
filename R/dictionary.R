@@ -25,16 +25,8 @@
 dictionary <- function(..., full_tbl = FALSE){
   
   # summary table ------------------------------------------------------------
-  
-  ## check if the summary table exists or needs to be updated
-  summary_table_check()
-  
   # load summary table
-
-  load(system.file("extdata", 
-                   "summary_table.rda",
-                   package = "popler"))
-  
+  summary_table <- summary_table_import()
   # variables ------------------------------------------------
 
   # variables of default (full_tbl=F) main table  

@@ -36,6 +36,7 @@ Imports:
     reshape2 (>= 1.4.2),
     RgoogleMaps (>= 1.4.1),
     rjson (>= 0.2.15),
+    rlang,
     rmarkdown (>= 1.2),
     RPostgreSQL (>= 0.4.1),
     rprojroot (>= 1.2),
