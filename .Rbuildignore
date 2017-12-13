@@ -6,4 +6,3 @@
 ^\.travis\.yml$
 ^data-raw$
 ^Pull_Req_Summary\.Rmd$
-^R/create_goodpractice_output\.R$
