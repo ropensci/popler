@@ -1,7 +1,10 @@
-language: R
+language: r
+r:
+  - oldrel
+  - release
+  - devel
 sudo: false
 cache: packages
-
 notifications:
   email:
     - levisc8@gmail.com
