@@ -2,7 +2,7 @@
 % Please edit documentation in R/util.R
 \name{summary_table_check}
 \alias{summary_table_check}
-\title{check if the main table needs to be updated}
+\title{Checks if the summary table needs to be updated}
 \usage{
 summary_table_check()
 }

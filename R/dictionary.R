@@ -29,7 +29,7 @@ dictionary <- function(..., full_tbl = FALSE){
   summary_table <- summary_table_import()
   # variables ------------------------------------------------
 
-  # variables of default (full_tbl=F) main table  
+  # variables of default (full_tbl=FALSE) main table  
   possible_vars  <- possible_vars()
   # variables of which user defined wishes to know the content 
   vars          <- vars_dict(...)
@@ -104,7 +104,7 @@ dict_list <- function(x, select_columns){
   if(length(norm_cols) > 1){
     out_norm <- lapply(x[ ,norm_cols], unique)
   } else {
-    out_norm <- lapply(x[ ,norm_cols,drop=F], unique)
+    out_norm <- lapply(x[ ,norm_cols, drop = FALSE], unique)
   }
   
   # get unique values of "special" variables ------------------------------------------

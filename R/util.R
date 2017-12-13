@@ -30,7 +30,7 @@ call_update = function(query){
   query_arg <- unlist(strsplit(query_str,f_logic))
   
   # make a matrix where col1 is the LHS of each query_arg and col2 is the RHS
-  LHS_RHS <- matrix(unlist(strsplit(query_arg,f_compn)),ncol=2,byrow=T)
+  LHS_RHS <- matrix(unlist(strsplit(query_arg,f_compn)),ncol=2,byrow=TRUE)
   
   # find logical operators in the query by searching query_str
   logic <- c(stringr::str_extract_all(query_str,f_logic)[[1]],"")
@@ -81,7 +81,7 @@ call_update = function(query){
 }
 
 # given a browse() object or a get_data() object, returns an identical browse
-# object with full_tbl=T and trim=F
+# object with full_tbl=TRUE and trim=FALSE
 rebrowse <- function(popler, ...){
   UseMethod("rebrowse")
 }
@@ -89,13 +89,13 @@ rebrowse <- function(popler, ...){
 rebrowse.browse <- function(popler, ...) {
   pmk <- paste0(popler$proj_metadata_key, collapse=",")
   return(eval(parse(text=paste0("browse(proj_metadata_key %in% c(", pmk,
-                                "), full_tbl=T, trim=F)"))))
+                                "), full_tbl=TRUE, trim=FALSE)"))))
 }
 
 rebrowse.get_data <- function(popler, ...) {
   pmk <- paste0(attributes(popler)$unique_projects, collapse=",")
   return(eval(parse(text=paste0("browse(proj_metadata_key %in% c(", 
-                                pmk,"), full_tbl=T, trim=F)"))))
+                                pmk,"), full_tbl=TRUE, trim=FALSE)"))))
 }
 
 # generate main data table summary ---------------------------------------------
@@ -147,7 +147,7 @@ summary_table_update = function(){
   out_proj[,sr_colnames][out_proj[,sr_colnames] == -99999] <- NA
   
   # add column for total spatial replicates
-  out_proj$tot_spat_rep <- apply(out_proj[sr_colnames], 1, prod, na.rm=T)
+  out_proj$tot_spat_rep <- apply(out_proj[sr_colnames], 1, prod, na.rm=TRUE)
   
   # add column for number of spatial levels 
   out_proj$n_spat_levs  <- apply(!is.na(out_proj[sr_colnames]), 1, sum) 
@@ -185,13 +185,14 @@ summary_table_update = function(){
   message("Finished.")
 }
 
-#' check if the main table needs to be updated
+#' Checks if the summary table needs to be updated
 #' 
 #' Checks the main table's age. If it's more than 6 weeks old, 
 #' returns a message suggesting an update
 #' 
 #' @seealso \code{\link{summary_table_update}}
 #' 
+#' @export
 summary_table_check = function(){
   
   wks_passed <- floor(as.numeric(difftime(Sys.time(),
@@ -223,7 +224,7 @@ db_open = function(){
 #' 
 db_close = function(connection){
     # RPostgreSQL::dbDisconnect(connection$con,quiet=T)
-  RPostgreSQL::dbDisconnect(connection,quiet=T)
+  RPostgreSQL::dbDisconnect(connection,quiet=TRUE)
 }
 
 # evaluate a string using the local environment, return the evaluation as string

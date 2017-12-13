@@ -21,7 +21,7 @@ cov_unpack <- function(x){
   # Extract all characters between the brackets and split the string on each comma (',')
   # followed by a space ('\\s')
   key_value_pair_dictionary_list <- stringr::str_split(
-    trimws(stringr::str_match(x$covariates, "\\{(.*)\\}"))[,2], ",\\s", simplify = T)
+    trimws(stringr::str_match(x$covariates, "\\{(.*)\\}"))[,2], ",\\s", simplify = TRUE)
   
   # Extract values from dictionary syntax (key: value)
   value_data <- apply(

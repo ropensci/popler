@@ -43,7 +43,7 @@ The user can subset what data, and which variables to visualize.
 # No arguments return the standard 16 columns of popler's main table
 default_vars = browse()
 
-# full.table==T returns the full table
+# full_tbl = TRUE returns the full table
 all_vars = browse(full_tbl = TRUE)
 
 # subset only data from the sevilleta LTER, and open the relative report in a html page

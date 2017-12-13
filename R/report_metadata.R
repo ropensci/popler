@@ -52,7 +52,7 @@ output:
 
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
 # required calculations
-A <- browse(BROWSE_QUERY, full_tbl=T, trim=F)
+A <- browse(BROWSE_QUERY, full_tbl=TRUE, trim=FALSE)
 NN <- nrow(A)
 n_taxa <- rep(NA,NN)
 for(i in 1:NN){
@@ -260,6 +260,6 @@ cite <- popler_citation(metadata)
   sink()
   
   # launch browser window
-  rmarkdown::render(md_file,quiet=T)
+  rmarkdown::render(md_file,quiet=TRUE)
   browseURL(html_file)
 }

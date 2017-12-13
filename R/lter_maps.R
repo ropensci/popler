@@ -65,7 +65,7 @@ lter_maps = function(input){
   
   # circle sizes for scale_size_area()
   s1 <- 1
-  s3 <- max(latlon_count$count, na.rm = T)
+  s3 <- max(latlon_count$count, na.rm = TRUE)
   if(s3 %% 2){
     s2 <- (s3 - 1) / 2
   } else {

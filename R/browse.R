@@ -26,7 +26,7 @@
 #' # No arguments return the standard 16 columns of popler's main table
 #' default_vars = browse()
 #' 
-#' # full.table==T returns the full table
+#' # full_tbl = TRUE returns the full table
 #' all_vars = browse(full_tbl = TRUE)
 #' 
 #' # subset only data from the sevilleta LTER, and open the relative report in a html page
@@ -131,7 +131,7 @@ keyword_subset <- function(x, keyword){
   
   #function: index of keywords
   i_keyw <- function(x, keyword) {
-    ind <- which(grepl(keyword, x, ignore.case = T) )
+    ind <- which(grepl(keyword, x, ignore.case = TRUE) )
     return(ind)
   }
   
