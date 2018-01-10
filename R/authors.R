@@ -14,6 +14,6 @@
 #' }
 # function definition
 authors <- function(data_object){
-  out <- attributes(data_object)$unique_authors %>%  as.tbl 
+  out <- attributes(data_object)$unique_authors %>%  as.tbl
   return(out)
 }

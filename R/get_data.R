@@ -37,11 +37,9 @@
 # Function that connects and gathers the information from the database
 get_data <- function(..., add_vars = NULL, subtract_vars = NULL,
                      cov_unpack = FALSE){
-  
   # open connection to database
   conn <- db_open()
-  
-  # define possible variables ---------------------------------------------------------------
+  # define possible variables ------------------------------------------
   
   # possible variables 
   possible_vars  <- vars_query(conn)
@@ -49,72 +47,77 @@ get_data <- function(..., add_vars = NULL, subtract_vars = NULL,
   all_vars       <- possible_vars$all_vars
   # default variables 
   default_vars   <- possible_vars$default_vars
-  
-  
-  # selected variables --------------------------------------------------------------------
-  
-  # extract the variables contained in the logical expressions specified in '...'
+  # selected variables -------------------------------------------------
+  # extract the variables contained in the logical expressions specified 
+  # in '...'
   
   # concatenate logical expressions specified in the '...' argument
-  # expressions can be specified explicitly, implicitly (through an object produced by browse()), or both 
-  c_calls       <- concatenate_queries(...)
-  # update the concatenated calls, in case c_calls contains "structure" or "treatment"
-  updated_calls <- call_update( c_calls )
+  # expressions can be specified explicitly, implicitly (through an 
+  # object produced by browse()), or both 
+  c_calls <- concatenate_queries(...)
+  
+  # update the concatenated calls, in case c_calls contains
+  # "structure" or "treatment"
+  updated_calls <- call_update(c_calls)
+  
   # extract the variables specified in the calls' expressions
-  # this is done to include `expr_vars` in the query, if some of `expr_vars` do not match `default_vars`.
-  expr_vars     <- expr_vars_get(all_vars, updated_calls)
+  # this is done to include `expr_vars` in the query, if some
+  # of `expr_vars` do not match `default_vars`.
+  expr_vars <- expr_vars_get(all_vars, updated_calls)
+  
+  # variables that appear either as default, added manually, or inherited
+  # from a logical operation
+  subset_vars <- unique(c(default_vars, add_vars, expr_vars))
+  # 'subset_vars' minus variables subtracted manually via argument
+  # 'subtract_vars' 
+  vars_select <- paste( setdiff(subset_vars, subtract_vars), collapse = ", ")
   
   
-  # variables that appear either as default, added manually, or inherited from a logical operation
-  subset_vars   <- unique( c(default_vars, add_vars, expr_vars) )
-  # 'subset_vars' minus variables subtracted manually via argument 'subtract_vars' 
-  vars_select   <- paste( setdiff(subset_vars, subtract_vars), collapse = ", ")
+  # translate R logical expressions in '...' into SQL ---------------------
+  sql_condition <- parse_to_sql_search(updated_calls)
   
   
-  # translate R logical expressions in '...' into SQL --------------------------------------------------------------------
-  sql_condition <- parse_to_sql_search( updated_calls )
-  
-  
-  # query ---------------------------------------------------------------------------------
+  # query -----------------------------------------------------------------
   
   # query popler online
   output_data <- popler_query(conn, vars_select, sql_condition)
   
-  # format output -------------------------------------------------------------------------
+  # format output ---------------------------------------------------------
   
   # replace -99999, but only for numeric variables
-  num_repl                <- sapply(output_data, is.numeric) %>% as.vector()
-  output_data[,num_repl]  <- lapply(output_data[ ,num_repl],
-                                    function(x){
+  num_repl <- sapply(output_data, is.numeric) %>% as.vector()
+  output_data[,num_repl] <- lapply(output_data[ ,num_repl],
+                                    function(x) {
                                       replace(x, x == -99999, NA)
-                                    }) %>% as.data.frame()
+                                    }
+                                   ) %>% as.data.frame()
   
   # remove variables that whose content is just "NA"
-  output_data             <- Filter(function(x) !all(x == "NA"), output_data)
+  output_data <- Filter(function(x) !all(x == "NA"), output_data)
   
   # Change "ordr" and "clss" to "order" and "class"
   output_data <- colname_change("clss", "class", output_data)
   output_data <- colname_change("ordr", "order", output_data)
-  output_data <- colname_change("count_observation", "abundance_observation", output_data)
+  output_data <- colname_change("count_observation", "abundance_observation", 
+                                output_data)
   
   # unpack the covariates?
-  if( cov_unpack == TRUE) {
+  if(cov_unpack == TRUE) {
     
-    output_data <-  output_data %>%
-                      dplyr::select(-.data$covariates) %>%
-                      cbind( cov_unpack(output_data))
-                      
+    output_data <- output_data %>%
+      dplyr::select(-.data$covariates) %>%
+      cbind(cov_unpack(output_data))
   }
   
-  # outputs -------------------------------------------------------------------------------
+  # outputs -----------------------------------------------------------------
   
   # assign class
   output_data <- structure(output_data, 
-                           unique_projects = unique(output_data$proj_metadata_key),
-                           unique_authors  = unique(output_data[,c("proj_metadata_key",
-                                                                   "authors",
-                                                                   "authors_contact")]),
-                           class = c("popler", "get_data", class(output_data)) 
+                unique_projects = unique(output_data$proj_metadata_key),
+                unique_authors  = unique(output_data[ ,c("proj_metadata_key",
+                                                         "authors",
+                                                         "authors_contact")]),
+                class = c("popler", "get_data", class(output_data)) 
   )
   
   # Informational message
@@ -131,27 +134,53 @@ get_data <- function(..., add_vars = NULL, subtract_vars = NULL,
 # obtain all potential columns 
 vars_query <- function(conn){
   
+  proj_sql <- paste0("SELECT column_name ",
+                     "FROM information_schema.columns ",
+                     "WHERE table_name = 'project_table'")
+  lter_sql <-  paste0("SELECT column_name ",
+                      "FROM information_schema.columns ",
+                      "WHERE table_name = 'lter_table'")
+  site_sql <- paste0("SELECT column_name ",
+                     "FROM information_schema.columns ",
+                     "WHERE table_name = 'study_site_table'")
+  s_i_p_sql <- paste0("SELECT column_name ",
+                      "FROM information_schema.columns ",
+                      "WHERE table_name = 'site_in_project_table'")
+  taxa_sql <- paste0("SELECT column_name ",
+                     "FROM information_schema.columns ",
+                     "WHERE table_name = 'taxa_table'")
+  abund_sql <- paste0("SELECT column_name ",
+                      "FROM information_schema.columns ",
+                      "WHERE table_name = 'count_table'")
   #list variables from the 6 tables relevant to standard popler queries  
-  proj_vars     <- query_get(conn, "SELECT column_name FROM information_schema.columns WHERE table_name = 'project_table'")[,1]
-  lter_vars     <- query_get(conn, "SELECT column_name FROM information_schema.columns WHERE table_name = 'lter_table'")[,1]
-  site_vars     <- query_get(conn, "SELECT column_name FROM information_schema.columns WHERE table_name = 'study_site_table'")[,1]
-  s_i_p_vars    <- query_get(conn, "SELECT column_name FROM information_schema.columns WHERE table_name = 'site_in_project_table'")[,1]
-  taxa_vars     <- query_get(conn, "SELECT column_name FROM information_schema.columns WHERE table_name = 'taxa_table'")[,1]
-  abund_vars    <- query_get(conn, "SELECT column_name FROM information_schema.columns WHERE table_name = 'count_table'")[,1]
+  proj_vars <- query_get(conn,
+                         proj_sql)[ ,1]
+  lter_vars <- query_get(conn, 
+                         lter_sql)[ ,1]
+  site_vars <- query_get(conn, 
+                         site_sql)[ ,1]
+  s_i_p_vars <- query_get(conn, 
+                          s_i_p_sql)[ ,1]
+  taxa_vars <- query_get(conn, 
+                         taxa_sql)[ ,1]
+  abund_vars <- query_get(conn, 
+                          abund_sql)[ ,1]
   
   # a vector containing all variables
-  all_vars      <- c(proj_vars,lter_vars,site_vars, s_i_p_vars,
-                     taxa_vars, abund_vars)
+  all_vars <- c(proj_vars, lter_vars,
+                site_vars, s_i_p_vars,
+                taxa_vars, abund_vars)
   
   # remove some variables that are in the database but we don't want to return
   # this is a temporary fix until we remove those columns from the database.
-  all_vars      <- all_vars[!all_vars %in% c("currently_funded",
-                                             "homepage",
-                                             "current_principle_investigator")]
+  all_vars <- all_vars[!all_vars %in% c("currently_funded",
+                                        "homepage",
+                                        "current_principle_investigator")]
   
   # a vector of "default" variables
-  default_vars  <- c("authors","authors_contact",
-                     "year","day","month","sppcode","genus","species","datatype",
+  default_vars  <- c("authors", "authors_contact",
+                     "year", "day", "month",
+                     "sppcode", "genus", "species", "datatype",
                      "spatial_replication_level_1_label",
                      "spatial_replication_level_1",
                      "spatial_replication_level_2_label",
@@ -163,21 +192,21 @@ vars_query <- function(conn){
                      "spatial_replication_level_5_label",
                      "spatial_replication_level_5",
                      "proj_metadata_key",
-                     "structure_type_1","structure_type_2",
-                     "structure_type_3","structure_type_4",
-                     "treatment_type_1","treatment_type_2",
+                     "structure_type_1", "structure_type_2",
+                     "structure_type_3", "structure_type_4",
+                     "treatment_type_1", "treatment_type_2",
                      "treatment_type_3",
                      "covariates" 
   )
   
-  return( list(all_vars = all_vars, default_vars = default_vars) )
+  return(list(all_vars = all_vars, default_vars = default_vars))
   
 }
 
 
 #' @importFrom lazyeval lazy_dots
 # a function to concatenate browse() outputs and new arguments
-concatenate_queries = function(...){
+concatenate_queries <- function(...){
   
   # lazy_dots eval get_data query
   Q <- lazyeval::lazy_dots(...)
@@ -187,24 +216,28 @@ concatenate_queries = function(...){
   
   # counters to check whether more than one browse() or new calls are used
   browse_calls <- 0
-  new_calls    <- 0
+  new_calls <- 0
   
   if(length(Q) > 2){
-    stop("You cannot enter more than two arguments:\n1) an object returned by browse() and/or\n2) a logical statement\nPlease refer to the '...' argument in ?get_data.")
+    stop("You cannot enter more than two arguments:\n1) ",
+         "an object returned by browse() and/or\n2) a logical", 
+         "statement\nPlease refer to the '...' argument in ?get_data.")
   }
   
   # loop over all inputs
-  for(i in 1:length(Q)){
-    if(class(Q[[i]]$expr) == "name"){
+  for(i in seq_len(length(Q))) {
+    if(class(Q[[i]]$expr) == "name") {
       
-      # if class of object is "name" evaluate it to get original browse() query
+      # if class of object is "name" evaluate it to get
+      # original browse() query
       tmp <- eval(Q[[i]]$expr)
       
       # if this variable isn't a popler object, throw an error
       if(class(tmp)[1] != "popler"){
         stop(paste0("Error using the following argument:\n\n      ", 
                     Q[[i]]$expr,
-                    "\n\n  Only logical expressions or outputs from the 'browse()' function may be used"))
+                    "\n\n  Only logical expressions or outputs from the ",
+                    "'browse()' function may be used"))
       }
       
       # store search argument as output
@@ -215,7 +248,7 @@ concatenate_queries = function(...){
     } else { 
       
       # if class of object is "call"...
-      if(grepl("browse[(]",deparse(Q[[i]]$expr))) {
+      if(grepl("browse[(]", deparse(Q[[i]]$expr))) {
         
         # if the call is to browse(), evaluate is and then get the search arg
         out[[i]] <- attributes(eval(Q[[i]]$expr))$search_expr
@@ -234,17 +267,16 @@ concatenate_queries = function(...){
   
   # if either call counter is more than 1, call an error
   if(browse_calls > 1){
-    stop("You cannot enter more than one browse() argument.\n  Please refer to the '...' argument in ?get_data.")
+    stop("You cannot enter more than one browse() argument.\n",
+         "Please refer to the '...' argument in ?get_data.")
   }
   if(new_calls > 1){
-    stop("You cannot enter more than one logical expression.\n  Please refer to the '...' argument in ?get_data.")
+    stop("You cannot enter more than one logical expression.\n ",
+         "Please refer to the '...' argument in ?get_data.")
   }
-  
-  # slight rewriting to avoid using the "." placeholder from magrittr.
-  # this should alleviate NOTES in check, even if it is slightly
-  # more verbose
-  LoopOut <- paste0(unlist(out), collapse="&") 
-  TextToParse <- paste0("substitute(", LoopOut ,")", collapse="")
+
+  LoopOut <- paste0(unlist(out), collapse = "&") 
+  TextToParse <- paste0("substitute(", LoopOut, ")", collapse = "")
   
   # return a single logical call
   return(eval(parse(text = TextToParse)))
@@ -253,41 +285,53 @@ concatenate_queries = function(...){
 
 # Identify which "search_expr" belong to "all_vars"
 expr_vars_get <- function(all_cols, inherit_logical){
-  
   inherit_elem <- as.character(inherit_logical)
   
   # change column names 
   inherit_elem <- colname_change("clss", "class", inherit_elem)
   inherit_elem <- colname_change("ordr", "order", inherit_elem)
   
-  inds = NULL
-  for(i in 1:length(all_cols)){
-    if( any( grepl(all_cols[i], inherit_elem) ) ){
-      inds = c(inds,i)  
+  inds <- NULL
+  for(i in seq_len(length(all_cols))){
+    if(any(grepl(all_cols[i], inherit_elem))){
+      inds <- c(inds, i)  
     }
   }
-  return( unique(all_cols[inds]) )
+  return(unique(all_cols[inds]))
 }
 
 
 # query popler
 popler_query <- function(conn, vars_select, sql_condition){
   
-  if(length(sql_condition) == 0) stop( "No logical expression specified. Please specify what data you wish to download from popler" )
-  
+  if(length(sql_condition) == 0) {
+    stop("No logical expression specified. Please specify what ",
+         "data you wish to download from popler" )
+  }
   # table specific variables
-  vars                     <- list()
-  vars$count_table         <- gsub("treatment_type_","count_table.treatment_type_",vars_select)
-  vars$biomass_table       <- gsub("treatment_type_","biomass_table.treatment_type_",vars_select)
-  vars$percent_cover_table <- gsub("treatment_type_","percent_cover_table.treatment_type_",vars_select)
-  vars$density_table       <- gsub("treatment_type_","density_table.treatment_type_",vars_select)
-  vars$individual_table    <- gsub("treatment_type_","individual_table.treatment_type_",vars_select)
+  vars <- list()
+  vars$count_table <- gsub("treatment_type_", 
+                           "count_table.treatment_type_",
+                           vars_select)
+  vars$biomass_table <- gsub("treatment_type_", 
+                             "biomass_table.treatment_type_",
+                             vars_select)
+  vars$percent_cover_table <- gsub("treatment_type_", 
+                                   "percent_cover_table.treatment_type_",
+                                   vars_select)
+  vars$density_table <- gsub("treatment_type_", 
+                             "density_table.treatment_type_",
+                             vars_select)
+  vars$individual_table <- gsub("treatment_type_",
+                                "individual_table.treatment_type_",
+                                vars_select)
   
   output_data <- query_get(conn, paste(
     # Count data
     "SELECT",vars$count_table,", count_observation",
     "FROM count_table",
-    "JOIN taxa_table ON count_table.taxa_count_fkey = taxa_table.taxa_table_key",
+    "JOIN taxa_table ",
+    "ON count_table.taxa_count_fkey = taxa_table.taxa_table_key",
     "JOIN site_in_project_table ON taxa_table.site_in_project_taxa_key =",
     "site_in_project_table.site_in_project_key",
     "JOIN project_table ON site_in_project_table.project_table_fkey =",
@@ -302,7 +346,8 @@ popler_query <- function(conn, vars_select, sql_condition){
     # Biomass data
     "SELECT",vars$biomass_table,", biomass_observation",
     "FROM biomass_table",
-    "JOIN taxa_table ON biomass_table.taxa_biomass_fkey = taxa_table.taxa_table_key",
+    "JOIN taxa_table ",
+    "ON biomass_table.taxa_biomass_fkey = taxa_table.taxa_table_key",
     "JOIN site_in_project_table ON taxa_table.site_in_project_taxa_key =",
     "site_in_project_table.site_in_project_key",
     "JOIN project_table ON site_in_project_table.project_table_fkey =",
@@ -317,7 +362,9 @@ popler_query <- function(conn, vars_select, sql_condition){
     # percent cover data
     "SELECT",vars$percent_cover_table,", percent_cover_observation",
     "FROM percent_cover_table",
-    "JOIN taxa_table ON percent_cover_table.taxa_percent_cover_fkey = taxa_table.taxa_table_key",
+    "JOIN taxa_table ",
+    "ON percent_cover_table.taxa_percent_cover_fkey ",
+    "= taxa_table.taxa_table_key",
     "JOIN site_in_project_table ON taxa_table.site_in_project_taxa_key =",
     "site_in_project_table.site_in_project_key",
     "JOIN project_table ON site_in_project_table.project_table_fkey =",
@@ -332,7 +379,8 @@ popler_query <- function(conn, vars_select, sql_condition){
     # individual data
     "SELECT",vars$individual_table,", individual_observation",
     "FROM individual_table",
-    "JOIN taxa_table ON individual_table.taxa_individual_fkey = taxa_table.taxa_table_key",
+    "JOIN taxa_table ",
+    "ON individual_table.taxa_individual_fkey = taxa_table.taxa_table_key",
     "JOIN site_in_project_table ON taxa_table.site_in_project_taxa_key =",
     "site_in_project_table.site_in_project_key",
     "JOIN project_table ON site_in_project_table.project_table_fkey =",
@@ -347,7 +395,8 @@ popler_query <- function(conn, vars_select, sql_condition){
     # density data
     "SELECT",vars$density_table,", density_observation",
     "FROM density_table",
-    "JOIN taxa_table ON density_table.taxa_density_fkey = taxa_table.taxa_table_key",
+    "JOIN taxa_table ",
+    "ON density_table.taxa_density_fkey = taxa_table.taxa_table_key",
     "JOIN site_in_project_table ON taxa_table.site_in_project_taxa_key =",
     "site_in_project_table.site_in_project_key",
     "JOIN project_table ON site_in_project_table.project_table_fkey =",
@@ -370,28 +419,33 @@ data_message <- function(x){
   if( length(unique(x$proj_metadata_key)) == 1)
     message(paste0("You have downloaded data from ",
                    length(unique(x$proj_metadata_key)),
-                   " project. \nThe identification number of this project is: ",
-                   paste0(unique(x$proj_metadata_key),
-                          collapse=", "),"."),"\n
-            IMPORTANT NOTICE: 
-            If you are about to use this data in a formal publication, as courtesy, please:
+                   " project.\nThe identification number of this project is:",
+                   paste0(" ", unique(x$proj_metadata_key),
+                          collapse=", "),
+                   "."),"\n
+            IMPORTANT NOTICE:\nIf you are about to use this data in a ",
+            "formal publication as courtesy, please:
             1) Contact the investigators of each project. 
             Do this by using function authors() on this object. 
-            2) Acknowledge funding sources, if these are provided in the metadata.   
-            Access metadata by using function metadata_url() on this object. \n")
+            2) Acknowledge funding sources, if these are provided ",
+            "in the metadata.   
+            Access metadata by using function metadata_url() on this ", 
+            "object. \n")
   
   else {
     message("\n",paste0("You have downloaded data from ",
                         length(unique(x$proj_metadata_key)),
                         " projects. \nThe identification numbers of these projects are: ",
-                        paste0(unique(x$proj_metadata_key),collapse=", "),"."),"\n
-            IMPORTANT NOTICE: 
-            If you are about to use this data in a formal publication, as courtesy, please:
+                        paste0(unique(x$proj_metadata_key),
+                               collapse=", "),"."),"\n
+            IMPORTANT NOTICE:\nIf you are about to use this data in a ",
+            "formal publication as courtesy, please:
             1) Contact the investigators of each project. 
-            Obtain contact information by using function authors() on this object. 
-            2) Acknowledge funding sources, if these are provided in the metadata.   
-            Access project metadata by using function metadata_url() on this object. \n")
-    
+            Do this by using function authors() on this object. 
+            2) Acknowledge funding sources, if these are provided ",
+            "in the metadata.   
+            Access metadata by using function metadata_url() on this ", 
+            "object. \n")
   }
   
 }
