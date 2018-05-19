@@ -61,6 +61,7 @@ report_dictionary <- function(full_tbl=FALSE, md_file=NULL, html_file=NULL){
                                            collapse=" , "),
                                     ")")))
   
+
   # build the .Rmd file piecewise
   header <- c(
 '
@@ -72,7 +73,7 @@ output:
 
 <br>  
 
-<img src= (\"C:/Program Files/R/R-3.3.0/library/popler/icon\".png) alt="Drawing" style="height: 110px; float: right"/>  
+<img src= `r system.file("icon.png",package="popler")` alt="Drawing" style="height: 110px; float: right"/>  
 
 <br>  
   

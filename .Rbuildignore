@@ -9,3 +9,6 @@
 ^inst/dictionary_files$
 ^inst/\.gitignore$
 ^appveyor\.yml$
+^MS/*$
+^Notes\.rmd$
+^Notes\.md$
