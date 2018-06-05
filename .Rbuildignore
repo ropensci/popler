@@ -17,3 +17,4 @@
 ^browse\.Rmd$
 ^browse\.html$
 ^browse_files$
+^codecov\.yml$

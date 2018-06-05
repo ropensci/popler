@@ -28,7 +28,8 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 Suggests: 
     knitr (>= 1.15.1),
-    testthat
+    testthat,
+    covr
 LazyData: true
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr

@@ -29,3 +29,7 @@ notifications:
     - levisc8@gmail.com
     - brad.ochocki@gmail.com 
     - aldo.compagnoni@gmail.com  
+    
+after_success:
+  - Rscript -e 'covr::codecov()'
+
