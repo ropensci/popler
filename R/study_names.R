@@ -32,7 +32,7 @@ study_names <- function(browsed, width = 60){
   # extract titles from object
   titles  <- unique( new_browsed$title )
   # Store 'wrapped' titles in a list 
-  title_l <- lapply(titles,strwrap, width = width)
+  title_l <- lapply(titles, strwrap, width = width)
   
   for(i in 1:length(title_l)){
     

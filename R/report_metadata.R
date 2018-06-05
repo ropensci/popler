@@ -249,9 +249,9 @@ cite <- popler_citation(metadata)
                  header)
   
   # update project block
-  proj_new <- rep(NA,nrow(input))
-  for(i in 1:nrow(input)){
-    proj_new[i] <- gsub("`r N<-X",paste0("`r N<-",i),proj)
+  proj_new <- rep(NA, nrow(input))
+  for(i in seq_len(nrow(input))){
+    proj_new[i] <- gsub("`r N<-X", paste0("`r N<-", i), proj)
   }
   
   # make markdown file

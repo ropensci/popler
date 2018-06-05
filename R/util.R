@@ -30,23 +30,25 @@ call_update = function(query){
   query_arg <- unlist(strsplit(query_str,f_logic))
   
   # make a matrix where col1 is the LHS of each query_arg and col2 is the RHS
-  LHS_RHS <- matrix(unlist(strsplit(query_arg,f_compn)),ncol=2,byrow=TRUE)
+  LHS_RHS <- matrix(unlist(strsplit(query_arg, f_compn)),
+                    ncol = 2,
+                    byrow = TRUE)
   
   # find logical operators in the query by searching query_str
-  logic <- c(stringr::str_extract_all(query_str,f_logic)[[1]],"")
+  logic <- c(stringr::str_extract_all(query_str, f_logic)[[1]],"")
   
   # find comparison operators in each argument by searching query_arg
-  comps <- unlist(stringr::str_extract_all(query_arg,f_compn))
+  comps <- unlist(stringr::str_extract_all(query_arg, f_compn))
   
   # make a list where each element is an argument in the query, updating LHS of
   # an argument when necessary
   query_list = list()
-  for(i in 1:nrow(LHS_RHS)){
+  for(i in seq_len(nrow(LHS_RHS))){
     
     # determine operator in case treatment or structure strings need to change
-    op <- ifelse(comps[i]=="!=", "&", "|")
+    op <- ifelse(comps[i] == "!=", "&", "|")
     
-    if(LHS_RHS[i,1] == "treatment"){
+    if(LHS_RHS[i, 1] == "treatment"){
       
       # update "treatment" string if necessary, then put query back together
       query_list[i] <- paste(gsub("@", string_eval_local(LHS_RHS[i,2]), 
@@ -57,7 +59,7 @@ call_update = function(query){
     } else if(LHS_RHS[i,1] == "structure"){
       
       # update "structure" string if necessary, then put query back together
-      query_list[i] <- paste(gsub("@", string_eval_local(LHS_RHS[i,2]),
+      query_list[i] <- paste(gsub("@", string_eval_local(LHS_RHS[i, 2]),
                                   gsub("@@", comps[i],
                                        gsub("@@@", op, r_str))),
                              logic[i])
@@ -73,8 +75,8 @@ call_update = function(query){
   # slight rewriting to avoid using the "." placeholder from magrittr.
   # this should alleviate NOTES in check, even if it is slightly
   # more verbose
-  QueryOut <- paste0(unlist(query_list), collapse="") 
-  TextToParse <- paste0("substitute(", QueryOut ,")", collapse="")
+  QueryOut <- paste0(unlist(query_list), collapse = "") 
+  TextToParse <- paste0("substitute(", QueryOut ,")", collapse = "")
   
   # collapse query_list to a single string, convert to expression, and return it
   return(eval(parse(text = TextToParse)))
@@ -111,7 +113,7 @@ rebrowse.get_data <- function(popler, ...) {
 #' @seealso \code{\link{summary_table_check}}
 #' 
 #' @export
-summary_table_update = function(){
+summary_table_update <- function(){
   
   message("Please wait while popler updates its summary table... this may take several minutes.")
   
@@ -177,7 +179,7 @@ summary_table_update = function(){
   
   # store main data table--------------------------------------------------
   st_file <- paste0(system.file("extdata", package = "popler"),"/summary_table.rda")
-  save(summary_table, file=st_file)
+  save(summary_table, file = st_file)
   
   # close database connection
   db_close(conn)
@@ -234,7 +236,7 @@ string_eval_local = function(x){
 
 # changes a column name from one name to another
 colname_change = function(from, to, x){
-  names(x) <- gsub(from,to,names(x))
+  names(x) <- gsub(from, to, names(x))
   return(x)
 }
 
@@ -246,7 +248,7 @@ colname_change = function(from, to, x){
 query_get = function(connection, query){
   # accepts a connection and a string query input
   # outputs a dataframe
-  return(tbl(connection,sql(query)) %>% data.frame())
+  return(dplyr::tbl(connection, dbplyr::sql(query)) %>% data.frame())
 }
 
 #' @noRd
@@ -295,7 +297,7 @@ popler_disconnector = function (con, name, silent = TRUE)
 factor_to_character <- function(x, full_tbl = FALSE){
   
   for(i in 1:ncol(x)){
-    if(class(x[,i])=="factor") x[,i]=as.character(x[,i])
+    if(class(x[,i])=="factor") x[ ,i] <- as.character(x[ ,i])
   }
   return(x)
   
