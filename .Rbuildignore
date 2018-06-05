@@ -13,3 +13,7 @@
 ^Notes\.rmd$
 ^Notes\.md$
 ^Dependency_Graph$
+^Dependency_Graph\.R$
+^browse\.Rmd$
+^browse\.html$
+^browse_files$
