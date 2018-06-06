@@ -209,13 +209,4 @@ popler_disconnector = function (con, name, silent = TRUE)
   environment()
 }
 
-# Converts factor columns into character format
-factor_to_character <- function(x, full_tbl = FALSE){
-  
-  for(i in 1:ncol(x)){
-    if(class(x[,i])=="factor") x[ ,i] <- as.character(x[ ,i])
-  }
-  return(x)
-  
-}
 
