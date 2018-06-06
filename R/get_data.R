@@ -35,7 +35,8 @@
 #'}
 
 # Function that connects and gathers the information from the database
-get_data <- function(..., add_vars = NULL, subtract_vars = NULL,
+
+pplr_get_data <- function(..., add_vars = NULL, subtract_vars = NULL,
                      cov_unpack = FALSE){
   # open connection to database
   conn <- db_open()
@@ -80,7 +81,7 @@ get_data <- function(..., add_vars = NULL, subtract_vars = NULL,
   # query -----------------------------------------------------------------
   
   # query popler online
-  output_data <- popler_query(conn, vars_select, sql_condition)
+  output_data <- pplr_query(conn, vars_select, sql_condition)
   
   # format output ---------------------------------------------------------
   
@@ -205,6 +206,7 @@ vars_query <- function(conn){
 
 
 #' @importFrom lazyeval lazy_dots
+#' @noRd
 # a function to concatenate browse() outputs and new arguments
 concatenate_queries <- function(...){
   
@@ -283,6 +285,7 @@ concatenate_queries <- function(...){
   
 }
 
+#' @noRd
 # Identify which "search_expr" belong to "all_vars"
 expr_vars_get <- function(all_cols, inherit_logical){
   inherit_elem <- as.character(inherit_logical)
@@ -302,7 +305,8 @@ expr_vars_get <- function(all_cols, inherit_logical){
 
 
 # query popler
-popler_query <- function(conn, vars_select, sql_condition){
+#' @noRd
+pplr_query <- function(conn, vars_select, sql_condition){
   
   if(length(sql_condition) == 0) {
     stop("No logical expression specified. Please specify what ",
@@ -413,6 +417,7 @@ popler_query <- function(conn, vars_select, sql_condition){
 }
 
 
+#' @noRd
 # informational message at every download
 data_message <- function(x){
   

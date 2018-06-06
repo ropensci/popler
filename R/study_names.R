@@ -18,7 +18,7 @@
 #' #study_names(vcr_dat, width = 30)
 #' }
 
-study_names <- function(browsed, width = 60){
+study_names <- function(browsed, width = 60) {
   
   summary_table <- summary_table_import()
   # re-browse data, with trim OFF

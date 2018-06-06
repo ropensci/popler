@@ -90,14 +90,16 @@ rebrowse <- function(popler, ...){
 
 rebrowse.browse <- function(popler, ...) {
   pmk <- paste0(popler$proj_metadata_key, collapse=",")
-  return(eval(parse(text=paste0("browse(proj_metadata_key %in% c(", pmk,
-                                "), full_tbl=TRUE, trim=FALSE)"))))
+  return(eval(parse(text = paste0("browse(proj_metadata_key %in% c(",
+                                  pmk,
+                                  "), full_tbl=TRUE, trim=FALSE)"))))
 }
 
 rebrowse.get_data <- function(popler, ...) {
   pmk <- paste0(attributes(popler)$unique_projects, collapse=",")
-  return(eval(parse(text=paste0("browse(proj_metadata_key %in% c(", 
-                                pmk,"), full_tbl=TRUE, trim=FALSE)"))))
+  return(eval(parse(text = paste0("browse(proj_metadata_key %in% c(", 
+                                  pmk,
+                                  "), full_tbl=TRUE, trim=FALSE)"))))
 }
 
 # generate main data table summary ---------------------------------------------

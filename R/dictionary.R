@@ -22,13 +22,13 @@
 #' # multiple columns
 #' dictionary_lter_lat <- dictionary(lterid,lat_lter, full_tbl = FALSE)
 #' }
-dictionary <- function(..., full_tbl = FALSE){
+pplr_dictionary <- function(..., full_tbl = FALSE){
   # summary table ------------------------------------------------------------
   # load summary table
   summary_table <- summary_table_import()
   # variables ------------------------------------------------
   # variables of default (full_tbl=FALSE) main table
-  possible_vars <- possible_vars()
+  possible_vars <- default_vars()
   # variables of which user defined wishes to know the content
   vars <- vars_dict(...)
   
@@ -40,7 +40,7 @@ dictionary <- function(..., full_tbl = FALSE){
     tmp <- if(full_tbl){
       summary_table
     } else {
-      summary_table[ ,possible_vars]
+      summary_table[ ,default_vars]
     }
     out <- dictionary_explain(tmp)
   # if colums specified.
@@ -55,6 +55,8 @@ dictionary <- function(..., full_tbl = FALSE){
 # lazy evaluation in dictionary
 
 #' @importFrom lazyeval lazy_dots
+#' @noRd
+
 vars_dict <- function(...){
   
   eval_that <- lazyeval::lazy_dots(...)
@@ -70,6 +72,7 @@ vars_dict <- function(...){
 
 
 # verify whether provided variables match one of the potential variables
+#' @noRd
 verify_vars <- function(sel_col){
   
   i <- which(sel_col %in% c(int.data$explanations$variable,
@@ -87,6 +90,8 @@ verify_vars <- function(sel_col){
 
 # produce the lists of unique dictionary values
 #' @importFrom stats setNames
+#' @noRd
+
 dict_list <- function(x, select_columns){
   
   # first, verify user input matches with variables contained in popler

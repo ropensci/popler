@@ -3,7 +3,8 @@
 #' scale_y_continuous geom_polygon geom_point theme map_data
 #' xlab ylab coord_map scale_size_area element_blank
 #' guide_legend
-#' 
+#' @noRd
+
 lter_maps <- function(input){
   # a function for making panel plots
   multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {

@@ -16,7 +16,8 @@
 #' @importFrom rlang .data
 #' @export
 # function definition 
-metadata_url <- function(data_object){
+
+pplr_metadata_url <- function(data_object){
   # study id(s)
   proj_ids  <- attributes(data_object)$unique_projects
   # load summary_table

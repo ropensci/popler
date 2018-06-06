@@ -19,7 +19,7 @@
 #' # cite$acknowledgement       # acknowledgement template
 #' }
 #' 
-popler_citation <- function(input, bibtex_path = NULL){
+pplr_citation <- function(input, bibtex_path = NULL){
   input <- rebrowse(input)
   
   # initialize a bibentry object

@@ -65,7 +65,7 @@ browse <- function(..., full_tbl = FALSE,
   }
   
   # error message if variable names are incorrect
-  vars_spell(vars, c(names(summary_table), "taxonomy"), possible_vars())
+  vars_spell(vars, c(names(summary_table), "taxonomy"), default_vars())
   
   # update user query to account for actual database variable names
   logic_expr <- call_update(substitute(...))
@@ -93,7 +93,7 @@ browse <- function(..., full_tbl = FALSE,
     out_vars <- if(full_tbl == TRUE) {
       subset_data
     } else {
-      subset_data[ ,possible_vars()]
+      subset_data[ ,default_vars()]
     }
     
   } else { # if variables are declared explicitly
@@ -116,7 +116,7 @@ browse <- function(..., full_tbl = FALSE,
   # attribute class "popler"
   out <- structure(out_form, 
                    class = c("popler", "browse", class(out_form)),
-                   search_expr = c(logic_expr,keyword_expr)[[1]])
+                   search_expr = c(logic_expr, keyword_expr)[[1]])
   
   if(report == TRUE){ 
     report_metadata(out) 
@@ -125,7 +125,6 @@ browse <- function(..., full_tbl = FALSE,
   return(out)
   
 }
-
 
 
 #' @noRd
@@ -185,7 +184,7 @@ select_by_criteria <- function(x, criteria){
 
 
 # Store possible variables
-possible_vars = function(){ 
+default_vars = function(){ 
   return(c("title","proj_metadata_key","lterid",
            "datatype","studytype",
            "duration_years", "community", "studystartyr", "studyendyr",
