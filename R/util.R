@@ -30,23 +30,25 @@ call_update = function(query){
   query_arg <- unlist(strsplit(query_str,f_logic))
   
   # make a matrix where col1 is the LHS of each query_arg and col2 is the RHS
-  LHS_RHS <- matrix(unlist(strsplit(query_arg,f_compn)),ncol=2,byrow=T)
+  LHS_RHS <- matrix(unlist(strsplit(query_arg, f_compn)),
+                    ncol = 2,
+                    byrow = TRUE)
   
   # find logical operators in the query by searching query_str
-  logic <- c(stringr::str_extract_all(query_str,f_logic)[[1]],"")
+  logic <- c(stringr::str_extract_all(query_str, f_logic)[[1]],"")
   
   # find comparison operators in each argument by searching query_arg
-  comps <- unlist(stringr::str_extract_all(query_arg,f_compn))
+  comps <- unlist(stringr::str_extract_all(query_arg, f_compn))
   
   # make a list where each element is an argument in the query, updating LHS of
   # an argument when necessary
   query_list = list()
-  for(i in 1:nrow(LHS_RHS)){
+  for(i in seq_len(nrow(LHS_RHS))){
     
     # determine operator in case treatment or structure strings need to change
-    op <- ifelse(comps[i]=="!=", "&", "|")
+    op <- ifelse(comps[i] == "!=", "&", "|")
     
-    if(LHS_RHS[i,1] == "treatment"){
+    if(LHS_RHS[i, 1] == "treatment"){
       
       # update "treatment" string if necessary, then put query back together
       query_list[i] <- paste(gsub("@", string_eval_local(LHS_RHS[i,2]), 
@@ -57,7 +59,7 @@ call_update = function(query){
     } else if(LHS_RHS[i,1] == "structure"){
       
       # update "structure" string if necessary, then put query back together
-      query_list[i] <- paste(gsub("@", string_eval_local(LHS_RHS[i,2]),
+      query_list[i] <- paste(gsub("@", string_eval_local(LHS_RHS[i, 2]),
                                   gsub("@@", comps[i],
                                        gsub("@@@", op, r_str))),
                              logic[i])
@@ -73,29 +75,31 @@ call_update = function(query){
   # slight rewriting to avoid using the "." placeholder from magrittr.
   # this should alleviate NOTES in check, even if it is slightly
   # more verbose
-  QueryOut <- paste0(unlist(query_list), collapse="") 
-  TextToParse <- paste0("substitute(", QueryOut ,")", collapse="")
+  QueryOut <- paste0(unlist(query_list), collapse = "") 
+  TextToParse <- paste0("substitute(", QueryOut ,")", collapse = "")
   
   # collapse query_list to a single string, convert to expression, and return it
   return(eval(parse(text = TextToParse)))
 }
 
 # given a browse() object or a get_data() object, returns an identical browse
-# object with full_tbl=T and trim=F
+# object with full_tbl=TRUE and trim=FALSE
 rebrowse <- function(popler, ...){
   UseMethod("rebrowse")
 }
 
 rebrowse.browse <- function(popler, ...) {
   pmk <- paste0(popler$proj_metadata_key, collapse=",")
-  return(eval(parse(text=paste0("browse(proj_metadata_key %in% c(", pmk,
-                                "), full_tbl=T, trim=F)"))))
+  return(eval(parse(text = paste0("browse(proj_metadata_key %in% c(",
+                                  pmk,
+                                  "), full_tbl=TRUE, trim=FALSE)"))))
 }
 
 rebrowse.get_data <- function(popler, ...) {
   pmk <- paste0(attributes(popler)$unique_projects, collapse=",")
-  return(eval(parse(text=paste0("browse(proj_metadata_key %in% c(", 
-                                pmk,"), full_tbl=T, trim=F)"))))
+  return(eval(parse(text = paste0("browse(proj_metadata_key %in% c(", 
+                                  pmk,
+                                  "), full_tbl=TRUE, trim=FALSE)"))))
 }
 
 # generate main data table summary ---------------------------------------------
@@ -111,7 +115,7 @@ rebrowse.get_data <- function(popler, ...) {
 #' @seealso \code{\link{summary_table_check}}
 #' 
 #' @export
-summary_table_update = function(){
+summary_table_update <- function(){
   
   message("Please wait while popler updates its summary table... this may take several minutes.")
   
@@ -147,7 +151,7 @@ summary_table_update = function(){
   out_proj[,sr_colnames][out_proj[,sr_colnames] == -99999] <- NA
   
   # add column for total spatial replicates
-  out_proj$tot_spat_rep <- apply(out_proj[sr_colnames], 1, prod, na.rm=T)
+  out_proj$tot_spat_rep <- apply(out_proj[sr_colnames], 1, prod, na.rm=TRUE)
   
   # add column for number of spatial levels 
   out_proj$n_spat_levs  <- apply(!is.na(out_proj[sr_colnames]), 1, sum) 
@@ -177,7 +181,7 @@ summary_table_update = function(){
   
   # store main data table--------------------------------------------------
   st_file <- paste0(system.file("extdata", package = "popler"),"/summary_table.rda")
-  save(summary_table, file=st_file)
+  save(summary_table, file = st_file)
   
   # close database connection
   db_close(conn)
@@ -185,13 +189,14 @@ summary_table_update = function(){
   message("Finished.")
 }
 
-#' check if the main table needs to be updated
+#' Checks if the summary table needs to be updated
 #' 
 #' Checks the main table's age. If it's more than 6 weeks old, 
 #' returns a message suggesting an update
 #' 
 #' @seealso \code{\link{summary_table_update}}
 #' 
+#' @export
 summary_table_check = function(){
   
   wks_passed <- floor(as.numeric(difftime(Sys.time(),
@@ -223,7 +228,7 @@ db_open = function(){
 #' 
 db_close = function(connection){
     # RPostgreSQL::dbDisconnect(connection$con,quiet=T)
-  RPostgreSQL::dbDisconnect(connection,quiet=T)
+  RPostgreSQL::dbDisconnect(connection,quiet=TRUE)
 }
 
 # evaluate a string using the local environment, return the evaluation as string
@@ -233,7 +238,7 @@ string_eval_local = function(x){
 
 # changes a column name from one name to another
 colname_change = function(from, to, x){
-  names(x) <- gsub(from,to,names(x))
+  names(x) <- gsub(from, to, names(x))
   return(x)
 }
 
@@ -245,7 +250,7 @@ colname_change = function(from, to, x){
 query_get = function(connection, query){
   # accepts a connection and a string query input
   # outputs a dataframe
-  return(tbl(connection,sql(query)) %>% data.frame())
+  return(dplyr::tbl(connection, dbplyr::sql(query)) %>% data.frame())
 }
 
 #' @noRd
@@ -294,7 +299,7 @@ popler_disconnector = function (con, name, silent = TRUE)
 factor_to_character <- function(x, full_tbl = FALSE){
   
   for(i in 1:ncol(x)){
-    if(class(x[,i])=="factor") x[,i]=as.character(x[,i])
+    if(class(x[,i])=="factor") x[ ,i] <- as.character(x[ ,i])
   }
   return(x)
   

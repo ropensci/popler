@@ -18,18 +18,18 @@
 #' @examples
 #' \dontrun{
 #' # Tallies without grouping factor
-#' summary_popler(count_vars = "title", trim = TRUE)
+#' pplr_summary(count_vars = "title", trim = TRUE)
 #'          
 #' # Number of species by study
-#' summary_popler(group_vars = "title", 
+#' pplr_summary(group_vars = "title", 
 #'                count_vars = "species", trim = TRUE)
 #'          
 #' # Number of studies by LTER site
-#' summary_popler(group_vars = "lterid", 
+#' pplr_summary(group_vars = "lterid", 
 #'                count_vars = "title", trim = TRUE)
 #' }       
 # The summary_popler function
-summary_popler <- function(group_vars = NULL, count_vars = "title", trim = TRUE){
+pplr_summary <- function(group_vars = NULL, count_vars = "title", trim = TRUE){
   
   summary_table <- summary_table_import()
   # tally cases, if tally_by is not NULL
@@ -42,16 +42,17 @@ summary_popler <- function(group_vars = NULL, count_vars = "title", trim = TRUE)
 # Calculate tallies
 #' @importFrom dplyr select one_of as.tbl group_by_ summarise_ n %>% distinct
 #' @importFrom stats setNames
-tallies=function(browsed_data,tally_columns,group_factors,trim){
+#' @noRd
+tallies <- function(browsed_data, tally_columns, group_factors, trim) {
   
   df_list <- list()
-  for(i in 1:length(tally_columns)){
+  for(i in seq_len(length(tally_columns))) {
     
     #does 'tally_columns' refers to multiple columns
     multi_tally <- multiple_columns(tally_columns[i])
     
     #columns referring to both group_factors and tallies
-    group_tally_cols <- c(group_factors,multi_tally)
+    group_tally_cols <- c(group_factors, multi_tally)
     
     #Data of interest for the tally
     tally_data <- dplyr::select(browsed_data,
@@ -59,10 +60,10 @@ tallies=function(browsed_data,tally_columns,group_factors,trim){
     
     #lower case of grouping factors (should get rid of doubles such as "yes" "Yes")
     tally_data <- as.data.frame(tally_data)
-    for(co in 1:ncol(tally_data)) { 
+    for(co in seq_len(ncol(tally_data))) { 
       tally_data[ ,co] <- tolower(tally_data[ ,co])
     }
-    tally_data <- as.tbl(tally_data)
+    tally_data <- dplyr::as.tbl(tally_data)
     
     #only unique values
     tally_data <- dplyr::distinct(tally_data)
@@ -72,7 +73,7 @@ tallies=function(browsed_data,tally_columns,group_factors,trim){
     #grouping factor present
     if(!is.null(group_factors)){ 
       df_list[[i]] <- tally_data %>%
-        group_by_(.dots = group_factors) %>%
+        group_by_(.dots = !!!group_factors) %>%
         summarise_(.dots = setNames(list(~n()),
                                   tally_name))
       #No grouping factor
@@ -83,14 +84,15 @@ tallies=function(browsed_data,tally_columns,group_factors,trim){
     }
     
   }
-  out=trim_display(Reduce(function(...) merge(...),df_list),trim)
+  out <- trim_display(Reduce(function(...) merge(...), df_list), trim)
   return(out)
   
 }
 
 
 # function converts entries to multiple columns - if need be
-multiple_columns=function(x) {
+#' @noRd
+multiple_columns <- function(x) {
   
   taxonomy            <-  c("kingdom","phylum","clss","ordr",
                             "family","genus","species")
@@ -102,8 +104,8 @@ multiple_columns=function(x) {
   if( any(x %in% wrapperNames) ){
     oldIds   <- which(x %in% wrapperNames)
     newIds   <- which(wrapperNames %in% x)
-    newArg <- eval(parse(n=1,text=paste0(wrapperNames[newIds])))
-    columnNames <- c(x[-oldIds],newArg)
+    newArg <- eval(parse(n = 1, text = paste0(wrapperNames[newIds])))
+    columnNames <- c(x[-oldIds], newArg)
     return(columnNames)
   } else {
     return(x)

@@ -26,7 +26,7 @@
 #' # No arguments return the standard 16 columns of popler's main table
 #' default_vars = browse()
 #' 
-#' # full.table==T returns the full table
+#' # full_tbl = TRUE returns the full table
 #' all_vars = browse(full_tbl = TRUE)
 #' 
 #' # subset only data from the sevilleta LTER, and open the relative report in a html page
@@ -48,7 +48,9 @@
 
 
 # The browse popler function
-browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE, keyword = NULL,
+browse <- function(..., full_tbl = FALSE, 
+                   vars = NULL, trim = TRUE, 
+                   view = FALSE, keyword = NULL,
                    report = FALSE){
   
   # load summary table
@@ -56,29 +58,30 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
   # stop if user supplies both criteria and a keyword
   if( !is.null(substitute(...)) & !is.null(keyword)){
     stop("
-         browse() cannot simultaneously subset based on both a logical statement and the 'keyword' argument.
-         Please use only one of the two methods, or refine your search using get_data().")
+         browse() cannot simultaneously subset based on both ",
+         "a logical statement and the 'keyword' argument.
+         Please use only one of the two methods, or refine your ",
+         "search using get_data().")
   }
   
   # error message if variable names are incorrect
-  vars_spell( vars, c(names(summary_table),"taxonomy"), possible_vars() )
+  vars_spell(vars, c(names(summary_table), "taxonomy"), default_vars())
   
   # update user query to account for actual database variable names
-  logic_expr   <- call_update(substitute(...))
-  
+  logic_expr <- call_update(substitute(...))
   
   # subset rows: if keyword is not NULL ---------------------------
-  if( !is.null(keyword) ){ 
+  if(!is.null(keyword)) { 
     
-    keyword_data   <- keyword_subset(summary_table, keyword)
-    subset_data    <- keyword_data$tab
-    keyword_expr   <- keyword_data$s_arg
+    keyword_data <- keyword_subset(summary_table, keyword)
+    subset_data <- keyword_data$tab
+    keyword_expr <- keyword_data$s_arg
     
     # subset rows: if logic_expr is not NULL
   } else {  
     
-    subset_data   <- select_by_criteria(summary_table, logic_expr)
-    keyword_expr  <- NULL 
+    subset_data <- select_by_criteria(summary_table, logic_expr)
+    keyword_expr <- NULL 
     
   }
   
@@ -90,7 +93,7 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
     out_vars <- if(full_tbl == TRUE) {
       subset_data
     } else {
-      subset_data[ ,possible_vars()]
+      subset_data[ ,default_vars()]
     }
     
   } else { # if variables are declared explicitly
@@ -111,9 +114,9 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
     utils::View(out_form)
   }
   # attribute class "popler"
-  out            <- structure(out_form, 
-                              class = c("popler", "browse", class(out_form) ),
-                              search_expr = c(logic_expr,keyword_expr)[[1]])
+  out <- structure(out_form, 
+                   class = c("popler", "browse", class(out_form)),
+                   search_expr = c(logic_expr, keyword_expr)[[1]])
   
   if(report == TRUE){ 
     report_metadata(out) 
@@ -124,28 +127,27 @@ browse <- function(..., full_tbl = FALSE, vars = NULL, trim = TRUE, view = FALSE
 }
 
 
-
 #' @noRd
 # implements the 'keyword' argument And operator in browse() 
 keyword_subset <- function(x, keyword){
   
   #function: index of keywords
   i_keyw <- function(x, keyword) {
-    ind <- which(grepl(keyword, x, ignore.case = T) )
+    ind <- which(grepl(keyword, x, ignore.case = TRUE) )
     return(ind)
   }
   
   # row numbers selected
-  ind_list  <- lapply(x, i_keyw, keyword)
-  proj_i    <- unique(unlist(ind_list))
+  ind_list <- lapply(x, i_keyw, keyword)
+  proj_i <- unique(unlist(ind_list))
   
   # projects selected
   if(length(proj_i) > 0){
-    proj_n      <- unique( x$proj_metadata_key[proj_i] )
-    statements  <- paste0("proj_metadata_key == ", proj_n)
-    src_arg     <- parse(text = paste0(statements, collapse = " | "))[[1]]
+    proj_n <- unique(x$proj_metadata_key[proj_i])
+    statements <- paste0("proj_metadata_key == ", proj_n)
+    src_arg <- parse(text = paste0(statements, collapse = " | "))[[1]]
   } else { 
-    src_arg     <- NULL
+    src_arg <- NULL
   }
   
   # return values
@@ -170,10 +172,11 @@ select_by_criteria <- function(x, criteria){
   }
   
   # if no results are returned, return an error
-  if( nrow(out) == 0 ) {
-    stop( "No matches found. Either:
+  if(nrow(out) == 0) {
+    stop("No matches found. Either:
           1. the name of variable(s) you specified is/are incorrect or 
-          2. the values you are looking for are not contained in the variable(s) you specified")
+          2. the values you are looking for are not contained in the",
+         "variable(s) you specified")
   }
   
   return(dplyr::tbl_df(out))
@@ -181,14 +184,16 @@ select_by_criteria <- function(x, criteria){
 
 
 # Store possible variables
-possible_vars = function(){ 
+default_vars = function(){ 
   return(c("title","proj_metadata_key","lterid",
            "datatype","studytype",
            "duration_years", "community", "studystartyr", "studyendyr",
-           "structured_type_1","structured_type_2","structured_type_3","structured_type_4",
+           "structured_type_1","structured_type_2","structured_type_3",
+           "structured_type_4",
            "treatment_type_1","treatment_type_2","treatment_type_3",
            "lat_lter","lng_lter",
-           "sppcode","species","kingdom","phylum","class","order","family","genus"))
+           "sppcode","species","kingdom","phylum","class","order"
+           ,"family","genus"))
            #"taxonomy")
 }
 
@@ -196,8 +201,8 @@ possible_vars = function(){
 # check that at least proj_metadata_key is included in variables
 vars_check <- function(x){
   
-  if( !"proj_metadata_key" %in% x ) {
-    x = c("proj_metadata_key",x)
+  if(!"proj_metadata_key" %in% x) {
+    x <- c("proj_metadata_key", x)
   }
   
   return(x)
@@ -225,14 +230,14 @@ taxa_nest <- function(x, full_tbl){
   
   # select taxonomic information (based on full_ or standard_table)
   if( full_tbl == FALSE){
-    taxas <- c("sppcode","species","kingdom","phylum",
-               "class","order","family","genus")
+    taxas <- c("sppcode", "species", "kingdom", "phylum",
+               "class", "order", "family", "genus")
   } else {
-    taxas <- c('sppcode','kingdom','subkingdom','infrakingdom',
-               'superdivision','division','subdivision',
-               'superphylum','phylum','subphylum','class',
-               'subclass','order','family','genus','species',
-               'common_name','authority')
+    taxas <- c("sppcode", "kingdom", "subkingdom", "infrakingdom",
+               "superdivision", "division", "subdivision",
+               "superphylum", "phylum", "subphylum", "class",
+               "subclass", "order", "family", "genus", "species",
+               "common_name", "authority")
   }
   
   # load summary_table
@@ -243,18 +248,13 @@ taxa_nest <- function(x, full_tbl){
   if(!any(names(x) %in% taxas)) out <- unique(summary_table[])
   
   # if only ONE of the taxonomic variables is provided
-  if( sum(names(x) %in% taxas) == 1 ){
+  if(sum(names(x) %in% taxas) == 1){
+
     
-    # NOTE FROM SCL------------
-    # consider rewriting without underscored tidyverse verbs. These are no longer
-    # needed due to tidy evaluation and their forms are currently deprecated.
-    # I'm guessing they'll disappear soon so it may be worth while to rewrite now
-    # and avoid breaking once the deprecated verbs disappear
-    
-    nested_var <- taxas[which( taxas %in% names(x) )]
+    nested_var <- taxas[which(taxas %in% names(x))]
     out  <- x %>% 
-      dplyr::group_by(.dots = setdiff(names(x),taxas) ) %>%
-      tidyr::nest(key_col = nested_var, nest_cols = nested_var )
+      dplyr::group_by(.dots = setdiff(names(x), taxas)) %>%
+      tidyr::nest(key_col = nested_var, nest_cols = nested_var)
     # Names of taxonomic lists
     names(out[ ,nested_var][[1]]) <- paste0(nested_var,
                                             "_project_#_",
@@ -264,14 +264,14 @@ taxa_nest <- function(x, full_tbl){
   
   # if more than ONE of the taxonomic variables is provided,
   # then these multiple taxonomic variables are group under "taxas"
-  if( sum(names(x) %in% taxas) > 1 ){
+  if(sum(names(x) %in% taxas) > 1){
     
     # nest data set
     out  <- x %>% 
-      dplyr::group_by(.dots = setdiff(names(x),taxas) ) %>%
+      dplyr::group_by(.dots = setdiff(names(x),taxas)) %>%
       tidyr::nest(.key = taxas)
     # Names of taxonomic lists
-    names(out$taxas)  <- paste0("taxa_project_#_",out$proj_metadata_key)
+    names(out$taxas)  <- paste0("taxa_project_#_", out$proj_metadata_key)
     
   }
   
@@ -281,16 +281,18 @@ taxa_nest <- function(x, full_tbl){
 
 
 # trim the display of character values. Mostly for project "titles"
-trim_display=function(x, trim){
+trim_display <- function(x, trim){
   
   if(trim == TRUE){
-    tmp = as.data.frame(x)
-    for(i in 1:ncol(tmp)){
-      if(is.character(tmp[,i])){ tmp[,i]=strtrim(tmp[,i],25) }
+    tmp <- as.data.frame(x)
+    for(i in 1:ncol(tmp)) {
+      if(is.character(tmp[ ,i])){ 
+        tmp[ ,i] <- strtrim(tmp[ ,i], 25) 
+      }
     }
-    tmp=as.tbl(tmp)
+    tmp <- as.tbl(tmp)
     return(tmp)
-  } else{
+  } else {
     return(x)
   }
 }

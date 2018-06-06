@@ -6,3 +6,15 @@
 ^\.travis\.yml$
 ^data-raw$
 ^Pull_Req_Summary\.Rmd$
+^inst/dictionary_files$
+^inst/\.gitignore$
+^appveyor\.yml$
+^MS/*$
+^Notes\.rmd$
+^Notes\.md$
+^Dependency_Graph$
+^Dependency_Graph\.R$
+^browse\.Rmd$
+^browse\.html$
+^browse_files$
+^codecov\.yml$

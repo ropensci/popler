@@ -22,32 +22,30 @@
 #' # multiple columns
 #' dictionary_lter_lat <- dictionary(lterid,lat_lter, full_tbl = FALSE)
 #' }
-dictionary <- function(..., full_tbl = FALSE){
-  
+pplr_dictionary <- function(..., full_tbl = FALSE){
   # summary table ------------------------------------------------------------
   # load summary table
   summary_table <- summary_table_import()
   # variables ------------------------------------------------
-
-  # variables of default (full_tbl=F) main table  
-  possible_vars  <- possible_vars()
-  # variables of which user defined wishes to know the content 
-  vars          <- vars_dict(...)
+  # variables of default (full_tbl=FALSE) main table
+  possible_vars <- default_vars()
+  # variables of which user defined wishes to know the content
+  vars <- vars_dict(...)
   
   # produce output -------------------------------------------
   
   # if no column specified, return ALL column names
-  if( is.null(vars) ){
+  if(is.null(vars)){
     # select data based on 
-    tmp   <- if(full_tbl){
+    tmp <- if(full_tbl){
       summary_table
     } else {
-      summary_table[ ,possible_vars]
+      summary_table[ ,default_vars]
     }
-    out   <- dictionary_explain(tmp)
+    out <- dictionary_explain(tmp)
   # if colums specified.
   } else {
-    out   <- dict_list(summary_table, vars)
+    out <- dict_list(summary_table, vars)
   }
   
   return(out)
@@ -57,12 +55,14 @@ dictionary <- function(..., full_tbl = FALSE){
 # lazy evaluation in dictionary
 
 #' @importFrom lazyeval lazy_dots
+#' @noRd
+
 vars_dict <- function(...){
   
   eval_that <- lazyeval::lazy_dots(...)
-  out       <- sapply(eval_that, function(x) as.character(x$expr) )
+  out <- sapply(eval_that, function(x) as.character(x$expr))
   
-  if(length(out) > 0 ) {
+  if(length(out) > 0) {
     return(out)
   } else { 
     return(NULL) 
@@ -72,10 +72,11 @@ vars_dict <- function(...){
 
 
 # verify whether provided variables match one of the potential variables
+#' @noRd
 verify_vars <- function(sel_col){
   
   i <- which(sel_col %in% c(int.data$explanations$variable,
-                            "structure","treatment","species") )
+                            "structure", "treatment", "species") )
   
   if( length(i) < length(sel_col) ){
     
@@ -89,39 +90,43 @@ verify_vars <- function(sel_col){
 
 # produce the lists of unique dictionary values
 #' @importFrom stats setNames
+#' @noRd
+
 dict_list <- function(x, select_columns){
   
   # first, verify user input matches with variables contained in popler
   verify_vars(select_columns)
   
   # index "special" and "normal"
-  i_spec          <- which(select_columns %in% c("structure","treatment","species") )
-  i_norm          <- setdiff(c(1:length(select_columns)), i_spec)
-  spec_cols       <- select_columns[i_spec]
-  norm_cols       <- select_columns[i_norm]
+  i_spec <- which(select_columns %in% c("structure",
+                                        "treatment",
+                                        "species"))
+  i_norm <- setdiff(c(1:length(select_columns)), i_spec)
+  spec_cols <- select_columns[i_spec]
+  norm_cols <- select_columns[i_norm]
   
   # get unique values of "normal" variables -------------------------------------------
   if(length(norm_cols) > 1){
     out_norm <- lapply(x[ ,norm_cols], unique)
   } else {
-    out_norm <- lapply(x[ ,norm_cols,drop=F], unique)
+    out_norm <- lapply(x[ ,norm_cols, drop = FALSE], unique)
   }
   
   # get unique values of "special" variables ------------------------------------------
-  out_spc     <- list()
+  out_spc <- list()
   
-  if( any( "species" == select_columns) ){
-    out_spc$species   <- unique(x[,c("genus","species")])
+  if(any("species" == select_columns)){
+    out_spc$species <- unique(x[ ,c("genus", "species")])
   }
   if( any("structure" == select_columns) ){
     # stash all structure data in a single vector
-    str_vec           <- unlist( c(x[,paste0("structured_type_",1:4)]) )
-    out_spc$structure <- unique( str_vec )
+    str_vec <- unlist(c(x[ ,paste0("structured_type_", 1:4)]))
+    out_spc$structure <- unique(str_vec)
   }
-  if( any("treatment" == select_columns) ){
+  if(any("treatment" == select_columns)){
     # stash all structure data in a single vector
-    tr_vec            <- unlist( c(x[,paste0("treatment_type_",1:3)]) )
-    out_spc$treatment <- unique( tr_vec )
+    tr_vec <- unlist(c(x[ ,paste0("treatment_type_", 1:3)]))
+    out_spc$treatment <- unique(tr_vec)
   } 
   
   # Variable descriptions ----------------------------------------------------------------
@@ -129,34 +134,34 @@ dict_list <- function(x, select_columns){
   descr_spec  <- c("species (species name)",
                    "structure (types of indidivual structure)",
                    "treatment (type of treatment)")
-  if(length(out_spc) > 0 ){
-    d_s_ind     <- sapply( names(out_spc), function(x) grep(x, descr_spec))
-    descr_spc   <- descr_spec[d_s_ind]
+  if(length(out_spc) > 0){
+    d_s_ind <- sapply(names(out_spc), function(x) grep(x, descr_spec))
+    descr_spc <- descr_spec[d_s_ind]
   } else {
     descr_spc <- NULL
   }
   
   # Normal variables
   description <- int.data$explanations$description[match(names(out_norm),
-                                                         int.data$explanations$variable)]
+                                      int.data$explanations$description)]
   
-  descr_norm  <- paste0(names(out_norm), " (", description,")" )
+  descr_norm <- paste0(names(out_norm), " (", description,")" )
   
   # final descriptions
-  names_out   <- rep(NA, length(select_columns))
+  names_out <- rep(NA, length(select_columns))
   names_out[i_norm] <- descr_norm
   names_out[i_spec] <- descr_spc
   
   
   # description of output -----------------------------------------------------------------
-  out         <- rep(list(NULL), length(select_columns))
+  out <- rep(list(NULL), length(select_columns))
   out[i_norm] <- out_norm
   out[i_spec] <- out_spc
-  out         <- setNames(out, names_out)
+  out <- setNames(out, names_out)
   
   # remove NAs or "NA"
-  out         <- lapply(out, function(x) x <- x[!is.na(x)])
-  out         <- lapply(out, function(x) x <- x[x != "NA"])
+  out <- lapply(out, function(x) x <- x[!is.na(x)])
+  out <- lapply(out, function(x) x <- x[x != "NA"])
   
   return(out) 
   
@@ -166,10 +171,10 @@ dict_list <- function(x, select_columns){
 # explain meaning of dictionary variables 
 dictionary_explain <- function(x){
   
-  if( ncol(x) < 60){
-    out = int.data$explain_short
+  if(ncol(x) < 60){
+    out <- int.data$explain_short
   } else {
-    out = int.data$explanations
+    out <- int.data$explanations
   }
   
   return(out)

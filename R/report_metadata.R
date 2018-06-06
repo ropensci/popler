@@ -1,13 +1,20 @@
 #' Open a report of the metadata of project(s) as an html page
 #'
-#' Generates a readable report of the metadata describing data sets contained in popler. The report contains citations, the links to the original URL of each data set, and example code to obtain the metadata and data of the projects represented in the html page. 
+#' Generates a readable report of the metadata describing data sets contained in
+#' popler. The report contains citations, the links to the original URL of each 
+#' data set, and example code to obtain the metadata and data of the projects
+#' represented in the html page. 
+#' 
 #' @param input A popler object returned from browse() or get_data()
 #' @param md_file Specify the filename and location for the generated markdown file (optional)
 #' @param html_file Specify the filename and location for
 #' the generated html file (optional)
+#' @return An invisible copy of \code{input}
+#' 
 #' @importFrom utils browseURL
 #' @importFrom rmarkdown render
 #' @export
+#' 
 #' @examples
 #' \dontrun{
 #' # Full dictionary
@@ -17,9 +24,12 @@
 #' data <- get_data(one_spp)
 #' report_metadata(data) # same as above
 #' }
-report_metadata=function(input, md_file="./browse.Rmd", html_file="./browse.html"){
+
+pplr_report_metadata <- function(input,
+                                 md_file="./browse.Rmd",
+                                 html_file="./browse.html") {
   
-  input <- rebrowse(input)
+  report_data <- rebrowse(input)
   
   # build the .Rmd file piecewise
   header <- c(
@@ -52,7 +62,7 @@ output:
 
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
 # required calculations
-A <- browse(BROWSE_QUERY, full_tbl=T, trim=F)
+A <- browse(BROWSE_QUERY, full_tbl=TRUE, trim=FALSE)
 NN <- nrow(A)
 n_taxa <- rep(NA,NN)
 for(i in 1:NN){
@@ -244,14 +254,14 @@ cite <- popler_citation(metadata)
 
   # change browse query  in header
   header <- gsub("BROWSE_QUERY",
-                 paste0(deparse(attributes(input)$search_expr),
+                 paste0(deparse(attributes(report_data)$search_expr),
                         collapse=""),
                  header)
   
   # update project block
-  proj_new <- rep(NA,nrow(input))
-  for(i in 1:nrow(input)){
-    proj_new[i] <- gsub("`r N<-X",paste0("`r N<-",i),proj)
+  proj_new <- rep(NA, nrow(report_data))
+  for(i in seq_len(nrow(report_data))){
+    proj_new[i] <- gsub("`r N<-X", paste0("`r N<-", i), proj)
   }
   
   # make markdown file
@@ -260,6 +270,8 @@ cite <- popler_citation(metadata)
   sink()
   
   # launch browser window
-  rmarkdown::render(md_file,quiet=T)
+  rmarkdown::render(md_file,quiet=TRUE)
   browseURL(html_file)
+  
+  invisible(input)
 }

@@ -18,7 +18,7 @@
 #' #study_names(vcr_dat, width = 30)
 #' }
 
-study_names <- function(browsed, width = 60){
+study_names <- function(browsed, width = 60) {
   
   summary_table <- summary_table_import()
   # re-browse data, with trim OFF
@@ -32,7 +32,7 @@ study_names <- function(browsed, width = 60){
   # extract titles from object
   titles  <- unique( new_browsed$title )
   # Store 'wrapped' titles in a list 
-  title_l <- lapply(titles,strwrap, width = width)
+  title_l <- lapply(titles, strwrap, width = width)
   
   for(i in 1:length(title_l)){
     

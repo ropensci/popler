@@ -61,6 +61,7 @@ report_dictionary <- function(full_tbl=FALSE, md_file=NULL, html_file=NULL){
                                            collapse=" , "),
                                     ")")))
   
+
   # build the .Rmd file piecewise
   header <- c(
 '
@@ -72,7 +73,7 @@ output:
 
 <br>  
 
-<img src= (\"C:/Program Files/R/R-3.3.0/library/popler/icon\".png) alt="Drawing" style="height: 110px; float: right"/>  
+<img src= `r system.file("icon.png",package="popler")` alt="Drawing" style="height: 110px; float: right"/>  
 
 <br>  
   
@@ -120,7 +121,7 @@ _ENTRY_
   # update defs and ents blocks
   defs_new <- rep(NA,nrow(TOC))
   ents_new <- rep(NA,nrow(TOC))
-  for(i in 1:length(defs_new)){
+  for(i in seq_len(length(defs_new))){
     # make table of contents + definitions
     defs_new[i] <- gsub("_NAME_", TOC[i,1], defs)
     defs_new[i] <- gsub("_DEFINITION_", TOC[i,2], defs_new[i])
@@ -138,7 +139,7 @@ _ENTRY_
   
   # make markdown file
   sink(md_file)
-  cat(header,defs_new,end_defs,ents_new)
+    cat(header, defs_new, end_defs, ents_new)
   sink()
   
   # launch browser window
