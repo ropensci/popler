@@ -1,13 +1,14 @@
 Package: popler
-Title: popler package
+Title: Popler R Package
 Version: 0.0.0.9001
 Authors@R: c(
   person("Compagnoni", "Aldo", email = "aldo.compagnoni@aggiemail.usu.edu",
   role = c("cre","aut")),
   person("Bibian", "Andrew", email = "ajbibian@rice.edu", role= c("aut")),
   person("Ochocki", "Brad", email = "brad.ochocki@rice.edu", role= c("aut")),
+  person("Levin", "Sam", email = "sam.levin@idiv.de", role = c("aut")),
   person("Miller", "Tom", email = "tom.miller@rice.edu", role= c("aut")))
-Description: This package allows to browse and query the popler database.
+Description: Browse and query the popler database.
 URL: https://github.com/AldoCompagnoni/popler
 BugReports: https://github.com/AldoCompagnoni/popler/issues
 Depends: R (>= 3.0.0)
