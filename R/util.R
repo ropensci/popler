@@ -213,14 +213,38 @@ summary_table_check = function(){
 }
 
 # open a connection to the popler database
-db_open = function(){
-  popler_connector(dbname="popler_3" , 
-                    host="ec2-54-214-212-101.us-west-2.compute.amazonaws.com" ,
-                    port=5432 ,
-                    user="other_user" ,
-                    password="bigdata" ,
-                    silent=TRUE)
+db_open <- function(dbname = 'popler_3', 
+                    host = "ec2-54-214-212-101.us-west-2.compute.amazonaws.com",
+                    port = 5432,
+                    user = "other_user",
+                    password = "bigdata",
+                    silent = TRUE) {
+    
+    if (!requireNamespace("RPostgreSQL", quietly = TRUE)) {
+      stop("RPostgreSQL package required to connect to postgres db", call. = FALSE)
+    }
+    user <- if(is.null(user)){
+      if(identical(Sys.getenv("TRAVIS"), "true")){
+        "postgres"
+      } else {
+          ""
+      } 
+    } else {
+      user
+    }
+    con <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(), 
+                                  host     = if(is.null(host))     "" else host, 
+                                  dbname   = if(is.null(dbname))   "" else dbname, 
+                                  user     = user, 
+                                  password = if(is.null(password)) "" else password, 
+                                  port     = if(is.null(port))     "" else port)
+    #info <- RPostgreSQL::dbGetInfo(con)
+    #dbplyr::src_sql("postgres", con, info=info, disco=popler:::popler_disconnector(con,"postgres",silent))
+    #src_sql("postgres", con, info=info, disco=popler:::popler_disconnector(con,"postgres",silent))
 }
+  
+  
+  
 
 # a wrapper function to (quietly) close popler database connections
 
@@ -277,32 +301,6 @@ popler_connector = function (dbname=NULL, host=NULL, port=NULL, user=NULL, passw
   #info <- RPostgreSQL::dbGetInfo(con)
   #dbplyr::src_sql("postgres", con, info=info, disco=popler:::popler_disconnector(con,"postgres",silent))
   #src_sql("postgres", con, info=info, disco=popler:::popler_disconnector(con,"postgres",silent))
-}
-
-# a (very slightly) modified version of dplyr::db_disconnector() to enable
-# silent disconnect
-
-#' @importFrom RPostgreSQL dbDisconnect
-popler_disconnector = function (con, name, silent = TRUE) 
-{
-  reg.finalizer(environment(), function(...) {
-    if (!silent) {
-      message("Auto-disconnecting ", name, " connection to popler database ", 
-              "(", paste(con@Id, collapse = ", "), ")")
-    }
-    RPostgreSQL::dbDisconnect(con)
-  })
-  environment()
-}
-
-# Converts factor columns into character format
-factor_to_character <- function(x, full_tbl = FALSE){
-  
-  for(i in 1:ncol(x)){
-    if(class(x[,i])=="factor") x[ ,i] <- as.character(x[ ,i])
-  }
-  return(x)
-  
 }
 
 

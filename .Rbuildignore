@@ -18,3 +18,4 @@
 ^browse\.html$
 ^browse_files$
 ^codecov\.yml$
+^R/Removed_Funs\.R$
