@@ -15,8 +15,8 @@ Metadata information in popler consists of 75 variables, but only 22 of these ar
 
 ```{r, warning = FALSE, message = FALSE}
 library(popler)
-dictionary(full_tbl = T)
-browse(full_tbl = T)
+pplr_dictionary(full_tbl = TRUE)
+pplr_browse(full_tbl = TRUE)
 ```
 
 ## What does `full_tbl = FALSE` leave out
@@ -24,9 +24,9 @@ browse(full_tbl = T)
 Controlling which variables are "left out" by setting `full_tbl = FALSE` reveals a few patterns: 
 
 ```{r, warning = FALSE, message = FALSE}
-left_out <- setdiff(dictionary(full_tbl = T)$variable, dictionary()$variable)
-keep     <- which( dictionary(full_tbl = T)$variable %in% left_out )
-dictionary(full_tbl = T)[keep,]
+left_out <- setdiff(pplr_dictionary(full_tbl = TRUE)$variable, pplr_dictionary()$variable)
+keep     <- which( pplr_dictionary(full_tbl = TRUE)$variable %in% left_out )
+pplr_dictionary(full_tbl = TRUE)[keep,]
 ```
 
 The type of variables left out can be lumped into four categories: spatio-temporal replication, measurement units, project specific information (PI, contacts, information on LTER site), and taxonomic information. In each of these cases, the variables left out are unlikely to be used in searches. For example, the variable "superdivision" is a taxonomic group provided by only a very small subset of studies, and it is seldom used in scientific publications (providing "superdivision" into ISI web of Science yields only two scientific articles).

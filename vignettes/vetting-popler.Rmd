@@ -27,14 +27,14 @@ If you are interested in long-term data, you will likely want to select projects
 
 ```{r, warning = FALSE, message = FALSE}
 library(popler)
-browse(duration_years > 10)
+pplr_browse(duration_years > 10)
 ```
 
 Note that most LTER projects contemplate sampling at a yearly or sub-yearly frequency. Thus, studies longer than 10 years generally guarantee a longitudinal series of 10 or more observations. The variable "samplefreq" characterizes the sample frequency of each study. [COMMENT: "samplefreq" is not browse() and dictionary() default settings. Still debating whether I should describe *full_tbl* right away or below]: 
 
 ```{r, warning = FALSE, message = FALSE}
-dictionary(samplefreq)
-browse(samplefreq == "monthly")
+pplr_dictionary(samplefreq)
+pplr_browse(samplefreq == "monthly")
 ```
 
 #### Spatial replication
@@ -47,10 +47,10 @@ If you wish to select data sets based on their spatial replication, you need to 
 
 Below we provide respective three examples for each one of these respective searches:
 
-```
-browse(tot_spat_rep > 100)
-browse(spatial_replication_level_1_number_of_unique_reps > 5)
-#browse(n_spat_levs == 3)
+```{r}
+pplr_browse(tot_spat_rep > 100)
+pplr_browse(spatial_replication_level_1_number_of_unique_reps > 5)
+#pplr_browse(n_spat_levs == 3)
 ```
 
 ###2. Taxonomic group
@@ -60,8 +60,8 @@ Popler contains a wealth of taxonomic information......
 To select information based on taxonomic groups, simply specify which group and which category you wish to select. The default settings of popler provide seven taxonomic groups: kingdom, phylum, class, order, family, genus, and species: 
 
 ```{r, warning = FALSE, message = FALSE}
-dictionary(class)
-browse(class == "Insecta")
+pplr_dictionary(class)
+pplr_browse(class == "Insecta")
 ```
 
 ###3. Study characteristics
@@ -75,14 +75,14 @@ Metadata information provides a few variables to select studies based on their a
 Below we provie several three examples on how to use these three fields. 
 
 ```{r, warning = FALSE, message = FALSE}
-dictionary(community)
-browse(community == "no") # 20 single-species studies
+pplr_dictionary(community)
+pplr_browse(community == "no") # 20 single-species studies
 
-dictionary(treatment)
-nrow( browse(treatment == "fire") ) # 21 fire studies
+pplr_dictionary(treatment)
+nrow( pplr_browse(treatment == "fire") ) # 21 fire studies
 
-dictionary(studytype)
-nrow( browse(studytype == "obs") ) # 78 observational studies
+pplr_dictionary(studytype)
+nrow( pplr_browse(studytype == "obs") ) # 78 observational studies
 ```
 
 ### 4. Geographic location.
@@ -90,20 +90,20 @@ nrow( browse(studytype == "obs") ) # 78 observational studies
 To select studies based on the latitude and longitude of the LTER headquarters, simply use the `lat_lter` and `lng_lter` numeric variables: 
 
 ```{r, warning = FALSE, message = FALSE}
-dictionary( lat_lter,lng_lter )
-browse(lat_lter > 40 & lng_lter < -100) # single-species studies
+pplr_dictionary( lat_lter,lng_lter )
+pplr_browse(lat_lter > 40 & lng_lter < -100) # single-species studies
 ```
 
 ### 5. More complicated searches
 
-Popler allows carrying out more complicated searches than those suggested above. In particular, it allows to i) combine to simultaneously search several types of metadata variables, and ii) use keywords. In the first case, simply provide the function `browse()` with a logical statement regarding more than one metadata variable. For example, if you want studies on plants with at least 4 nested spatial levels, and 10 years of data:
+Popler allows carrying out more complicated searches than those suggested above. In particular, it allows to i) combine to simultaneously search several types of metadata variables, and ii) use keywords. In the first case, simply provide the function `pplr_browse()` with a logical statement regarding more than one metadata variable. For example, if you want studies on plants with at least 4 nested spatial levels, and 10 years of data:
 
 ```{r, warning = FALSE, message = FALSE}
-#browse(kingdom == "Plantae" & n_spat_levs == 4 & duration_years > 10)
+#pplr_browse(kingdom == "Plantae" & n_spat_levs == 4 & duration_years > 10)
 ```
 
 In the second case, using keywords can be crucial to retrieve data types that are not directly related to the information contained in metadata variables. For example, you might want to select data based on a particular research topic, rather than the taxa or the experimental design. To aid these searches, popler provides the `keyword` binary operator `%=%`.
 
-```
-#browse( title %=% "parasit" & n_spat_levs > 2 | genus == "Eimeria")
+```{r}
+#pplr_browse( title %=% "parasit" & n_spat_levs > 2 | genus == "Eimeria")
 ```
