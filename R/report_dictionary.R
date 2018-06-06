@@ -9,19 +9,24 @@
 #' the generated markdown file (optional)
 #' @param html_file Specify the filename and location for the 
 #' generated html file (optional)
+#' 
+#' @return This function is called for its side effects and does not 
+#' return anything.
+#' 
 #' @importFrom rmarkdown render
 #' @importFrom utils browseURL
 #' @export
+#' 
 #' @examples
 #' \dontrun{
 #' # Full dictionary
-#' report_dictionary(full_tbl = TRUE)
+#' pplr_report_dictionary(full_tbl = TRUE)
 #' 
 #' # "Abridged" version
-#' report_dictionary()
+#' pplr_report_dictionary()
 #' }
 #' 
-report_dictionary <- function(full_tbl=FALSE, md_file=NULL, html_file=NULL){
+pplr_report_dictionary <- function(full_tbl=FALSE, md_file=NULL, html_file=NULL){
   
   # store explanations as table of contents
   if(full_tbl){
@@ -56,7 +61,7 @@ report_dictionary <- function(full_tbl=FALSE, md_file=NULL, html_file=NULL){
             "duration_years")
   
   # store entries
-  entries <- eval(parse(text=paste0("dictionary(",
+  entries <- eval(parse(text=paste0("pplr_dictionary(",
                                     paste0(TOC[,1] , 
                                            collapse=" , "),
                                     ")")))

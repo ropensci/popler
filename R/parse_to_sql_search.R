@@ -3,8 +3,8 @@
 #' @importFrom dbplyr translate_sql_ translate_sql
 #' @noRd
 
-#This function procudes a string with an sql statement
-#From an R statement that could be used on "
+# This function produces a string with an sql statement
+# that matches it's R equivalent
 parse_to_sql_search <- function(..., lazy = FALSE){
   #Use Hadley's translate_sql
   if (lazy == TRUE) { # with lazy evaluation

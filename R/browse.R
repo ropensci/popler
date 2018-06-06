@@ -1,6 +1,6 @@
 #' Browse the metadata of projects contained in the popler database
 #'
-#' browse() reports the metadata of LTER studies contained in the popler database. 
+#' pplr_browse() reports the metadata of LTER studies contained in the popler database. 
 #' The user can subset what data, and which variables to visualize.  
 #' 
 #' @param ... A logical expression to subset popler's main table
@@ -24,41 +24,41 @@
 #' 
 #' \dontrun{
 #' # No arguments return the standard 16 columns of popler's main table
-#' default_vars = browse()
+#' default_vars = pplr_browse()
 #' 
 #' # full_tbl = TRUE returns the full table
-#' all_vars = browse(full_tbl = TRUE)
+#' all_vars = pplr_browse(full_tbl = TRUE)
 #' 
 #' # subset only data from the sevilleta LTER, and open the relative report in a html page
-#' sev_data = browse(lterid == "SEV", report = TRUE)
+#' sev_data = pplr_browse(lterid == "SEV", report = TRUE)
 #' 
 #' # consider only plant data sets 
-#' plant_data = browse(kingdom == "Plantae")
+#' plant_data = pplr_browse(kingdom == "Plantae")
 #' 
 #' # Select only the data you need
-#' three_columns = browse(vars = c("title","proj_metadata_key","genus","species"))
+#' three_columns = pplr_browse(vars = c("title","proj_metadata_key","genus","species"))
 #' 
 #' # Select only the data you need
-#' study_21 = browse( proj_metadata_key == 25)
+#' study_21 = pplr_browse( proj_metadata_key == 25)
 #' 
 #' # Select studies that contain word "parasite"
-#' parasite_studies = browse( keyword = "parasite")
+#' parasite_studies = pplr_browse( keyword = "parasite")
 #' }
 #' 
 
 
 # The browse popler function
-browse <- function(..., full_tbl = FALSE, 
+pplr_browse <- function(..., full_tbl = FALSE, 
                    vars = NULL, trim = TRUE, 
                    view = FALSE, keyword = NULL,
                    report = FALSE){
   
   # load summary table
-  summary_table <- summary_table_import()
+  summary_table <- pplr_summary_table_import()
   # stop if user supplies both criteria and a keyword
   if( !is.null(substitute(...)) & !is.null(keyword)){
     stop("
-         browse() cannot simultaneously subset based on both ",
+         pplr_browse() cannot simultaneously subset based on both ",
          "a logical statement and the 'keyword' argument.
          Please use only one of the two methods, or refine your ",
          "search using get_data().")
@@ -119,7 +119,7 @@ browse <- function(..., full_tbl = FALSE,
                    search_expr = c(logic_expr, keyword_expr)[[1]])
   
   if(report == TRUE){ 
-    report_metadata(out) 
+    pplr_report_metadata(out) 
   }
 
   return(out)
@@ -128,7 +128,7 @@ browse <- function(..., full_tbl = FALSE,
 
 
 #' @noRd
-# implements the 'keyword' argument And operator in browse() 
+# implements the 'keyword' argument And operator in pplr_browse() 
 keyword_subset <- function(x, keyword){
   
   #function: index of keywords
@@ -160,6 +160,7 @@ keyword_subset <- function(x, keyword){
 
 # function to subset dataframe by criteria and do error checking
 #' @importFrom dplyr tbl_df
+#' @noRd
 select_by_criteria <- function(x, criteria){
   
   if(!is.null(criteria)) {
@@ -184,6 +185,7 @@ select_by_criteria <- function(x, criteria){
 
 
 # Store possible variables
+#' @noRd
 default_vars = function(){ 
   return(c("title","proj_metadata_key","lterid",
            "datatype","studytype",
@@ -199,6 +201,7 @@ default_vars = function(){
 
 
 # check that at least proj_metadata_key is included in variables
+#' @noRd
 vars_check <- function(x){
   
   if(!"proj_metadata_key" %in% x) {
@@ -210,6 +213,7 @@ vars_check <- function(x){
 }
 
 # Error for misspelled columns in full table
+#' @noRd
 vars_spell <- function(select_columns, columns_full_tab, possibleargs){
   
   #Check for spelling mistakes
@@ -226,6 +230,7 @@ vars_spell <- function(select_columns, columns_full_tab, possibleargs){
 
 #' @importFrom dplyr group_by %>% 
 #' @importFrom tidyr nest
+#' @noRd
 taxa_nest <- function(x, full_tbl){
   
   # select taxonomic information (based on full_ or standard_table)
@@ -241,7 +246,7 @@ taxa_nest <- function(x, full_tbl){
   }
   
   # load summary_table
-  summary_table <- summary_table_import()
+  summary_table <- pplr_summary_table_import()
   # check "x" variable names
   
   # if no taxonomy information provided 
@@ -280,6 +285,8 @@ taxa_nest <- function(x, full_tbl){
 }
 
 
+#'@importFrom dplyr as.tbl
+#'@noRd
 # trim the display of character values. Mostly for project "titles"
 trim_display <- function(x, trim){
   
@@ -290,7 +297,7 @@ trim_display <- function(x, trim){
         tmp[ ,i] <- strtrim(tmp[ ,i], 25) 
       }
     }
-    tmp <- as.tbl(tmp)
+    tmp <- dplyr::as.tbl(tmp)
     return(tmp)
   } else {
     return(x)

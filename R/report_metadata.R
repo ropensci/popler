@@ -5,10 +5,13 @@
 #' data set, and example code to obtain the metadata and data of the projects
 #' represented in the html page. 
 #' 
-#' @param input A popler object returned from browse() or get_data()
-#' @param md_file Specify the filename and location for the generated markdown file (optional)
+#' @param input A popler object returned from \code{pplr_browse()} or 
+#' \code{pplr_get_data()}
+#' @param md_file Specify the filename and location for the generated markdown
+#' file (optional)
 #' @param html_file Specify the filename and location for
 #' the generated html file (optional)
+#' 
 #' @return An invisible copy of \code{input}
 #' 
 #' @importFrom utils browseURL
@@ -18,11 +21,11 @@
 #' @examples
 #' \dontrun{
 #' # Full dictionary
-#' one_spp <- browse(community=="no" & duration_years > 15)
-#' report_metadata(one_spp)
+#' one_spp <- pplr_browse(community == "no" & duration_years > 15)
+#' pplr_report_metadata(one_spp)
 #' 
-#' data <- get_data(one_spp)
-#' report_metadata(data) # same as above
+#' data <- pplr_get_data(one_spp)
+#' pplr_report_metadata(data) # same as above
 #' }
 
 pplr_report_metadata <- function(input,
@@ -62,7 +65,7 @@ output:
 
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
 # required calculations
-A <- browse(BROWSE_QUERY, full_tbl=TRUE, trim=FALSE)
+A <- pplr_browse(BROWSE_QUERY, full_tbl=TRUE, trim=FALSE)
 NN <- nrow(A)
 n_taxa <- rep(NA,NN)
 for(i in 1:NN){
@@ -203,7 +206,7 @@ if(length(st_t)==0){st_t <- "none recorded"}
 <a name="refs"></a>  
 
 ### References
-`r paste(paste0("<br><a name=c",1:NN,"></a>[",1:NN,".](#",1:NN,") ",format(popler_citation(A)$bibliography),collapse="<br>"))`  
+`r paste(paste0("<br><a name=c",1:NN,"></a>[",1:NN,".](#",1:NN,") ",format(pplr_citation(A)$bibliography),collapse="<br>"))`  
 
 <div style="text-align: right"> *[back to Table of Contents](#contents)* </div> 
 
@@ -217,7 +220,7 @@ if(length(st_t)==0){st_t <- "none recorded"}
 <a name="ack"></a>  
 
 ### Acknowledgements
-`r popler:::popler_citation(A)$acknowledgement`  
+`r popler:::pplr_citation(A)$acknowledgement`  
 
 <div style="text-align: right"> *[back to Table of Contents](#contents)* </div> 
 
@@ -235,13 +238,13 @@ if(length(st_t)==0){st_t <- "none recorded"}
 pmk <- c(`r A$proj_metadata_key`)
 
 # make a browse object and view the metadata
-metadata <- browse(proj_metadata_key %in% pmk, full_tbl=TRUE, trim=FALSE, interact=TRUE)
+metadata <- pplr_browse(proj_metadata_key %in% pmk, full_tbl=TRUE, trim=FALSE)
 
 # download the data
-data <- get_data(metadata)
+data <- pplr_get_data(metadata)
 
 # cite the projects
-cite <- popler_citation(metadata)
+cite <- pplr_citation(metadata)
 
 # cite$bibliography          # the bibliography
 # cite$Bibtex                # Bibtex entries for each dataset
@@ -266,11 +269,11 @@ cite <- popler_citation(metadata)
   
   # make markdown file
   sink(md_file)
-  cat(header, geo, proj_list, proj_new, dat, refs, ack, code)
+    cat(header, geo, proj_list, proj_new, dat, refs, ack, code)
   sink()
   
   # launch browser window
-  rmarkdown::render(md_file,quiet=TRUE)
+  rmarkdown::render(md_file, quiet = TRUE)
   browseURL(html_file)
   
   invisible(input)

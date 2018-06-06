@@ -2,12 +2,16 @@
 # appropriate columns in the database.
 
 #' @importFrom stringr str_extract_all 
+#' @noRd
+
 call_update = function(query){
   
-  # query is some user's input (i.e. a query) to the browse() function
+  # query is some user's input (i.e. a query) to the pplr_browse() function
   
   # if the query is null, don't do anything; just return the query
-  if(is.null(query)){ return(query) }
+  if(is.null(query)){ 
+    return(query) 
+  }
   
   # define some regex strings to:
   f_logic <- "[|]+[!]|[&]+[!]|[&|]+"  # ...find logical operators
@@ -24,10 +28,10 @@ call_update = function(query){
   structured_type_4 @@ @)"
   
   # convert query to character string and remove spaces
-  query_str <- gsub(" ", "",paste0(deparse(query),collapse=""))
+  query_str <- gsub(" ", "", paste0(deparse(query), collapse = ""))
   
   # split query_str on logical operators to get individual arguments
-  query_arg <- unlist(strsplit(query_str,f_logic))
+  query_arg <- unlist(strsplit(query_str, f_logic))
   
   # make a matrix where col1 is the LHS of each query_arg and col2 is the RHS
   LHS_RHS <- matrix(unlist(strsplit(query_arg, f_compn)),
@@ -82,6 +86,7 @@ call_update = function(query){
   return(eval(parse(text = TextToParse)))
 }
 
+#' @noRd
 # given a browse() object or a get_data() object, returns an identical browse
 # object with full_tbl=TRUE and trim=FALSE
 rebrowse <- function(popler, ...){
@@ -90,32 +95,45 @@ rebrowse <- function(popler, ...){
 
 rebrowse.browse <- function(popler, ...) {
   pmk <- paste0(popler$proj_metadata_key, collapse=",")
-  return(eval(parse(text = paste0("browse(proj_metadata_key %in% c(",
+  return(eval(parse(text = paste0("pplr_browse(proj_metadata_key %in% c(",
                                   pmk,
                                   "), full_tbl=TRUE, trim=FALSE)"))))
 }
 
 rebrowse.get_data <- function(popler, ...) {
   pmk <- paste0(attributes(popler)$unique_projects, collapse=",")
-  return(eval(parse(text = paste0("browse(proj_metadata_key %in% c(", 
+  return(eval(parse(text = paste0("pplr_browse(proj_metadata_key %in% c(", 
                                   pmk,
                                   "), full_tbl=TRUE, trim=FALSE)"))))
 }
 
+
+#' @noRd
+# Converts factor columns into character format
+factor_to_character <- function(x, full_tbl = FALSE){
+  
+  for(i in 1:ncol(x)){
+    if(class(x[,i])=="factor") x[ ,i] <- as.character(x[ ,i])
+  }
+  return(x)
+  
+}
+
 # generate main data table summary ---------------------------------------------
 
-#' Automaticcaly retrieve most up to date version of \code{popler}
+#' Automatically retrieve most up to date version of \code{popler}
 #' summary table
 #' 
-#' @return Updates the data object \code{summary_table}. 
+#' @return This function is called for its side effect and does not return 
+#' anything
 #' 
 #' @note This object is often called internally by popler functions,
-#'  but can also be accessed by calling \code{data(summary_table)}. 
+#'  but can also be accessed by calling \code{pplr_summary_table_import()}. 
 #' 
-#' @seealso \code{\link{summary_table_check}}
+#' @seealso \code{\link{pplr_summary_table_check}}
 #' 
 #' @export
-summary_table_update <- function(){
+pplr_summary_table_update <- function(){
   
   message("Please wait while popler updates its summary table... this may take several minutes.")
   
@@ -128,7 +146,9 @@ summary_table_update <- function(){
   taxa_cols   <- query_get(conn, "SELECT column_name FROM information_schema.columns WHERE table_name = 'taxa_table'")[,1]
   search_cols <- paste( c(proj_cols,lter_cols,taxa_cols), collapse = ", ")
   
-  search_cols[!search_cols %in% c("currently_funded","homepage","current_principle_investigator")]
+  search_cols[!search_cols %in% c("currently_funded",
+                                  "homepage",
+                                  "current_principle_investigator")]
   # open database connection, query result
   out <- query_get(conn, 
                    paste("SELECT", search_cols,
@@ -194,10 +214,10 @@ summary_table_update <- function(){
 #' Checks the main table's age. If it's more than 6 weeks old, 
 #' returns a message suggesting an update
 #' 
-#' @seealso \code{\link{summary_table_update}}
+#' @seealso \code{\link{pplr_summary_table_update}}
 #' 
 #' @export
-summary_table_check = function(){
+pplr_summary_table_check = function(){
   
   wks_passed <- floor(as.numeric(difftime(Sys.time(),
                                           file.mtime(system.file("extdata", 
@@ -207,11 +227,12 @@ summary_table_check = function(){
   # if summary_table.rda does exist, but was created more than 6 weeeks ago,
   # prompt user to update the table.
   if(wks_passed >= 6){
-    message("It's been ", wks_passed, " weeks since popler's summary table has been updated.\nWe recommend running 'summary_table_update()' to make sure your summary table is up to date with the latest database changes.")
+    message("It's been ", wks_passed, " weeks since popler's summary table has been updated.\nWe recommend running 'pplr_summary_table_update()' to make sure your summary table is up to date with the latest database changes.")
   }
   
 }
 
+#' @noRd
 # open a connection to the popler database
 db_open <- function(dbname = 'popler_3', 
                     host = "ec2-54-214-212-101.us-west-2.compute.amazonaws.com",
@@ -249,17 +270,19 @@ db_open <- function(dbname = 'popler_3',
 # a wrapper function to (quietly) close popler database connections
 
 #' @importFrom RPostgreSQL dbDisconnect
-#' 
+#' @noRd 
 db_close = function(connection){
     # RPostgreSQL::dbDisconnect(connection$con,quiet=T)
   RPostgreSQL::dbDisconnect(connection,quiet=TRUE)
 }
 
+#' @noRd
 # evaluate a string using the local environment, return the evaluation as string
 string_eval_local = function(x){
-  paste0(deparse(eval(parse(text=paste0("local(",x,")")))),collapse="")
+  paste0(deparse(eval(parse(text = paste0("local(",x,")")))),collapse="")
 }
 
+#' @noRd
 # changes a column name from one name to another
 colname_change = function(from, to, x){
   names(x) <- gsub(from, to, names(x))
@@ -270,6 +293,7 @@ colname_change = function(from, to, x){
 
 #' @importFrom dplyr %>% tbl
 #' @importFrom dbplyr sql
+#' @noRd
 
 query_get = function(connection, query){
   # accepts a connection and a string query input
@@ -284,7 +308,9 @@ query_get = function(connection, query){
 
 # a (very slightly) modified version of dplyr::src_postgres() to connect to the
 # popler database and enable a silent disconnect
-popler_connector = function (dbname=NULL, host=NULL, port=NULL, user=NULL, password=NULL, silent=TRUE) {
+popler_connector <- function (dbname=NULL, host=NULL,
+                             port=NULL, user=NULL, 
+                             password=NULL, silent=TRUE) {
   
   if (!requireNamespace("RPostgreSQL", quietly = TRUE)) {
     stop("RPostgreSQL package required to connect to postgres db", call. = FALSE)
@@ -321,7 +347,7 @@ popler_connector = function (dbname=NULL, host=NULL, port=NULL, user=NULL, passw
 #' 
 #' @export
 
-summary_table_import <- function() {
+pplr_summary_table_import <- function() {
   # create empty environment for loading
   pkgEnv <- new.env(parent = emptyenv())
   

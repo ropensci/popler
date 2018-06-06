@@ -4,15 +4,19 @@
 #' @param input a popler object returned from browse() or get_data()
 #' @param bibtex_path Specify the filename and location for 
 #' the generated markdown file (optional)
+#' 
+#' @return A list of references from \code{input}
+#' 
 #' @importFrom utils person toBibtex bibentry
 #' @export
+#' 
 #' @examples
 #' \dontrun{
 #' # make a browse object
-#' metadata <- browse(proj_metadata_key %in% c(17, 317, 494))
+#' metadata <- pplr_browse(proj_metadata_key %in% c(17, 317, 494))
 #'
 #' # cite the projects
-#' cite <- popler_citation(metadata)
+#' cite <- pplr_citation(metadata)
 #' 
 #' # cite$bibliography          # the bibliography
 #' # cite$Bibtex                # Bibtex entries for each dataset

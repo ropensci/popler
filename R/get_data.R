@@ -21,17 +21,17 @@
 #' 
 #' \dontrun{
 #' # browse a study, then get the data associated with it
-#' parasite = browse(proj_metadata_key == 25)
-#' gh_data = get_data(parasite)
+#' parasite = pplr_browse(proj_metadata_key == 25)
+#' gh_data = pplr_get_data(parasite)
 #' 
 #' # further subset this data set, based on year
-#' gh_data_96_99 = get_data(parasite, year > 1995 & year < 2000)
+#' gh_data_96_99 = pplr_get_data(parasite, year > 1995 & year < 2000)
 #' 
 #' # insect data sets from the SEV lter site
-#' insect_sev = browse(class == "Insecta" & lterid == "SEV")
-#' insect_25_yrs96_99 = get_data(insect_sev, year > 1995 & year < 2000 & proj_metadata_key == 25)
+#' insect_sev = pplr_browse(class == "Insecta" & lterid == "SEV")
+#' insect_25_yrs96_99 = pplr_get_data(insect_sev, year > 1995 & year < 2000)
 #' 
-#' insect_21_25 = get_data((proj_metadata_key == 43 | proj_metadata_key == 25) & year < 1995 )
+#' insect_21_25 = pplr_get_data((proj_metadata_key == 43 | proj_metadata_key == 25) & year < 1995 )
 #'}
 
 # Function that connects and gathers the information from the database
@@ -94,7 +94,7 @@ pplr_get_data <- function(..., add_vars = NULL, subtract_vars = NULL,
                                    ) %>% as.data.frame()
   
   # remove variables that whose content is just "NA"
-  output_data <- Filter(function(x) !all(x == "NA"), output_data)
+  output_data <- base::Filter(function(x) !all(x == "NA"), output_data)
   
   # Change "ordr" and "clss" to "order" and "class"
   output_data <- colname_change("clss", "class", output_data)
@@ -107,7 +107,7 @@ pplr_get_data <- function(..., add_vars = NULL, subtract_vars = NULL,
     
     output_data <- output_data %>%
       dplyr::select(-.data$covariates) %>%
-      cbind(cov_unpack(output_data))
+      cbind(pplr_cov_unpack(output_data))
   }
   
   # outputs -----------------------------------------------------------------
@@ -425,28 +425,32 @@ data_message <- function(x){
     message(paste0("You have downloaded data from ",
                    length(unique(x$proj_metadata_key)),
                    " project.\nThe identification number of this project is:",
-                   paste0(" ", unique(x$proj_metadata_key),
+                   paste0(" ", 
+                          unique(x$proj_metadata_key),
                           collapse=", "),
-                   "."),"\n
-            IMPORTANT NOTICE:\nIf you are about to use this data in a ",
+                   "."),
+            "\n
+            IMPORTANT NOTICE:\n
+            If you are about to use this data in a ",
             "formal publication as courtesy, please:
             1) Contact the investigators of each project. 
-            Do this by using function authors() on this object. 
             2) Acknowledge funding sources, if these are provided ",
             "in the metadata.   
             Access metadata by using function metadata_url() on this ", 
             "object. \n")
   
   else {
-    message("\n",paste0("You have downloaded data from ",
-                        length(unique(x$proj_metadata_key)),
-                        " projects. \nThe identification numbers of these projects are: ",
-                        paste0(unique(x$proj_metadata_key),
-                               collapse=", "),"."),"\n
-            IMPORTANT NOTICE:\nIf you are about to use this data in a ",
+    message("\n", paste0("You have downloaded data from ",
+                         length(unique(x$proj_metadata_key)),
+                         " projects. \nThe identification numbers of these projects are: ",
+                         paste0(unique(x$proj_metadata_key),
+                               collapse = ", "),
+                         "."),
+            "\n
+            IMPORTANT NOTICE:\n
+            If you are about to use this data in a ",
             "formal publication as courtesy, please:
             1) Contact the investigators of each project. 
-            Do this by using function authors() on this object. 
             2) Acknowledge funding sources, if these are provided ",
             "in the metadata.   
             Access metadata by using function metadata_url() on this ", 

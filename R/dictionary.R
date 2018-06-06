@@ -14,21 +14,21 @@
 #' @examples
 #' \dontrun{
 #' # Column names
-#' column_names <- dictionary(full_tbl = FALSE)
+#' column_names <- pplr_dictionary(full_tbl = FALSE)
 #' 
 #' # Dictionary information
-#' dictionary_lter <- dictionary(lterid, full_tbl = FALSE)
+#' dictionary_lter <- pplr_dictionary(lterid, full_tbl = FALSE)
 #' 
 #' # multiple columns
-#' dictionary_lter_lat <- dictionary(lterid,lat_lter, full_tbl = FALSE)
+#' dictionary_lter_lat <- pplr_dictionary(lterid,lat_lter, full_tbl = FALSE)
 #' }
+
 pplr_dictionary <- function(..., full_tbl = FALSE){
   # summary table ------------------------------------------------------------
   # load summary table
-  summary_table <- summary_table_import()
+  summary_table <- pplr_summary_table_import()
   # variables ------------------------------------------------
-  # variables of default (full_tbl=FALSE) main table
-  possible_vars <- default_vars()
+
   # variables of which user defined wishes to know the content
   vars <- vars_dict(...)
   
@@ -40,7 +40,9 @@ pplr_dictionary <- function(..., full_tbl = FALSE){
     tmp <- if(full_tbl){
       summary_table
     } else {
-      summary_table[ ,default_vars]
+      
+      # variables of default (full_tbl=FALSE) main table
+      summary_table[ ,default_vars()]
     }
     out <- dictionary_explain(tmp)
   # if colums specified.
@@ -167,7 +169,7 @@ dict_list <- function(x, select_columns){
   
 }
 
-
+#' @noRd
 # explain meaning of dictionary variables 
 dictionary_explain <- function(x){
   
