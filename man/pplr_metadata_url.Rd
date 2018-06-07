@@ -7,7 +7,7 @@
 pplr_metadata_url(data_object)
 }
 \arguments{
-\item{data_object}{An object produced by the function pply_get_data()}
+\item{data_object}{An object produced by the function \code{pplr_get_data()}}
 }
 \description{
 Load the webpage containing the metadata of the data sets downloaded through 
