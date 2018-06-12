@@ -48,7 +48,7 @@ prep_map_data <- function(input) {
   
 }
 
-#' @importFrom rlang enquo
+#' @importFrom rlang quo
 #' 
 #' @noRd
 # wraps the others to print the plots
@@ -104,16 +104,17 @@ lter_maps <- function(input) {
 #' @importFrom ggplot2 ggplot theme_bw aes ggtitle scale_x_continuous
 #' scale_y_continuous geom_polygon geom_point theme map_data
 #' xlab ylab coord_map scale_size_area element_blank
-#' @importFrom rlang enquo !!
+#' @importFrom rlang quo !!
 #' 
 #' @noRd
 
 ak_map <- function(count_data, x, y, polygon_group, count_group) {
   
-  # x <- enquo(x)
-  # y <- enquo(y)
-  # polygon_group <- enquo(polygon_group)
-  # count_group <- enquo(count_group)
+  # Quosured in lter_maps(), so no need to quo again here
+  # x <- rlang::quo(x)
+  # y <- rlang::quo(y)
+  # polygon_group <- rlang::quo(polygon_group)
+  # count_group <- rlang::quo(count_group)
   
   ak <- ggplot2::map_data('world', region='USA')
   ak <- ak[which(ak$subregion == 'Alaska'), ]
@@ -158,16 +159,17 @@ ak_map <- function(count_data, x, y, polygon_group, count_group) {
 #' @importFrom ggplot2 ggplot theme_bw aes ggtitle scale_x_continuous
 #' scale_y_continuous geom_polygon geom_point theme map_data
 #' xlab ylab coord_map scale_size_area element_blank
-#' @importFrom rlang enquo !!
+#' @importFrom rlang quo !!
 #' 
 #' @noRd
 
 us_map <- function(count_data, x, y, polygon_group, count_group, size_breaks) {
   
-  # x <- enquo(x)
-  # y <- enquo(y)
-  # polygon_group <- enquo(polygon_group)
-  # count_group <- enquo(count_group)
+  # Quosured in lter_maps(), so no need to quo again here
+  # x <- rlang::quo(x)
+  # y <- rlang::quo(y)
+  # polygon_group <- rlang::quo(polygon_group)
+  # count_group <- rlang::quo(count_group)
   
   us <- ggplot2::map_data('usa')
   p_us <- ggplot2::ggplot() + 
@@ -218,10 +220,11 @@ us_map <- function(count_data, x, y, polygon_group, count_group, size_breaks) {
 
 an_map <- function(count_data, x, y, polygon_group, count_group) {
   
-  # x <- enquo(x)
-  # y <- enquo(y)
-  # polygon_group <- enquo(polygon_group)
-  # count_group <- enquo(count_group)
+  # Quosured in lter_maps(), so no need to quo again here
+  # x <- rlang::quo(x)
+  # y <- rlang::quo(y)
+  # polygon_group <- rlang::quo(polygon_group)
+  # count_group <- rlang::quo(count_group)
   
   # draw Antarctica-based locations
   an <- ggplot2::map_data("world")

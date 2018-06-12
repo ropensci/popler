@@ -234,7 +234,7 @@ vars_spell <- function(select_columns, columns_full_tab, possibleargs){
 taxa_nest <- function(x, full_tbl){
   
   # select taxonomic information (based on full_ or standard_table)
-  if( full_tbl == FALSE){
+  if(!full_tbl){
     taxas <- c("sppcode", "species", "kingdom", "phylum",
                "class", "order", "family", "genus")
   } else {
@@ -250,7 +250,8 @@ taxa_nest <- function(x, full_tbl){
   # check "x" variable names
   
   # if no taxonomy information provided 
-  if(!any(names(x) %in% taxas)) out <- unique(summary_table[])
+  if(!any(names(x) %in% taxas)) out <- unique(summary_table[ ,names(x),
+                                                             drop = FALSE])
   
   # if only ONE of the taxonomic variables is provided
   if(sum(names(x) %in% taxas) == 1){
@@ -261,10 +262,7 @@ taxa_nest <- function(x, full_tbl){
       dplyr::group_by(.dots = setdiff(names(x), taxas)) %>%
       tidyr::nest(key_col = nested_var, nest_cols = nested_var)
     # Names of taxonomic lists
-    names(out[ ,nested_var][[1]]) <- paste0(nested_var,
-                                            "_project_#_",
-                                            out$proj_metadata_key)
-    
+    names(out)[2] <- nested_var 
   }
   
   # if more than ONE of the taxonomic variables is provided,
