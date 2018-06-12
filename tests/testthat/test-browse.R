@@ -42,13 +42,13 @@ test_that("Select by criteria", {
   x <- summary_table
   
   # Test 1 
-  subset_data <- select_by_criteria(x, substitute(kingdom == "Plantae"))
+  subset_data <- popler:::select_by_criteria(x, substitute(kingdom == "Plantae"))
   expect_equal( unique(subset_data$kingdom), "Plantae")
   # Test 2
-  subset_data <- select_by_criteria(x, substitute(lterid == "SEV"))
+  subset_data <- popler:::select_by_criteria(x, substitute(lterid == "SEV"))
   expect_equal(unique(subset_data$lterid), "SEV")
   # Test 3
-  subset_data <- select_by_criteria(x,substitute(genus == "Poa"))
+  subset_data <- popler:::select_by_criteria(x,substitute(genus == "Poa"))
   expect_equal(unique(subset_data$genus), "Poa")
   
   rm(list = c("x","subset_data"))
@@ -60,24 +60,25 @@ context("browse(): taxa_nest")
 
 # Select By Criteria function
 test_that("taxa_nest", {
+  possible_vars <- popler:::default_vars()
   
   # limit yourself to one/two studies
   # 1 full tab = TRUE, vars = NULL
-  shrinked_tab <- taxa_nest(summary_table, full_tbl = TRUE)
+  shrinked_tab <- popler:::taxa_nest(summary_table, full_tbl = TRUE)
   # test 1a: taxas variables
   expect_equal(ncol(shrinked_tab$taxas[[1]]), 18)
   # test 1b: number of projects
   expect_equal(nrow(shrinked_tab), length(unique(summary_table$proj_metadata_key)))
   
   # 2 full tab = TRUE, vars = NULL
-  shrinked_tab <- taxa_nest(summary_table[ , default_vars()], full_tbl = FALSE)
+  shrinked_tab <- popler:::taxa_nest(summary_table[ , possible_vars], full_tbl = FALSE)
   # test 2a: taxas variables
   expect_equal(ncol(shrinked_tab$taxas[[1]]), 8)
   # test 2b: number of projects
   expect_equal(nrow(shrinked_tab), length(unique(summary_table$proj_metadata_key)))
   
   # 4. vars = "proj_metadata_key" (not a taxonomic variable)
-  shrinked_tab <- taxa_nest(summary_table[ , vars_check("proj_metadata_key"),
+  shrinked_tab <- popler:::taxa_nest(summary_table[ , popler:::vars_check("proj_metadata_key"),
                                            drop = FALSE],
                             full_tbl = FALSE)
   # no taxa list
@@ -88,7 +89,7 @@ test_that("taxa_nest", {
   expect_equal(ncol(shrinked_tab), 1)
   
   # 5. vars = c("proj_metadata_key","lterid") (no taxonomic variables)
-  shrinked_tab <- taxa_nest(summary_table[ , vars_check(c("proj_metadata_key", 
+  shrinked_tab <- popler:::taxa_nest(summary_table[ , popler:::vars_check(c("proj_metadata_key", 
                                                           'lterid')),
                                            drop = FALSE],
                             full_tbl = FALSE)  # no taxa list
@@ -96,7 +97,7 @@ test_that("taxa_nest", {
   expect_equal(ncol(shrinked_tab), 2)
   
   # 5. vars = "genus" (only one taxonomic variable)
-  shrinked_tab <- taxa_nest(summary_table[ ,vars_check("genus")],
+  shrinked_tab <- popler:::taxa_nest(summary_table[ ,popler:::vars_check("genus")],
                             full_tbl = FALSE)
   # two columns: "proj_metadata_key", and "genus"
   expect_equal(ncol(shrinked_tab), 2)
@@ -104,7 +105,7 @@ test_that("taxa_nest", {
   expect_equal(names(shrinked_tab)[2], "genus")
   
   # 6. vars = c("genus","species") (two taxonomic variables)
-  shrinked_tab <- taxa_nest(summary_table[ , vars_check(c("genus","species"))],
+  shrinked_tab <- popler:::taxa_nest(summary_table[ , popler:::vars_check(c("genus","species"))],
                             full_tbl = FALSE)
   # two columns: "proj_metadata_key", and "taxas"
   expect_equal(ncol(shrinked_tab), 2)
@@ -154,7 +155,7 @@ context("browse() function")
 test_that("browse() function ", {
   
  
-  # n of columns
+  # No search criteria
   expect_equal(ncol(pplr_browse() ), 19)
   expect_equal(ncol(pplr_browse(full_tbl = TRUE)), 60 )
   
@@ -164,6 +165,29 @@ test_that("browse() function ", {
   
   expect_equal(names(pplr_browse(vars = "lng_lter")), 
                c("proj_metadata_key", "lng_lter"))
+  
+  # functioning of ...
+  SBC <- pplr_browse(lterid == 'SBC')
+  
+  expect_equal(ncol(SBC), 19)
+  expect_true(all(popler:::default_vars()[1:18] %in% names(SBC)))
+  
+  a_few <- pplr_browse(lterid == 'SEV' | lterid == 'MVC',
+                       full_tbl = TRUE)
+  expect_equal(ncol(a_few), 60)
+  
+  
+  # functioning of keywords
+  parasites <- pplr_browse(keyword = 'parasite')
+  
+  expect_true(inherits(parasites,
+                       'tbl_df'))
+
+  expect_equal(dim(parasites)[2], 19) # 18 columns of data + 1 for taxonomic
+  
+  
+  rodents <- pplr_browse(keyword = 'rodent', full_tbl = TRUE)
+  expect_equal(ncol(rodents), 60) # all info
   
   #functioning error messages
   expect_error(pplr_browse(structured_type_3 == "stages" & 

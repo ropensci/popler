@@ -11,9 +11,23 @@ test_that("dictionary() function ", {
   # n of list elements
   expect_equal(length(pplr_dictionary(species)), 1)
   expect_equal(length(pplr_dictionary(lterid, lng_lter)), 2)
+  expect_equal(length(pplr_dictionary(lterid, lng_lter, lat_lter,
+                                      treatment, structure, species)), 6)
   
   # class of list elements
-  expect_equal(class(pplr_dictionary(species)[[1]]), "data.frame")
-  expect_equal(class(pplr_dictionary(lterid)[[1]]), "character")
+  
+  # first, exceptions to general rules
+  expect_true(inherits(pplr_dictionary(species)[[1]], "character"))
+  expect_true(inherits(pplr_dictionary(structure)[[1]], 'character'))
+  expect_true(inherits(pplr_dictionary(treatment)[[1]], 'character'))
+  expect_true(inherits(pplr_dictionary(proj_metadata_key)[[1]], 'integer'))
+  
+  # make sure others are correct
+  expect_true(inherits(pplr_dictionary(lterid)[[1]], "character"))
+  expect_true(inherits(pplr_dictionary(duration_years)[[1]], 'table'))
+  
+  
+  # Fails correctly
+  expect_error(pplr_dictionary(lter))
   
 })
