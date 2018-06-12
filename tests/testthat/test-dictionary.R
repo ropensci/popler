@@ -2,6 +2,7 @@
 context("dictionary() function")
 
 test_that("dictionary() function ", {
+  
   skip_on_cran()
   
   # n of variables in "informational message"

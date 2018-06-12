@@ -1,5 +1,4 @@
 # test the browse_popler function 
-library(testthat)
 
 summary_table <- pplr_summary_table_import()
 
@@ -9,6 +8,7 @@ context("browse(): Informational messages")
 # Do informational messages provide the expected output?
 test_that("Informational messages", {
   
+  skip_on_cran()
   # Initial group_factors
   possiblevars <- tolower(c("lterid", "proj_metadata_key", "title",
                             "metalink", "studytype", "community",
@@ -34,9 +34,9 @@ test_that("Informational messages", {
 })
 
 context("browse(): Select by criteria")
-
 # Select By Criteria function
 test_that("Select by criteria", {
+  skip_on_cran()
   
   # Data
   x <- summary_table
@@ -60,6 +60,8 @@ context("browse(): taxa_nest")
 
 # Select By Criteria function
 test_that("taxa_nest", {
+  skip_on_cran()
+  
   possible_vars <- popler:::default_vars()
   
   # limit yourself to one/two studies
@@ -123,6 +125,7 @@ context("pplr_browse(): error functions")
 
 # does this function actually return character columns? 
 test_that("Errors ", {
+  skip_on_cran()
   
   # Initial group_factors
   possible_arg  <- tolower(c("lterid", "proj_metadata_key", "title",
@@ -153,6 +156,7 @@ test_that("Errors ", {
 context("browse() function")
 
 test_that("browse() function ", {
+  skip_on_cran()
   
  
   # No search criteria
