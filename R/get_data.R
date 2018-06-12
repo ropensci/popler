@@ -83,6 +83,11 @@ pplr_get_data <- function(..., add_vars = NULL, subtract_vars = NULL,
   # query popler online
   output_data <- pplr_query(conn, vars_select, sql_condition)
   
+  if(dim(output_data)[1] < 1) {
+    stop('No data found. Check to make sure query is correct',
+         call. = FALSE)
+  }
+  
   # format output ---------------------------------------------------------
   
   # replace -99999, but only for numeric variables
