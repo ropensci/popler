@@ -90,6 +90,18 @@ verify_vars <- function(sel_col){
   
 }
 
+
+unique_or_summary <- function(col) {
+  if(is.numeric(col) | 
+     is.integer(col)) {
+    
+    summary(col)
+    
+  } else {
+    
+    unique(col)
+  }
+}
 # produce the lists of unique dictionary values
 #' @importFrom stats setNames
 #' @noRd
@@ -102,16 +114,18 @@ dict_list <- function(x, select_columns){
   # index "special" and "normal"
   i_spec <- which(select_columns %in% c("structure",
                                         "treatment",
-                                        "species"))
+                                        "species",
+                                        "proj_metadata_key"))
   i_norm <- setdiff(c(1:length(select_columns)), i_spec)
-  spec_cols <- select_columns[i_spec]
   norm_cols <- select_columns[i_norm]
   
   # get unique values of "normal" variables -------------------------------------------
   if(length(norm_cols) > 1){
-    out_norm <- lapply(x[ ,norm_cols], unique)
+    out_norm <- lapply(x[ ,norm_cols, drop = FALSE], 
+                       function(y) unique_or_summary(y))
   } else {
-    out_norm <- lapply(x[ ,norm_cols, drop = FALSE], unique)
+    out_norm <- lapply(x[ ,norm_cols, drop = FALSE],
+                       function(y) unique_or_summary(y))
   }
   
   # get unique values of "special" variables ------------------------------------------
@@ -119,6 +133,9 @@ dict_list <- function(x, select_columns){
   
   if(any("species" == select_columns)){
     out_spc$species <- unique(x[ ,c("genus", "species")])
+  }
+  if(any("proj_metadata_key" == select_columns)) {
+    out_spc$proj_metadata_key <- unique(x[ ,'proj_metadata_key'])
   }
   if( any("structure" == select_columns) ){
     # stash all structure data in a single vector
@@ -135,7 +152,8 @@ dict_list <- function(x, select_columns){
   # Special variables
   descr_spec  <- c("species (species name)",
                    "structure (types of indidivual structure)",
-                   "treatment (type of treatment)")
+                   "treatment (type of treatment)",
+                   "proj_metadata_key")
   if(length(out_spc) > 0){
     d_s_ind <- sapply(names(out_spc), function(x) grep(x, descr_spec))
     descr_spc <- descr_spec[d_s_ind]
