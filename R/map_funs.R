@@ -2,7 +2,7 @@
 # of formatted data and breaks for 
 #' @noRd
 prep_map_data <- function(input) { 
-  input <- popler:::rebrowse.browse(input)
+  input <- rebrowse(input)
   
   # get lat-long counts for each site
   B <- table(input$lng_lter, input$lat_lter)
@@ -48,12 +48,20 @@ prep_map_data <- function(input) {
   
 }
 
+#' @importFrom rlang enquo
+#' 
+#' @noRd
 # wraps the others to print the plots
 lter_maps <- function(input) { 
   plot_pars <- prep_map_data(input)
   
   counts <- plot_pars$data
   sizes <- plot_pars$breaks
+  
+  long <- rlang::quo(long)
+  lat <- rlang::quo(lat)
+  count <- rlang::quo(count)
+  group <- rlang::quo(group)
   
   ak_plot <- ak_map(count_data = counts, 
                     x = long,
@@ -102,10 +110,10 @@ lter_maps <- function(input) {
 
 ak_map <- function(count_data, x, y, polygon_group, count_group) {
   
-  x <- enquo(x)
-  y <- enquo(y)
-  polygon_group <- enquo(polygon_group)
-  count_group <- enquo(count_group)
+  # x <- enquo(x)
+  # y <- enquo(y)
+  # polygon_group <- enquo(polygon_group)
+  # count_group <- enquo(count_group)
   
   ak <- ggplot2::map_data('world', region='USA')
   ak <- ak[which(ak$subregion == 'Alaska'), ]
@@ -156,10 +164,10 @@ ak_map <- function(count_data, x, y, polygon_group, count_group) {
 
 us_map <- function(count_data, x, y, polygon_group, count_group, size_breaks) {
   
-  x <- enquo(x)
-  y <- enquo(y)
-  polygon_group <- enquo(polygon_group)
-  count_group <- enquo(count_group)
+  # x <- enquo(x)
+  # y <- enquo(y)
+  # polygon_group <- enquo(polygon_group)
+  # count_group <- enquo(count_group)
   
   us <- ggplot2::map_data('usa')
   p_us <- ggplot2::ggplot() + 
@@ -200,20 +208,20 @@ us_map <- function(count_data, x, y, polygon_group, count_group, size_breaks) {
 #' @param count_group the name of the grouping variable to make size counts
 #' on. This is almost always \code{count}
 #'
-#'@return A class \code{ggplot} object
+#' @return A class \code{ggplot} object
 #' @importFrom ggplot2 ggplot theme_bw aes ggtitle scale_x_continuous
 #' scale_y_continuous geom_polygon geom_point theme map_data
 #' xlab ylab coord_map scale_size_area element_blank
-#' @importFrom rlang enquo !!
+#' @importFrom rlang  !!
 #' 
 #' @noRd
 
 an_map <- function(count_data, x, y, polygon_group, count_group) {
   
-  x <- enquo(x)
-  y <- enquo(y)
-  polygon_group <- enquo(polygon_group)
-  count_group <- enquo(count_group)
+  # x <- enquo(x)
+  # y <- enquo(y)
+  # polygon_group <- enquo(polygon_group)
+  # count_group <- enquo(count_group)
   
   # draw Antarctica-based locations
   an <- ggplot2::map_data("world")
