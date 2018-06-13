@@ -249,6 +249,7 @@ pplr_summary_table_check = function(){
 }
 
 #' @noRd
+#' @importFrom RPostgreSQL PostgreSQL dbConnect
 # open a connection to the popler database
 db_open <- function(dbname = 'popler_3', 
                     host = "ec2-54-214-212-101.us-west-2.compute.amazonaws.com",
@@ -316,35 +317,6 @@ query_get = function(connection, query){
   # outputs a dataframe
   return(dplyr::tbl(connection, dbplyr::sql(query)) %>% data.frame())
 }
-
-#' @noRd
-#' @importFrom RPostgreSQL dbConnect PostgreSQL
-#' 
-## these functions should be masked from the user but available in popler
-
-# a (very slightly) modified version of dplyr::src_postgres() to connect to the
-# popler database and enable a silent disconnect
-popler_connector <- function (dbname=NULL, host=NULL,
-                             port=NULL, user=NULL, 
-                             password=NULL, silent=TRUE) {
-  
-  if (!requireNamespace("RPostgreSQL", quietly = TRUE)) {
-    stop("RPostgreSQL package required to connect to postgres db", call. = FALSE)
-  }
-  user <- if(is.null(user)){
-    if(identical(Sys.getenv("TRAVIS"), "true")){"postgres"} else {""} 
-    } else user
-  con <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(), 
-                   host     = if(is.null(host))     "" else host, 
-                   dbname   = if(is.null(dbname))   "" else dbname, 
-                   user     = user, 
-                   password = if(is.null(password)) "" else password, 
-                   port     = if(is.null(port))     "" else port)
-  #info <- RPostgreSQL::dbGetInfo(con)
-  #dbplyr::src_sql("postgres", con, info=info, disco=popler:::popler_disconnector(con,"postgres",silent))
-  #src_sql("postgres", con, info=info, disco=popler:::popler_disconnector(con,"postgres",silent))
-}
-
 
 # Source for idea
 # https://stackoverflow.com/questions/30357330/r-cmd-check-no-visible-binding-for-global-variable-mypkgdata
