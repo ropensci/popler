@@ -19,3 +19,4 @@
 ^browse_files$
 ^codecov\.yml$
 ^R/Removed_Funs\.R$
+^cran-comments\.md$
