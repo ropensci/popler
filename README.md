@@ -20,10 +20,18 @@ if(!require(devtools, quietly = TRUE)) {
 devtools::install_github('AldoCompagnoni/popler')
 ```
 
-All exported functions use the `pplr_` prefix and tidy evaluation, meaning you do not need to manually quote inputs. Once installed, you can explore the variables in the data base using the `pplr_dictionary()` function. This will give you a better idea of what each variable means and assist in refining queries for the next step. Additionally, there is the `report_dictionary()` function which generates an .Rmd file and renders it into html.
+All exported functions use the `pplr_` prefix and lazy evaluation, meaning you do not need to manually quote most inputs. Once installed, you can explore the variables in the data base using the `pplr_dictionary()` function. This will give you a better idea of what each variable means and assist in refining queries for the next step. Additionally, there is the `pplr_report_dictionary()` function which generates an .Rmd file and renders it into html.
 
 ``` r
 pplr_dictionary()
 ```
 
-More to come later...
+Once you have become acquainted with the various types of data in the data base, the next step is to use the `pplr_browse()` function to view the variables associated with a given project. `pplr_browse()`can accept a logical condition (e.g. `duration_years > 5`), a given set of variables using the `vars` argument, or a keyword string using the `keyword` argument. These all generate a `tbl` that inherits from `popler` and `browse` classes.
+
+``` r
+long_studies <- pplr_browse(duration_years > 20) # ... is not quoted!
+
+parasite_studies <- pplr_browse(keyword = 'parasite') # but keyword is quoted
+
+interesting_studies <- pplr_browse(vars = c('duration_years', 'lterid')) # so are vars
+```
