@@ -251,31 +251,23 @@ pplr_summary_table_check = function(){
 #' @noRd
 #' @importFrom RPostgreSQL PostgreSQL dbConnect
 # open a connection to the popler database
-db_open <- function(dbname = 'popler_3', 
-                    host = "ec2-54-214-212-101.us-west-2.compute.amazonaws.com",
-                    port = 5432,
-                    user = "other_user",
-                    password = "bigdata",
-                    silent = TRUE) {
+db_open <- function() {
     
     if (!requireNamespace("RPostgreSQL", quietly = TRUE)) {
       stop("RPostgreSQL package required to connect to postgres db", call. = FALSE)
     }
-    user <- if(is.null(user)){
-      if(identical(Sys.getenv("TRAVIS"), "true")){
-        "postgres"
-      } else {
-          ""
-      } 
-    } else {
-      user
-    }
+    
+    inputs <- int.data$db
+    
+    
+  
     con <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(), 
-                                  host     = if(is.null(host))     "" else host, 
-                                  dbname   = if(is.null(dbname))   "" else dbname, 
-                                  user     = user, 
-                                  password = if(is.null(password)) "" else password, 
-                                  port     = if(is.null(port))     "" else port)
+                                  host     = inputs$server, 
+                                  dbname   = inputs$dbname, 
+                                  user     = inputs$uid, 
+                                  password = inputs$pwd, 
+                                  port     = inputs$port)
+    
     #info <- RPostgreSQL::dbGetInfo(con)
     #dbplyr::src_sql("postgres", con, info=info, disco=popler:::popler_disconnector(con,"postgres",silent))
     #src_sql("postgres", con, info=info, disco=popler:::popler_disconnector(con,"postgres",silent))

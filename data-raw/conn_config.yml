@@ -1,0 +1,7 @@
+default:
+  access:
+    dbname: 'popler_3' 
+    server: 'ec2-54-214-212-101.us-west-2.compute.amazonaws.com'
+    uid: 'other_user'
+    pwd: 'bigdata'  
+    port: 5432
