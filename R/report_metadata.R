@@ -84,7 +84,7 @@ n_taxa[i] <- nrow(A$taxas[[i]])
     
 ### Geographic overview of sites
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
-suppressWarnings(map <- lter_maps(A))
+suppressWarnings(map <- pplr_maps(A))
 ```
 <div style="text-align: right"> *[back to Table of Contents](#contents)* </div>  
   

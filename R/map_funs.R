@@ -1,5 +1,5 @@
 # re-shape the data into appropriate shape for lter_maps. returns a list 
-# of formatted data and breaks for 
+# of formatted data and breaks for legend
 #' @noRd
 prep_map_data <- function(input) { 
   input <- rebrowse(input)
@@ -48,11 +48,25 @@ prep_map_data <- function(input) {
   
 }
 
+#' Generate maps of LTER sites
+#' 
+#' @description Generates maps of LTER sites in a given \code{input} object.
+#' Sizes of site markers correspond to the number of studies at a given site.
+#' 
+#' @param input An object created by either \code{pplr_browse()} or
+#' \code{pplr_get_data()}
+#' @param return_maps A logical indicating whether to return the \code{ggplot}
+#' objects or an invisible copy of the input data. Use \code{FALSE} to retain
+#' the ability to use this in a pipe. Use \code{TRUE} if you want to modify
+#' the \code{ggplot} objects interactively.
+#' 
+#' @return The \code{input} object (invisibly).
+#' 
 #' @importFrom rlang quo
 #' 
-#' @noRd
-# wraps the others to print the plots
-lter_maps <- function(input) { 
+#' @export
+# wraps the others to print the plots UNFINISHED----------------
+pplr_maps <- function(input, return_maps = FALSE) { 
   plot_pars <- prep_map_data(input)
   
   counts <- plot_pars$data
@@ -63,31 +77,96 @@ lter_maps <- function(input) {
   count <- rlang::quo(count)
   group <- rlang::quo(group)
   
-  ak_plot <- ak_map(count_data = counts, 
-                    x = long,
-                    y = lat,
-                    polygon_group = group,
-                    count_group = count)
-  us_plot <- us_map(count_data = counts, 
-                    x = long,
-                    y = lat,
-                    polygon_group = group,
-                    count_group = count,
-                    size_breaks = sizes)
-  an_plot <- an_map(count_data = counts, 
-                    x = long,
-                    y = lat,
-                    polygon_group = group,
-                    count_group = count)
+  plots <- list()
   
-  layout_mat <- matrix(c(1, 2, 2,
-                         3, 3, 3),
-                       nrow = 2, 
-                       byrow = TRUE)
-
-  multiplot(ak_plot, us_plot, an_plot, layout = layout_mat)
+  # Next part identifies which plots should be drawn and who gets a legend
+  # based on who is drawn. Rules are as follows:
+  # All 3 - US plot, legend on right,
+  # US + AK - US plot, legend on right
+  # US + AN - US plot, legend on right
+  # AK + AN - AK plot, legend on right
+  # US/AK only - legend on right
+  # AN only - legend on bottom
   
+  if(any(counts$lat > 50, na.rm = TRUE)) {
+    ak_plot <- ak_map(count_data = counts, 
+                      x = long,
+                      y = lat,
+                      polygon_group = group,
+                      count_group = count,
+                      size_breaks = sizes)
+    plots$ak <- ak_plot
+  }
   
+  if(any(counts$lat < 50 & counts$lat > 0, na.rm = TRUE)) {
+    us_plot <- us_map(count_data = counts, 
+                      x = long,
+                      y = lat,
+                      polygon_group = group,
+                      count_group = count,
+                      size_breaks = sizes)
+    plots$us <- us_plot
+  }
+  
+  if(any(counts$lat < -40, na.rm = TRUE)) {
+    an_plot <- an_map(count_data = counts, 
+                      x = long,
+                      y = lat,
+                      polygon_group = group,
+                      count_group = count,
+                      size_breaks = sizes)
+    plots$an <- an_plot
+  }
+  
+  if(any(counts$lat > -40 & counts$lat < 0, na.rm = TRUE)) { 
+    mc_plot <- mc_map(count_data = counts,
+                      x = long,
+                      y = lat,
+                      polygon_group = group,
+                      count_group = count,
+                      size_breaks = sizes)
+    
+    plots$mc <- mc_plot
+    
+  }
+  
+  if(length(plots) == 4) {
+    plot_all(plots)
+  } # all plots
+  
+  if(length(plots) == 3){
+    if(!'mc' %in% names(plots)) plot_3_no_mc(plots)
+    if(!'an' %in% names(plots)) plot_3_no_an(plots)
+    if(!'us' %in% names(plots)) plot_3_no_us(plots)
+    if(!'ak' %in% names(plots)) plot_3_no_ak(plots)
+  } 
+  
+  if(length(plots) == 2) {
+    if(all(c('an', 'ak') %in% names(plots))) plot_2_ak_an(plots)
+    if(all(c('an', 'mc') %in% names(plots))) plot_2_mc_an(plots)
+    if(all(c('an', 'us') %in% names(plots))) plot_2_us_an(plots)
+    if(all(c('us', 'mc') %in% names(plots))) plot_2_us_mc(plots)
+    if(all(c('us', 'ak') %in% names(plots))) plot_2_us_ak(plots)
+    if(all(c('mc', 'ak') %in% names(plots))) plot_2_ak_mc(plots)
+  } # 2 plots
+  
+  if(length(plots) == 1) {
+    if("an" %in% names(plots)) {
+      print(plots[[1]] + ggplot2::theme(legend.position = "bottom"))
+    } else {
+      print(plots[[1]] + ggplot2::theme(legend.position = "right"))
+    }
+  }
+  
+  if(return_maps) {
+    
+    return(plots)
+    
+  } else { 
+    
+    invisible(input)
+    
+  }
 }
 
 
@@ -108,7 +187,11 @@ lter_maps <- function(input) {
 #' 
 #' @noRd
 
-ak_map <- function(count_data, x, y, polygon_group, count_group) {
+ak_map <- function(count_data,
+                   x, y,
+                   polygon_group,
+                   count_group,
+                   size_breaks) {
   
   # Quosured in lter_maps(), so no need to quo again here
   # x <- rlang::quo(x)
@@ -116,13 +199,14 @@ ak_map <- function(count_data, x, y, polygon_group, count_group) {
   # polygon_group <- rlang::quo(polygon_group)
   # count_group <- rlang::quo(count_group)
   
+
   ak <- ggplot2::map_data('world', region='USA')
   ak <- ak[which(ak$subregion == 'Alaska'), ]
   p_ak <- ggplot2::ggplot() + 
     ggplot2::theme_bw() + 
     ggplot2::ggtitle("Alaska") +
     ggplot2::theme(axis.title.x = ggplot2::element_blank(),
-                   legend.position = "none") +
+                   legend.position = "right") +
     ggplot2::geom_polygon(data = ak,
                           ggplot2::aes(x = !! x, 
                                         y = !! y, 
@@ -137,7 +221,11 @@ ak_map <- function(count_data, x, y, polygon_group, count_group) {
                                 expand = c(0, 0)) +
     ggplot2::scale_y_continuous(limits = c(50, 72),
                                 expand = c(0, 0)) +
-    ggplot2::ylab("Latitude") +
+    ggplot2::ylab("") +
+    ggplot2::scale_size_area(breaks = size_breaks, 
+                             guide = 
+                               ggplot2::guide_legend(title = 
+                                                       "Number of\nprojects")) + 
     ggplot2::coord_map()
   
   return(p_ak)
@@ -163,7 +251,11 @@ ak_map <- function(count_data, x, y, polygon_group, count_group) {
 #' 
 #' @noRd
 
-us_map <- function(count_data, x, y, polygon_group, count_group, size_breaks) {
+us_map <- function(count_data,
+                   x, y, 
+                   polygon_group, 
+                   count_group, 
+                   size_breaks) {
   
   # Quosured in lter_maps(), so no need to quo again here
   # x <- rlang::quo(x)
@@ -174,7 +266,7 @@ us_map <- function(count_data, x, y, polygon_group, count_group, size_breaks) {
   us <- ggplot2::map_data('usa')
   p_us <- ggplot2::ggplot() + 
     ggplot2::theme_bw() + 
-    ggplot2::ggtitle("Contiguous United States") +
+    ggplot2::ggtitle("United States and Puerto Rico") +
     ggplot2::theme(axis.title.x = ggplot2::element_blank(),
                    axis.title.y = ggplot2::element_blank(),
                    legend.position = "right") +
@@ -188,8 +280,8 @@ us_map <- function(count_data, x, y, polygon_group, count_group, size_breaks) {
                                      y = !! y, 
                                      size = !! count_group),
                         alpha = 0.5) + 
-    ggplot2::scale_x_continuous(limits = c(-126, -66.6), expand = c(0, 0)) +
-    ggplot2::scale_y_continuous(limits = c(24.5, 50), expand = c(0, 0)) +
+    ggplot2::scale_x_continuous(limits = c(-126, -62.5), expand = c(0, 0)) +
+    ggplot2::scale_y_continuous(limits = c(15, 50), expand = c(0, 0)) +
     ggplot2::scale_size_area(breaks = size_breaks, 
                              guide = 
                                ggplot2::guide_legend(title = 
@@ -218,13 +310,19 @@ us_map <- function(count_data, x, y, polygon_group, count_group, size_breaks) {
 #' 
 #' @noRd
 
-an_map <- function(count_data, x, y, polygon_group, count_group) {
+an_map <- function(count_data, 
+                   x, y,
+                   polygon_group, 
+                   count_group, 
+                   size_breaks) {
   
   # Quosured in lter_maps(), so no need to quo again here
   # x <- rlang::quo(x)
   # y <- rlang::quo(y)
   # polygon_group <- rlang::quo(polygon_group)
   # count_group <- rlang::quo(count_group)
+  
+  
   
   # draw Antarctica-based locations
   an <- ggplot2::map_data("world")
@@ -233,7 +331,7 @@ an_map <- function(count_data, x, y, polygon_group, count_group) {
     ggplot2::theme_bw() + 
     ggplot2::ggtitle("Antarctica") +
     ggplot2::theme(axis.title.y = ggplot2::element_blank(),
-                   legend.position = "none") +
+                   legend.position = "bottom") +
     ggplot2::geom_polygon(data = an,
                           ggplot2::aes(x = !! x, 
                                        y = !! y, 
@@ -246,11 +344,51 @@ an_map <- function(count_data, x, y, polygon_group, count_group) {
                         alpha = 0.5) + 
     ggplot2::scale_x_continuous(limits = c(-180, 180), expand = c(0, 0)) +
     ggplot2::scale_y_continuous(limits = c(-85, -60), expand = c(0, 0)) +
-    ggplot2::xlab("Longitude") +
+    ggplot2::xlab("") +
+    ggplot2::scale_size_area(breaks = size_breaks, 
+                             guide = 
+                               ggplot2::guide_legend(title = 
+                                                       "Number of projects")) + 
     ggplot2::coord_map()
   
   return(p_an)
   
+}
+
+mc_map <- function(count_data, 
+                    x, y,
+                    polygon_group, 
+                    count_group,
+                    size_breaks) {
+  
+  mcr <- ggplot2::map_data("world")
+  mcr <- mcr[mcr$region == 'French Polynesia', ]
+  
+  p_mc <- ggplot2::ggplot() + 
+    ggplot2::theme_bw() + 
+    ggplot2::ggtitle("French Polynesia") +
+    ggplot2::theme(axis.title.y = ggplot2::element_blank(),
+                   legend.position = "right") +
+    ggplot2::geom_polygon(data = mcr,
+                          ggplot2::aes(x = !! x, 
+                                       y = !! y, 
+                                       group = !! polygon_group),
+                          fill="#FF9D60") + 
+    ggplot2::geom_point(data = count_data,
+                        ggplot2::aes(x = !! x,
+                                     y = !! y,
+                                     size = !! count_group),
+                        alpha = 0.5) +
+    ggplot2::scale_x_continuous(limits = c(-150, -148.5)) +
+    ggplot2::scale_y_continuous(limits = c(-18, -17)) +
+    ggplot2::xlab("") +
+    ggplot2::scale_size_area(breaks = size_breaks, 
+                             guide = 
+                               ggplot2::guide_legend(title = 
+                                                       "Number of \nprojects")) + 
+    ggplot2::coord_map()
+  
+  return(p_mc)
 }
 
 
@@ -287,3 +425,166 @@ multiplot <-  multiplot <- function(..., layout) {
     }
   }
 }
+
+
+
+#' @importFrom ggplot2 theme
+#' @noRd
+plot_all <- function(plots) {
+  
+  layout_mat <- matrix(c(1, 2, 2,
+                         3, 4, 4),
+                       nrow = 2,
+                       byrow = TRUE) 
+  
+  multiplot(plots$ak + ggplot2::theme(legend.position = 'none'),
+            plots$us + ggplot2::theme(legend.position = 'none'),
+            plots$mc + ggplot2::theme(legend.position = 'none'),
+            plots$an + ggplot2::theme(legend.position = 'bottom'),
+            layout = layout_mat)
+}
+
+#' @importFrom ggplot2 theme
+#' @noRd
+plot_3_no_mc <- function(plots) {
+  layout_mat <- matrix(c(1, 2, 2,
+                         3, 3, 3),
+                       nrow = 2,
+                       byrow = TRUE)
+  
+  multiplot(plots$ak + ggplot2::theme(legend.position = 'none'),
+            plots$us,
+            plots$an + ggplot2::theme(legend.position = 'none'),
+            layout = layout_mat)
+  
+}
+
+#' @importFrom ggplot2 theme
+#' @noRd
+plot_3_no_an <- function(plots) {
+  layout_mat <- matrix(c(1, 2, 2,
+                         3, 3, 3,
+                         3, 3, 3),
+                       nrow = 3,
+                       byrow = TRUE)
+  
+  multiplot(plots$mc + ggplot2::theme(legend.position = 'none'),
+            plots$ak + ggplot2::theme(legend.position = 'none'),
+            plots$us,
+            layout = layout_mat)
+  
+}
+
+#' @importFrom ggplot2 theme
+#' @noRd
+plot_3_no_ak <- function(plots) {
+  layout_mat <- matrix(c(1, 2, 2,
+                         3, 3, 3),
+                       nrow = 2,
+                       byrow = TRUE)
+  
+  multiplot(plots$mc + ggplot2::theme(legend.position = 'none'),
+            plots$us,
+            plots$an + ggplot2::theme(legend.position = 'none'),
+            layout = layout_mat)
+}
+
+#' @importFrom ggplot2 theme
+#' @noRd
+plot_3_no_us <- function(plots) {
+  layout_mat <- matrix(c(1, 2, 2,
+                         3, 3, 3),
+                       nrow = 2,
+                       byrow = TRUE)
+  
+  multiplot(plots$mc + ggplot2::theme(legend.position = 'none'),
+            plots$ak,
+            plots$an + ggplot2::theme(legend.position = 'none'),
+            layout = layout_mat)
+}
+
+#' @importFrom ggplot2 theme
+#' @noRd
+plot_2_us_ak <- function(plots) {
+  layout_mat <- matrix(c(1, 2, 2,
+                         1, 2, 2),
+                       nrow = 2,
+                       byrow = TRUE)
+  
+  multiplot(plots$ak + ggplot2::theme(legend.position = 'none'),
+            plots$us,
+            layout = layout_mat)
+  
+}
+
+#' @importFrom ggplot2 theme
+#' @noRd
+plot_2_us_mc <- function(plots) {
+  
+  layout_mat <- matrix(c(1, 2, 2,
+                         1, 2, 2),
+                       nrow = 2,
+                       byrow = TRUE)
+  
+  multiplot(plots$mc + ggplot2::theme(legend.position = 'none'),
+            plots$us,
+            layout = layout_mat)
+}
+
+#' @importFrom ggplot2 theme
+#' @noRd
+plot_2_us_an <- function(plots) {
+  
+  layout_mat <- matrix(c(1, 1, 1,
+                         2, 2, 2),
+                       nrow = 2,
+                       byrow = TRUE)
+  
+  multiplot(plots$us,
+            plots$an + ggplot2::theme(legend.position = 'none'),
+            layout = layout_mat)
+}
+
+#' @importFrom ggplot2 theme
+#' @noRd
+plot_2_ak_mc <- function(plots) {
+  
+  layout_mat <- matrix(c(1, 2, 2,
+                         1, 2, 2),
+                       nrow = 2,
+                       byrow = TRUE)
+  
+  multiplot(plots$mc + ggplot2::theme(legend.position = 'none'),
+            plots$ak,
+            layout = layout_mat)
+}
+
+#' @importFrom ggplot2 theme
+#' @noRd
+plot_2_ak_an <- function(plots) {
+  
+  layout_mat <- matrix(c(1, 1, 1,
+                         2, 2, 2),
+                       nrow = 2,
+                       byrow = TRUE)
+  
+  multiplot(plots$ak,
+            plots$an + ggplot2::theme(legend.position = 'none'),
+            layout = layout_mat)
+}
+
+#' @importFrom ggplot2 theme
+#' @noRd
+plot_2_mc_an <- function(plots) {
+  
+  layout_mat <- matrix(c(1, 2, 2),
+                       nrow = 1,
+                       byrow = TRUE)
+  
+  multiplot(plots$mc + ggplot2::theme(legend.position = 'none'),
+            plots$an,
+            layout = layout_mat)
+}
+
+
+
