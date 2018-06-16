@@ -8,10 +8,6 @@
 \alias{reexports}
 \alias{mutate}
 \title{Objects exported from other packages}
-\description{
-These functions are imported from other packages. Follow links
-to see their documentation.
-}
 \keyword{internal}
 \description{
 These objects are imported from other packages. Follow the links

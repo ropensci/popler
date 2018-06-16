@@ -40,19 +40,13 @@ test_that('Output file types are correct', {
 })
 
 test_that('report_metadata can use all types of input', {
-  skip('passes interactively and in devtools::test, but not in devtools::check()')
-  
-  browse_rmd_file <- tempfile(fileext = '.Rmd')
-  browse_html_file <- tempfile(fileext = '.html')
-  
-  g_d_rmd_file <- tempfile(fileext = '.Rmd')
-  g_d_html_file <- tempfile(fileext = '.html')
-  
+
+  skip_on_cran()
   
   # browse
   pplr_report_metadata(pplr_browse(lterid == 'MCR'), 
-                       md_file = browse_rmd_file,
-                       html_file = browse_html_file)
+                       md_file = tempfile(fileext = '.Rmd'),
+                       html_file = tempfile(fileext = '.html'))
   
   expect_equal(sum(grepl('*[.]Rmd|*[.]html', fs::dir_ls(tempdir()))), 2)
   
@@ -66,8 +60,8 @@ test_that('report_metadata can use all types of input', {
   # Get_data
   
   pplr_report_metadata(pplr_get_data(lterid == 'MCR'),
-                       md_file = g_d_rmd_file,
-                       html_file = g_d_html_file)
+                       md_file = tempfile(fileext = '.Rmd'),
+                       html_file = tempfile(fileext = '.html'))
   
   expect_equal(sum(grepl('*[.]Rmd|*[.]html', fs::dir_ls(tempdir()))), 2)
   
