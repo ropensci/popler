@@ -34,7 +34,8 @@ Suggests:
     covr,
     fs,
     maps,
-    mapproj
+    mapproj,
+    magrittr
 LazyData: true
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr
