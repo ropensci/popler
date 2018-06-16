@@ -123,7 +123,7 @@ pplr_get_data <- function(..., add_vars = NULL, subtract_vars = NULL,
                 unique_authors  = unique(output_data[ ,c("proj_metadata_key",
                                                          "authors",
                                                          "authors_contact")]),
-                class = c("popler", "get_data", class(output_data)) 
+                class = c("get_data", class(output_data)) 
   )
   
   # Informational message

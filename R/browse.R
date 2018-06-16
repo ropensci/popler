@@ -115,7 +115,7 @@ pplr_browse <- function(..., full_tbl = FALSE,
   }
   # attribute class "popler"
   out <- structure(out_form, 
-                   class = c("popler", "browse", class(out_form)),
+                   class = c("browse", class(out_form)),
                    search_expr = c(logic_expr, keyword_expr)[[1]])
   
   if(report == TRUE){ 
