@@ -5,7 +5,6 @@ library(fs)
 library(ggplot2)
 
 
-
 test_that('Output file types are correct', {
   skip_on_cran()
   

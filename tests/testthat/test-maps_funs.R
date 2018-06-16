@@ -51,22 +51,22 @@ test_that('produce proper output', {
             'ggplot')
   
   expect_is(pplr_maps(pplr_browse(lterid == 'SEV'),
-                      return_maps = TRUE),
+                      return_plot = TRUE),
             'list')
   
   expect_equal(length(pplr_maps(pplr_browse(lterid == 'SEV'),
-                                return_maps = TRUE)),
+                                return_plot = TRUE)),
                1)
   expect_equal(length(pplr_maps(pplr_browse(lterid == 'SEV' | 
                                             lterid == 'MCR'),
-                                return_maps = TRUE)),
+                                return_plot = TRUE)),
                2)
   expect_equal(length(pplr_maps(pplr_browse(lterid == 'SEV' | 
                                             lterid == 'MCR' |
                                             lterid == 'PAL'),
-                                return_maps = TRUE)),
+                                return_plot = TRUE)),
                3)
   expect_equal(length(pplr_maps(pplr_browse(), 
-                                return_maps = TRUE)),
+                                return_plot = TRUE)),
                4)
 })
