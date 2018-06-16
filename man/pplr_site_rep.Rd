@@ -4,15 +4,12 @@
 \alias{pplr_site_rep}
 \title{Spatial-temporal replication of data sets}
 \usage{
-pplr_site_rep(input, rep_level = 1, return_plot = FALSE)
+pplr_site_rep(input, return_plot = FALSE)
 }
 \arguments{
 \item{input}{The output from \code{pplr_get_data()}. This will not work
 with output from \code{pplr_browse} as the raw data is required to calculate
 the amount of replication.}
-
-\item{rep_level}{An integer corresponding to the desired spatial replication
-level. Values of 1-4 are possible, with 1 being the default.}
 
 \item{return_plot}{A logical indicating whether to return a copy of the 
 \code{input} data or the \code{ggplot} object created by the function. Use
@@ -24,13 +21,8 @@ useful for piping). Default is \code{FALSE}.}
 The \code{input} object (invisibly) or a \code{ggplot2} object.
 }
 \description{
-Create figures for temporal replication of a given data set at a given
-spatial grain.
-}
-\details{
-Higher values of \code{rep_level} indicate larger spatial grains. 
-Be sure to check the values of \code{spatial_replication_level_X_label} in 
-the \code{pplr_get_data()} object to ensure that the results make sense.
+Create figures for temporal replication of sites in a given 
+data set.
 }
 \examples{
 \dontrun{
@@ -41,7 +33,7 @@ library(dplyr)
 # create an unmodified figure
 BNZ <- pplr_get_data(lterid == 'BNZ')
 
-pplr_site_rep(BNZ, rep_level = 3)
+pplr_site_rep(BNZ)
 
 # Return the figure instead of the data for subsequent modification
 Antarctica <- pplr_get_data(lterid == 'PAL')
