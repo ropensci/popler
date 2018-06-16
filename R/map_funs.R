@@ -55,18 +55,35 @@ prep_map_data <- function(input) {
 #' 
 #' @param input An object created by either \code{pplr_browse()} or
 #' \code{pplr_get_data()}
-#' @param return_maps A logical indicating whether to return the \code{ggplot}
-#' objects or an invisible copy of the input data. Use \code{FALSE} to retain
-#' the ability to use this in a pipe. Use \code{TRUE} if you want to modify
-#' the \code{ggplot} objects interactively.
+#' @param return_plot A logical indicating whether to return a copy of the 
+#' \code{input} data or the \code{ggplot} object created by the function. Use
+#' \code{TRUE} to return the \code{ggplot} object for subsequent modification.
+#' Use \code{FALSE} to return an invisible copy of the \code{input} object (
+#' useful for piping). Default is \code{FALSE}.
 #' 
-#' @return The \code{input} object (invisibly).
+#' @return The \code{input} object (invisibly) or a \code{ggplot2} object.
+#' 
+#' @examples 
+#' \dontrun{
+#' 
+#' library(dplyr)
+#' # Return the invisible object and keep piping
+#' 
+#' browse_object <- pplr_browse(proj_metadata_key == 11)
+#' 
+#' browse_object %>%
+#'   pplr_maps() %>% 
+#'   pplr_get_data()
+#'   
+#'   
+#' 
+#' }
 #' 
 #' @importFrom rlang quo
 #' 
 #' @export
 # wraps the others to print the plots UNFINISHED----------------
-pplr_maps <- function(input, return_maps = FALSE) { 
+pplr_maps <- function(input, return_plot = FALSE) { 
   plot_pars <- prep_map_data(input)
   
   counts <- plot_pars$data
@@ -158,7 +175,7 @@ pplr_maps <- function(input, return_maps = FALSE) {
     }
   }
   
-  if(return_maps) {
+  if(return_plot) {
     
     return(plots)
     
@@ -182,7 +199,7 @@ pplr_maps <- function(input, return_maps = FALSE) {
 #'
 #' @importFrom ggplot2 ggplot theme_bw aes ggtitle scale_x_continuous
 #' scale_y_continuous geom_polygon geom_point theme map_data
-#' xlab ylab coord_map scale_size_area element_blank
+#' xlab ylab coord_map scale_size_area element_blank margin
 #' @importFrom rlang quo !!
 #' 
 #' @noRd
@@ -206,7 +223,11 @@ ak_map <- function(count_data,
     ggplot2::theme_bw() + 
     ggplot2::ggtitle("Alaska") +
     ggplot2::theme(axis.title.x = ggplot2::element_blank(),
-                   legend.position = "right") +
+                   legend.position = "right",
+                   plot.margin = ggplot2::margin(t = 5,
+                                                 l = 2.5,
+                                                 r = 2.5,
+                                                 b = 0)) +
     ggplot2::geom_polygon(data = ak,
                           ggplot2::aes(x = !! x, 
                                         y = !! y, 
@@ -222,6 +243,7 @@ ak_map <- function(count_data,
     ggplot2::scale_y_continuous(limits = c(50, 72),
                                 expand = c(0, 0)) +
     ggplot2::ylab("") +
+    ggplot2::xlab("") + 
     ggplot2::scale_size_area(breaks = size_breaks, 
                              guide = 
                                ggplot2::guide_legend(title = 
@@ -246,7 +268,7 @@ ak_map <- function(count_data,
 #'
 #' @importFrom ggplot2 ggplot theme_bw aes ggtitle scale_x_continuous
 #' scale_y_continuous geom_polygon geom_point theme map_data
-#' xlab ylab coord_map scale_size_area element_blank
+#' xlab ylab coord_map scale_size_area element_blank margin
 #' @importFrom rlang quo !!
 #' 
 #' @noRd
@@ -269,7 +291,11 @@ us_map <- function(count_data,
     ggplot2::ggtitle("United States and Puerto Rico") +
     ggplot2::theme(axis.title.x = ggplot2::element_blank(),
                    axis.title.y = ggplot2::element_blank(),
-                   legend.position = "right") +
+                   legend.position = "right",
+                   plot.margin = ggplot2::margin(t = 5,
+                                                 l = 2.5,
+                                                 r = 2.5,
+                                                 b = 0)) +
     ggplot2::geom_polygon(data = us,
                           ggplot2::aes(x = !! x, 
                                        y = !! y, 
@@ -280,6 +306,8 @@ us_map <- function(count_data,
                                      y = !! y, 
                                      size = !! count_group),
                         alpha = 0.5) + 
+    ggplot2::xlab("") + 
+    ggplot2::ylab("") + 
     ggplot2::scale_x_continuous(limits = c(-126, -62.5), expand = c(0, 0)) +
     ggplot2::scale_y_continuous(limits = c(15, 50), expand = c(0, 0)) +
     ggplot2::scale_size_area(breaks = size_breaks, 
@@ -305,7 +333,7 @@ us_map <- function(count_data,
 #' @return A class \code{ggplot} object
 #' @importFrom ggplot2 ggplot theme_bw aes ggtitle scale_x_continuous
 #' scale_y_continuous geom_polygon geom_point theme map_data
-#' xlab ylab coord_map scale_size_area element_blank
+#' xlab ylab coord_map scale_size_area element_blank margin
 #' @importFrom rlang  !!
 #' 
 #' @noRd
@@ -331,7 +359,11 @@ an_map <- function(count_data,
     ggplot2::theme_bw() + 
     ggplot2::ggtitle("Antarctica") +
     ggplot2::theme(axis.title.y = ggplot2::element_blank(),
-                   legend.position = "bottom") +
+                   legend.position = "bottom",
+                   plot.margin = ggplot2::margin(t = 5,
+                                                 l = 2.5,
+                                                 r = 2.5,
+                                                 b = 0)) +
     ggplot2::geom_polygon(data = an,
                           ggplot2::aes(x = !! x, 
                                        y = !! y, 
@@ -345,6 +377,7 @@ an_map <- function(count_data,
     ggplot2::scale_x_continuous(limits = c(-180, 180), expand = c(0, 0)) +
     ggplot2::scale_y_continuous(limits = c(-85, -60), expand = c(0, 0)) +
     ggplot2::xlab("") +
+    ggplot2::ylab("") + 
     ggplot2::scale_size_area(breaks = size_breaks, 
                              guide = 
                                ggplot2::guide_legend(title = 
@@ -368,7 +401,11 @@ mc_map <- function(count_data,
     ggplot2::theme_bw() + 
     ggplot2::ggtitle("French Polynesia") +
     ggplot2::theme(axis.title.y = ggplot2::element_blank(),
-                   legend.position = "right") +
+                   legend.position = "right",
+                   plot.margin = ggplot2::margin(t = 5, 
+                                                 l = 2.5, 
+                                                 r = 2.5, 
+                                                 b = 0)) +
     ggplot2::geom_polygon(data = mcr,
                           ggplot2::aes(x = !! x, 
                                        y = !! y, 
@@ -382,6 +419,7 @@ mc_map <- function(count_data,
     ggplot2::scale_x_continuous(limits = c(-150, -148.5)) +
     ggplot2::scale_y_continuous(limits = c(-18, -17)) +
     ggplot2::xlab("") +
+    ggplot2::ylab("") + 
     ggplot2::scale_size_area(breaks = size_breaks, 
                              guide = 
                                ggplot2::guide_legend(title = 

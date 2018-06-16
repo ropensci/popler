@@ -4,21 +4,39 @@
 \alias{pplr_maps}
 \title{Generate maps of LTER sites}
 \usage{
-pplr_maps(input, return_maps = FALSE)
+pplr_maps(input, return_plot = FALSE)
 }
 \arguments{
 \item{input}{An object created by either \code{pplr_browse()} or
 \code{pplr_get_data()}}
 
-\item{return_maps}{A logical indicating whether to return the \code{ggplot}
-objects or an invisible copy of the input data. Use \code{FALSE} to retain
-the ability to use this in a pipe. Use \code{TRUE} if you want to modify
-the \code{ggplot} objects interactively.}
+\item{return_plot}{A logical indicating whether to return a copy of the 
+\code{input} data or the \code{ggplot} object created by the function. Use
+\code{TRUE} to return the \code{ggplot} object for subsequent modification.
+Use \code{FALSE} to return an invisible copy of the \code{input} object (
+useful for piping). Default is \code{FALSE}.}
 }
 \value{
-The \code{input} object (invisibly).
+The \code{input} object (invisibly) or a \code{ggplot2} object.
 }
 \description{
 Generates maps of LTER sites in a given \code{input} object.
 Sizes of site markers correspond to the number of studies at a given site.
+}
+\examples{
+\dontrun{
+
+library(dplyr)
+# Return the invisible object and keep piping
+
+browse_object <- pplr_browse(proj_metadata_key == 11)
+
+browse_object \%>\%
+  pplr_maps() \%>\% 
+  pplr_get_data()
+  
+  
+
+}
+
 }

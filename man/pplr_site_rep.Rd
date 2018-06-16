@@ -20,6 +20,9 @@ level. Values of 1-4 are possible, with 1 being the default.}
 Use \code{FALSE} to return an invisible copy of the \code{input} object (
 useful for piping). Default is \code{FALSE}.}
 }
+\value{
+The \code{input} object (invisibly) or a \code{ggplot2} object.
+}
 \description{
 Create figures for temporal replication of a given data set at a given
 spatial grain.

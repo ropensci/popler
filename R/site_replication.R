@@ -18,6 +18,7 @@
 #' Be sure to check the values of \code{spatial_replication_level_X_label} in 
 #' the \code{pplr_get_data()} object to ensure that the results make sense.
 #' 
+#' @return The \code{input} object (invisibly) or a \code{ggplot2} object.
 #' 
 #' @examples 
 #' \dontrun{
