@@ -2,27 +2,73 @@
 % Please edit documentation in R/site_replication.R
 \name{pplr_site_rep}
 \alias{pplr_site_rep}
+\alias{pplr_site_rep_plot}
 \title{Spatial-temporal replication of data sets}
 \usage{
-pplr_site_rep(input, return_plot = FALSE)
+pplr_site_rep(input, freq = 1, duration = 10, rep_level = 1,
+  return_logical = TRUE)
+
+pplr_site_rep_plot(input, return_plot = FALSE)
 }
 \arguments{
-\item{input}{The output from \code{pplr_get_data()}. This will not work
+\item{input}{An object of class \code{pplr_get_data}. This will not work
 with output from \code{pplr_browse} as the raw data is required to calculate
 the amount of replication.}
+
+\item{freq}{A number corresponding to the desired annual frequency of 
+temporal replication. Studies that are 
+repblicated more frequently will be included in the counts and those that 
+replicated less frequently will be excluded. If \code{return_logical = TRUE},
+rows included in sites that are replicated at the desired frequency will have
+a \code{TRUE} value, and rows that are not will have \code{FALSE} value. Values
+greater than 1 correspond to sampling multiple times per year. For example, 
+\code{freq = 2} indicates a desired sampling frequency of every 6 months. 
+Values less than 1 indicate sampling intervals of greater than 1 year. For
+example, \code{freq = 0.5} indicates a desired sampling frequency of once
+every 2 years.}
+
+\item{duration}{An integer corresponding to the desired duration of temporal
+replication. Rows corresponding to sites with more replication will be 
+included, while those with less will be excluded.}
+
+\item{rep_level}{An integer corresponding to the level of spatial replication
+desired. Values between 1 and 4 are possible (though higher levels may not be
+present for some datasets). Higher values correspond to higher levels of 
+spatial nestedness. The default value of \code{rep_level = 1} corresponds to 
+entire sites.}
+
+\item{return_logical}{Indicates whether to return a summary table of class
+\code{tbl} or a logical vector. The default is \code{TRUE}.}
 
 \item{return_plot}{A logical indicating whether to return a copy of the 
 \code{input} data or the \code{ggplot} object created by the function. Use
 \code{TRUE} to return the \code{ggplot} object for subsequent modification.
-Use \code{FALSE} to return an invisible copy of the \code{input} object (
-useful for piping). Default is \code{FALSE}.}
+Use \code{FALSE} to return an invisible copy of the \code{input} object 
+(useful for piping). Default is \code{FALSE}.}
 }
 \value{
-The \code{input} object (invisibly) or a \code{ggplot2} object.
+\code{pplr_site_rep_plot}: \code{input} object (invisibly) or a
+\code{ggplot2} object. Use \code{return_plot} to control.
+
+\code{pplr_site_rep}: A \code{tbl} or a logical vector of length 
+\code{dim(input)[1]}. Use \code{return_logical} to control.
 }
 \description{
-Create figures for temporal replication of sites in a given 
-data set.
+These functions are provided to assist examining the amount of 
+temporal replication for each spatial replicate in a given dataset. Use 
+\code{pplr_site_rep} to produce logical vectors for subsetting or summary 
+tables for further exploration. Use \code{pplr_site_rep_plot} to produce
+visualizations of entire datasets or subsetted outputs from 
+\code{pplr_site_rep} (see examples)
+}
+\details{
+\code{pplr_site_rep_plot} produces a figure detailing the amount
+of temporal replication at a given site (\code{spatial_replication_level_1}).
+
+\code{pplr_site_rep} works with any level of spatial replication and produces
+either a summary table of temporal replication 
+or a logical vector that can be used for subsetting a data set based on the
+desired frequency and length of time.
 }
 \examples{
 \dontrun{
@@ -30,21 +76,41 @@ data set.
 library(ggplot2)
 library(dplyr)
 
+# produce logical vector and subset using it. This can also be piped into a 
+# the plotting function for visiualization
+
+good_studies <- pplr_get_data(lterid == 'SEV') \%>\%
+                   .[pplr_site_rep(input = .,
+                                   duration = 12, 
+                                   rep_level = 3), ] \%>\%
+                   pplr_site_rep_plot()
+                                       
+
+# Or, make a neat summary table and decide where to go from there
+SEV <- pplr_get_data(lterid == 'SEV')
+
+rep_table <- pplr_site_rep(input = SEV,
+                           freq = 0.5,
+                           duration = 12,
+                           return_logical = FALSE)
+ 
+# pplr_site_rep_plot ---------------
+                                                     
 # create an unmodified figure
 BNZ <- pplr_get_data(lterid == 'BNZ')
 
-pplr_site_rep(BNZ)
+pplr_site_rep_plot(BNZ)
 
 # Return the figure instead of the data for subsequent modification
 Antarctica <- pplr_get_data(lterid == 'PAL')
 
-pplr_site_rep(Antarctica,
+pplr_site_rep_plot(Antarctica,
               return_plot = TRUE) + 
    ggtitle("Penguins Rock!")
    
 # Use within pipes. Cannot return and modify the figure this way.
 pplr_get_data(lterid == 'SEV') \%>\% 
-  pplr_site_rep(return_plot = FALSE) \%>\%
+  pplr_site_rep_plot(return_plot = FALSE) \%>\%
   pplr_report_metadata()
 }
 

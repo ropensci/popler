@@ -24,7 +24,10 @@ Imports:
     stats (>= 3.3.0),
     stringr (>= 1.2.0),
     tidyr (>= 0.6.1),  
-    utils (>= 3.3.0)
+    utils (>= 3.3.0),
+    magrittr,
+    lubridate,
+    purrr
 Remotes: tidyverse/ggplot2
 License: MIT + file LICENSE
 Encoding: UTF-8
@@ -34,8 +37,7 @@ Suggests:
     covr,
     fs,
     maps,
-    mapproj,
-    magrittr
+    mapproj
 LazyData: true
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr
