@@ -201,6 +201,12 @@ pplr_site_rep <- function(input,
     summary <- dplyr::filter(summary, .data$n_dates >= freq)
   }
   
+  if(dim(summary)[1] < 1) {
+    stop('No sites meet the frequency requirements for this combination of\n',
+         '"freq" and "rep_level". Please use different settings.')
+  }
+  
+  
   # next, compute which years are sampled consecutively. rle computes the number
   # times in a row that a value appears. Thus, if a difference of 1 appears more
   # than the requested duration, then that is what we want
@@ -208,6 +214,11 @@ pplr_site_rep <- function(input,
   
   duration_idx <- which(consecutive_years$lengths >= duration &
                           consecutive_years$values == 1)
+  
+  if(length(duration_idx) < 1) {
+    stop('Chosen "duration" is too long for this data set.\n',
+         'Please choose a shorter "duration".')
+  }
   
   # rle doesn't really return what we want though. The actual group_col index
   # we need are the row numbers for each site replicate. Examine the output of 
@@ -274,7 +285,7 @@ pplr_site_rep <- function(input,
 # helper to work in bind_cols
 paste2 <- function(data, cols, name) {
   name <- rlang::quo_name(name)
-  data <- data[ ,cols]
+  data <- data[ ,cols, drop = FALSE]
   listdf <- list()
   
   for(i in seq_len(dim(data)[2])) {
