@@ -28,7 +28,7 @@
 #' replication. Rows corresponding to sites with more replication will be 
 #' included, while those with less will be excluded.
 #' @param rep_level An integer corresponding to the level of spatial replication
-#' desired. Values between 1 and 4 are possible (though higher levels may not be
+#' desired. Values between 1 and 5 are possible (though higher levels may not be
 #' present for some datasets). Higher values correspond to higher levels of 
 #' spatial nestedness. The default value of \code{rep_level = 1} corresponds to 
 #' entire sites.
@@ -113,8 +113,8 @@ pplr_site_rep <- function(input,
     stop('"input" must be an object of class "get_data".')
   }
   
-  if(rep_level < 1 & rep_level > 4) {
-    stop('"rep_level" must be an integer between 1 and 4.')
+  if(rep_level < 1 & rep_level > 5) {
+    stop('"rep_level" must be an integer between 1 and 5.')
   }
 
   # create symbols for rep_levels

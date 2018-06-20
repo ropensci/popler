@@ -73,7 +73,7 @@ test_that('fails correctly', {
   skip_on_cran()
   data <- pplr_get_data(lterid == 'PAL')
   
-  expect_error(pplr_site_rep(data, rep_level = 5))
+  expect_error(pplr_site_rep(data, rep_level = 6))
   expect_error(pplr_site_rep(data, duration = 55))
   expect_error(pplr_site_rep(data, freq = 7))
   

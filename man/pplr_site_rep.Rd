@@ -32,7 +32,7 @@ replication. Rows corresponding to sites with more replication will be
 included, while those with less will be excluded.}
 
 \item{rep_level}{An integer corresponding to the level of spatial replication
-desired. Values between 1 and 4 are possible (though higher levels may not be
+desired. Values between 1 and 5 are possible (though higher levels may not be
 present for some datasets). Higher values correspond to higher levels of 
 spatial nestedness. The default value of \code{rep_level = 1} corresponds to 
 entire sites.}
