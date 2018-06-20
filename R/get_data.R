@@ -240,7 +240,7 @@ concatenate_queries <- function(...){
       tmp <- eval(Q[[i]]$expr)
       
       # if this variable isn't a popler object, throw an error
-      if(class(tmp)[1] != "popler"){
+      if(class(tmp)[1] != "browse"){
         stop(paste0("Error using the following argument:\n\n      ", 
                     Q[[i]]$expr,
                     "\n\n  Only logical expressions or outputs from the ",
