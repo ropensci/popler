@@ -21,7 +21,7 @@ The popler R package is an interface that allows browsing and querying populatio
 The popler R package is currently in the development phase, and it should be downloaded directly from its [GitHub page](https://github.com/AldoCompagnoni/popler). Before doing this, make sure to install the [Devtools R package](https://cran.r-project.org/web/packages/devtools/README.html). Once devtools is installed on your machine, install and load popler:
 
 ```{r,warnings = FALSE, message = FALSE}
-devtools::install_github("AldoCompagnoni/popler", build_vignettes = TRUE)
+# devtools::install_github("AldoCompagnoni/popler", build_vignettes = TRUE)
 library(popler)
 ```
 
