@@ -2,18 +2,22 @@
 % Please edit documentation in R/util.R
 \name{rebrowse}
 \alias{rebrowse}
-\title{Take a \code{browse} object and update it with \code{full_tbl = TRUE} & 
-\code{trim = FALSE}.}
+\alias{rebrowse.browse}
+\alias{rebrowse.get_data}
+\title{Take a \code{browse} object and update it with \code{full_tbl = TRUE}.}
 \usage{
-rebrowse(popler, ...)
+rebrowse(input, ...)
+
+\method{rebrowse}{browse}(input, ...)
+
+\method{rebrowse}{get_data}(input, ...)
 }
 \arguments{
-\item{popler}{An object of class \code{popler} and either \code{browse} or
+\item{input}{An object of class either \code{browse} or
 \code{get_data}.}
 
 \item{...}{unused}
 }
 \description{
-Take a \code{browse} object and update it with \code{full_tbl = TRUE} & 
-\code{trim = FALSE}.
+Take a \code{browse} object and update it with \code{full_tbl = TRUE}.
 }

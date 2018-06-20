@@ -4,8 +4,8 @@
 \alias{pplr_browse}
 \title{Browse the metadata of projects contained in the popler database}
 \usage{
-pplr_browse(..., full_tbl = FALSE, vars = NULL, trim = TRUE,
-  view = FALSE, keyword = NULL, report = FALSE)
+pplr_browse(..., full_tbl = FALSE, vars = NULL, view = FALSE,
+  keyword = NULL, report = FALSE)
 }
 \arguments{
 \item{...}{A logical expression to subset popler's main table}
@@ -15,9 +15,6 @@ columns, or the full main table?}
 
 \item{vars}{A vector of characters: which variables 
 of popler's main table should be selected?}
-
-\item{trim}{If TRUE, strings are truncated at the 50th character.
-Default is TRUE.}
 
 \item{view}{If TRUE, opens up a spreadsheet-style data viewer.}
 

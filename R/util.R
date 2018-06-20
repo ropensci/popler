@@ -86,41 +86,42 @@ call_update = function(query){
   return(eval(parse(text = TextToParse)))
 }
 
-#' Take a \code{browse} object and update it with \code{full_tbl = TRUE} & 
-#' \code{trim = FALSE}.
-#' @param popler An object of class \code{popler} and either \code{browse} or
+#' Take a \code{browse} object and update it with \code{full_tbl = TRUE}.
+#' @param input An object of class either \code{browse} or
 #' \code{get_data}.
 #' @param ... unused
 #' 
 #' @export
 # given a browse() object or a get_data() object, returns an identical browse
-# object with full_tbl=TRUE and trim=FALSE
-rebrowse <- function(popler, ...){
+# object with full_tbl=TRUE
+rebrowse <- function(input, ...){
   UseMethod("rebrowse")
 }
 
-#' Rebrowse a \code{browse} object
+#' @name rebrowse.browse
+#' @rdname rebrowse
 #' 
 #' @inheritParams rebrowse
 #' 
 #' @export
-rebrowse.browse <- function(popler, ...) {
-  pmk <- paste0(popler$proj_metadata_key, collapse=",")
+rebrowse.browse <- function(input, ...) {
+  pmk <- paste0(input$proj_metadata_key, collapse=",")
   return(eval(parse(text = paste0("pplr_browse(proj_metadata_key %in% c(",
                                   pmk,
-                                  "), full_tbl=TRUE, trim=FALSE)"))))
+                                  "), full_tbl=TRUE)"))))
 }
 
-#' Rebrowse a \code{get_data} object
+#' @name rebrowse.get_data
+#' @rdname rebrowse
 #' 
 #' @inheritParams rebrowse
 #' 
 #' @export
-rebrowse.get_data <- function(popler, ...) {
-  pmk <- paste0(attributes(popler)$unique_projects, collapse=",")
+rebrowse.get_data <- function(input, ...) {
+  pmk <- paste0(attributes(input)$unique_projects, collapse=",")
   return(eval(parse(text = paste0("pplr_browse(proj_metadata_key %in% c(", 
                                   pmk,
-                                  "), full_tbl=TRUE, trim=FALSE)"))))
+                                  "), full_tbl=TRUE)"))))
 }
 
 

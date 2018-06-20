@@ -8,8 +8,6 @@
 #' columns, or the full main table?
 #' @param vars A vector of characters: which variables 
 #' of popler's main table should be selected?
-#' @param trim If TRUE, strings are truncated at the 50th character.
-#'  Default is TRUE.
 #' @param view If TRUE, opens up a spreadsheet-style data viewer.
 #' @param keyword A string that selects 
 #' @param report If TRUE, function produces a markdown 
@@ -49,7 +47,7 @@
 
 # The browse popler function
 pplr_browse <- function(..., full_tbl = FALSE, 
-                   vars = NULL, trim = TRUE, 
+                   vars = NULL, 
                    view = FALSE, keyword = NULL,
                    report = FALSE){
   
@@ -104,10 +102,8 @@ pplr_browse <- function(..., full_tbl = FALSE,
   
   
   # collapse taxonomic information for each project into a list 
-  nested_data  <- taxa_nest(out_vars, full_tbl)
+  out_form  <- taxa_nest(out_vars, full_tbl)
   
-  # trim output
-  out_form <- trim_display(nested_data, trim)
   
   # write output
   if(view == TRUE) {
@@ -280,24 +276,4 @@ taxa_nest <- function(x, full_tbl){
   
   return(out)
   
-}
-
-
-#'@importFrom dplyr as.tbl
-#'@noRd
-# trim the display of character values. Mostly for project "titles"
-trim_display <- function(x, trim){
-  
-  if(trim == TRUE){
-    tmp <- as.data.frame(x)
-    for(i in 1:ncol(tmp)) {
-      if(is.character(tmp[ ,i])){ 
-        tmp[ ,i] <- strtrim(tmp[ ,i], 25) 
-      }
-    }
-    tmp <- dplyr::as.tbl(tmp)
-    return(tmp)
-  } else {
-    return(x)
-  }
 }

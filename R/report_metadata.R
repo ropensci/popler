@@ -65,7 +65,7 @@ output:
 
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
 # required calculations
-A <- pplr_browse(BROWSE_QUERY, full_tbl=TRUE, trim=FALSE)
+A <- pplr_browse(BROWSE_QUERY, full_tbl=TRUE)
 NN <- nrow(A)
 n_taxa <- rep(NA,NN)
 for(i in 1:NN){
@@ -238,7 +238,7 @@ if(length(st_t)==0){st_t <- "none recorded"}
 pmk <- c(`r A$proj_metadata_key`)
 
 # make a browse object and view the metadata
-metadata <- pplr_browse(proj_metadata_key %in% pmk, full_tbl=TRUE, trim=FALSE)
+metadata <- pplr_browse(proj_metadata_key %in% pmk, full_tbl=TRUE)
 
 # download the data
 data <- pplr_get_data(metadata)
