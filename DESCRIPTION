@@ -18,26 +18,26 @@ Imports:
     ggplot2 (>= 2.2.1),
     grid (>= 3.3.0),
     lazyeval (>= 0.2.0),
-    rlang,
+    rlang (>= 0.2.1),
     rmarkdown (>= 1.2),
     RPostgreSQL (>= 0.4.1),
     stats (>= 3.3.0),
     stringr (>= 1.2.0),
     tidyr (>= 0.6.1),  
     utils (>= 3.3.0),
-    magrittr,
-    lubridate,
-    purrr
+    magrittr (>= 1.5.0),
+    lubridate (>= 1.7.4),
+    purrr (>= 0.2.5)
 Remotes: tidyverse/ggplot2
 License: MIT + file LICENSE
 Encoding: UTF-8
 Suggests: 
     knitr (>= 1.15.1),
-    testthat,
-    covr,
-    fs,
-    maps,
-    mapproj
+    testthat(>= 2.0.0),
+    covr (>= 3.1.0),
+    fs (>= 1.2.3),
+    maps (>= 3.3.0),
+    mapproj (>= 1.2.6)
 LazyData: true
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr
