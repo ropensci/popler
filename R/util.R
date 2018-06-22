@@ -138,18 +138,22 @@ factor_to_character <- function(x, full_tbl = FALSE){
 
 # generate main data table summary ---------------------------------------------
 
-#' Automatically retrieve most up to date version of \code{popler}
+#' @title Update \code{popler}'s summary table
+#' 
+#' @description Automatically retrieve most up to date version of \code{popler}
 #' summary table
 #' 
 #' @return This function is called for its side effect and does not return 
 #' anything
 #' 
-#' @note This object is often called internally by popler functions,
-#'  but can also be accessed by calling \code{pplr_summary_table_import()}. 
+#' @note The \code{summary_table} is often called internally by popler functions,
+#'  but can also be accessed directly by calling \code{pplr_summary_table_import()}. 
 #' 
 #' @seealso \code{\link{pplr_summary_table_check}}
 #' 
 #' @export
+#' 
+
 pplr_summary_table_update <- function(){
   
   message("Please wait while popler updates its summary table... this may take several minutes.")
@@ -226,14 +230,15 @@ pplr_summary_table_update <- function(){
   message("Finished.")
 }
 
-#' Checks if the summary table needs to be updated
+#' @title Check last time summary_table was updated
 #' 
-#' Checks the main table's age. If it's more than 6 weeks old, 
-#' returns a message suggesting an update
+#' @description Checks the main table's age. If it's more than 6 weeks old, 
+#' returns a message suggesting an update.
 #' 
 #' @seealso \code{\link{pplr_summary_table_update}}
 #' 
 #' @export
+
 pplr_summary_table_check = function(){
   
   wks_passed <- floor(as.numeric(difftime(Sys.time(),
@@ -281,14 +286,14 @@ db_open <- function() {
 
 #' @importFrom RPostgreSQL dbDisconnect
 #' @noRd 
-db_close = function(connection){
+db_close <- function(connection){
     # RPostgreSQL::dbDisconnect(connection$con,quiet=T)
   RPostgreSQL::dbDisconnect(connection,quiet=TRUE)
 }
 
 #' @noRd
 # evaluate a string using the local environment, return the evaluation as string
-string_eval_local = function(x){
+string_eval_local <- function(x){
   paste0(deparse(eval(parse(text = paste0("local(",x,")")))),collapse="")
 }
 
