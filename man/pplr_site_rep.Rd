@@ -11,13 +11,13 @@ pplr_site_rep(input, freq = 1, duration = 10, rep_level = 1,
 pplr_site_rep_plot(input, return_plot = FALSE)
 }
 \arguments{
-\item{input}{An object of class \code{pplr_get_data}. This will not work
-with output from \code{pplr_browse} as the raw data is required to calculate
+\item{input}{An object of class \code{get_data}. This will not work
+with output from \code{browse} as the raw data is required to calculate
 the amount of replication.}
 
 \item{freq}{A number corresponding to the desired annual frequency of 
 temporal replication. Studies that are 
-repblicated more frequently will be included in the counts and those that 
+replicated more frequently will be included in the counts and those that 
 replicated less frequently will be excluded. If \code{return_logical = TRUE},
 rows included in sites that are replicated at the desired frequency will have
 a \code{TRUE} value, and rows that are not will have \code{FALSE} value. Values

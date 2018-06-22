@@ -2,8 +2,7 @@
 % Please edit documentation in R/util.R
 \name{pplr_summary_table_update}
 \alias{pplr_summary_table_update}
-\title{Automatically retrieve most up to date version of \code{popler}
-summary table}
+\title{Update \code{popler}'s summary table}
 \usage{
 pplr_summary_table_update()
 }
@@ -16,8 +15,8 @@ Automatically retrieve most up to date version of \code{popler}
 summary table
 }
 \note{
-This object is often called internally by popler functions,
- but can also be accessed by calling \code{pplr_summary_table_import()}.
+The \code{summary_table} is often called internally by popler functions,
+ but can also be accessed directly by calling \code{pplr_summary_table_import()}.
 }
 \seealso{
 \code{\link{pplr_summary_table_check}}

@@ -66,23 +66,18 @@ prep_map_data <- function(input) {
 #' @examples 
 #' \dontrun{
 #' 
-#' library(dplyr)
-#' # Return the invisible object and keep piping
+#' library(dplyr) # make %>% available
 #' 
 #' browse_object <- pplr_browse(proj_metadata_key == 11)
 #' 
 #' browse_object %>%
-#'   pplr_maps() %>% 
-#'   pplr_get_data()
-#'   
-#'   
-#' 
+#'   pplr_maps() 
 #' }
 #' 
 #' @importFrom rlang quo
 #' 
 #' @export
-# wraps the others to print the plots UNFINISHED----------------
+# wraps the others to print the plots 
 pplr_maps <- function(input, return_plot = FALSE) { 
   plot_pars <- prep_map_data(input)
   

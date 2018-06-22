@@ -10,12 +10,12 @@
 #' visualizations of entire datasets or subsetted outputs from 
 #' \code{pplr_site_rep} (see examples)
 #' 
-#' @param input An object of class \code{pplr_get_data}. This will not work
-#' with output from \code{pplr_browse} as the raw data is required to calculate
+#' @param input An object of class \code{get_data}. This will not work
+#' with output from \code{browse} as the raw data is required to calculate
 #' the amount of replication.
 #' @param freq A number corresponding to the desired annual frequency of 
 #' temporal replication. Studies that are 
-#' repblicated more frequently will be included in the counts and those that 
+#' replicated more frequently will be included in the counts and those that 
 #' replicated less frequently will be excluded. If \code{return_logical = TRUE},
 #' rows included in sites that are replicated at the desired frequency will have
 #' a \code{TRUE} value, and rows that are not will have \code{FALSE} value. Values
@@ -184,8 +184,8 @@ pplr_site_rep <- function(input,
     
     year_diffs <- rle(diff(summary$year))
     
-    freq_idx <- which(year_diffs$values <= 1/freq
-                      & year_diffs$values >= 0)
+    freq_idx <- which(year_diffs$values <= 1/freq & 
+                      year_diffs$values >= 0)
     
     sites <- character(length(freq_idx))
     
@@ -212,9 +212,15 @@ pplr_site_rep <- function(input,
   # than the requested duration, then that is what we want
   consecutive_years <- rle(diff(summary$year))
   
-  duration_idx <- which(consecutive_years$lengths >= duration &
+  if(freq >= 1){
+    duration_idx <- which(consecutive_years$lengths >= duration &
                           consecutive_years$values == 1)
-  
+  } else {
+    duration_idx <- which(consecutive_years$lengths >= duration &
+                          consecutive_years$values <= 1/freq & 
+                          consecutive_years$values > 0)
+    
+  }
   if(length(duration_idx) < 1) {
     stop('Chosen "duration" is too long for this data set.\n',
          'Please choose a shorter "duration".')

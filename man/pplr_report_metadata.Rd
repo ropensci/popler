@@ -18,7 +18,7 @@ file (optional)}
 the generated html file (optional)}
 }
 \value{
-An invisible copy of \code{input}
+An invisible copy of \code{input}.
 }
 \description{
 Generates a readable report of the metadata describing data sets contained in

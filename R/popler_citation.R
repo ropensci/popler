@@ -1,11 +1,11 @@
 #' Provide citations for a popler browse or get_data object.
 #'
 #' Returns a bibliography, Bibtex citations, and an acknowledgement template.
-#' @param input a popler object returned from browse() or get_data()
+#' @param input An object  of class \code{browse} or \code{get_data}.
 #' @param bibtex_path Specify the filename and location for 
 #' the generated markdown file (optional)
 #' 
-#' @return A list of references from \code{input}
+#' @return A list of references from \code{input}.
 #' 
 #' @importFrom utils person toBibtex bibentry
 #' @export

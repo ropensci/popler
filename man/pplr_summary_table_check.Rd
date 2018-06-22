@@ -2,13 +2,13 @@
 % Please edit documentation in R/util.R
 \name{pplr_summary_table_check}
 \alias{pplr_summary_table_check}
-\title{Checks if the summary table needs to be updated}
+\title{Check last time summary_table was updated}
 \usage{
 pplr_summary_table_check()
 }
 \description{
 Checks the main table's age. If it's more than 6 weeks old, 
-returns a message suggesting an update
+returns a message suggesting an update.
 }
 \seealso{
 \code{\link{pplr_summary_table_update}}

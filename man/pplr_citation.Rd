@@ -7,13 +7,13 @@
 pplr_citation(input, bibtex_path = NULL)
 }
 \arguments{
-\item{input}{a popler object returned from browse() or get_data()}
+\item{input}{An object  of class \code{browse} or \code{get_data}.}
 
 \item{bibtex_path}{Specify the filename and location for 
 the generated markdown file (optional)}
 }
 \value{
-A list of references from \code{input}
+A list of references from \code{input}.
 }
 \description{
 Returns a bibliography, Bibtex citations, and an acknowledgement template.

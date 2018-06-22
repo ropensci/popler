@@ -120,13 +120,10 @@ dict_list <- function(x, select_columns){
   norm_cols <- select_columns[i_norm]
   
   # get unique values of "normal" variables -------------------------------------------
-  if(length(norm_cols) > 1){
-    out_norm <- lapply(x[ ,norm_cols, drop = FALSE], 
-                       function(y) unique_or_summary(y))
-  } else {
-    out_norm <- lapply(x[ ,norm_cols, drop = FALSE],
-                       function(y) unique_or_summary(y))
-  }
+  
+  out_norm <- lapply(x[ ,norm_cols, drop = FALSE],
+                     function(y) unique_or_summary(y))
+  
   
   # get unique values of "special" variables ------------------------------------------
   out_spc <- list()

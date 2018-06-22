@@ -109,6 +109,22 @@ parasite_data   <- pplr_get_data(proj_metadata_key == 25) # option 3
 
 ```
 
+Even relatively small datasets can take some time to download (especially with slower internet connections). Therefore, `popler` provides two utility functions for efficiently saving downloaded data. They are thin wrappers around `saveRDS` and `readRDS` that allow you to store large data sets in highly compressed formats. `.rds` files also have the advantage of rapid read and write times from R, making them optimal for saving data sets for later usage. Note that you do *not* specify the file type when specifying the path.
+
+```{r eval = FALSE}
+
+# save the large data set for later usage
+pplr_save(poa_data, file = "some/file/path/Poa_Data")
+
+# when you're ready to use it again, pick up where you left off.
+
+poa_data_reloaded <- pplr_load(file = "some/file/path/Poa_Data")
+
+# These will be identical
+stopifnot(identical(poa_data, poa_data_reloaded))
+
+```
+
 ### Carefully vet the methods of downloaded data sets.
 
 We urge the user to carefully read the documentation of each project before using it for research purposes. Data sets downloaded with `popler` share data structure, but each project has its peculiarities. To show the *metadata* of the downloaded data sets, use `pplr_report_metadata` on the data object produced by `pplr_get_data()`. To read the *methods* of each project, click on  the 'metadata link' hyperlink provided in the html page.
@@ -127,8 +143,7 @@ All objects produced by `pplr_get_data()` have the same structure. Most variable
 2. For data sets that contain data on multiple species, data on `genus` and `species` are not always available. In cases when the `genus` and `species` variables are not available, taxonomic identifiers will be contained in the `sppcode` variable. This variable contains codes for species or other higher taxonomic unit. These codes are string of usually a few characters.
 
 Users can explore the level of temporal replication at each nested level of spatial replication using 
-the `pplr_site_rep()` and `pplr_site_rep_plot()` functions. `pplr_site_rep` offfers the user control over level of spatial replication and the frequency and duration of temporal replication to either subset a `pplr_get_data()` object or create a summary table. `pplr_site_rep_plot()` shows the user whether a given site (`spatial_replication_level_1`) was sampled in a given year. For additional examples on how to explore and vet `popler` data, see `vignette('vetting-popler', package = 'popler')`
-
+the `pplr_site_rep()` and `pplr_site_rep_plot()` functions. `pplr_site_rep` offfers the user control over level of spatial replication and the frequency and duration of temporal replication to either subset a `pplr_get_data()` object or create a summary table. `pplr_site_rep_plot()` shows the user whether a given site (`spatial_replication_level_1`) was sampled in a given year. For additional examples on how to explore and vet `popler` data, see `vignette('vetting-popler', package = 'popler')`.
 
 ## Extra covariates
 

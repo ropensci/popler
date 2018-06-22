@@ -42,18 +42,18 @@
 #' @seealso \code{\link[base]{saveRDS}}, \code{\link[base]{readRDS}}
 #' 
 #' @export
-pplr_save <- function(object, file) {
+pplr_save <- function(input, file) {
   
-  if(!inherits(object, 'get_data')){
+  if(!inherits(input, 'get_data')){
     stop('"pplr_save" is only intended for use with objects of "get_data" class')
   }
   
   filepath <- paste0(file, '.rds')
   
   
-  saveRDS(object, file = filepath)
+  saveRDS(input, file = filepath)
   
-  invisible(object)
+  invisible(input)
   
 }
 

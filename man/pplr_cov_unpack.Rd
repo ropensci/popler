@@ -4,18 +4,17 @@
 \alias{pplr_cov_unpack}
 \title{Unpack the covariates contained in downloaded data sets}
 \usage{
-pplr_cov_unpack(x)
+pplr_cov_unpack(input)
 }
 \arguments{
-\item{x}{object produced by the function pplr_get_data(). \emph{NOTE}: temporarily, 
-data can come from 1 study only.}
+\item{input}{An object of class \code{get_data}.}
 }
 \value{
 A data frame whose columns represent the covariates of the data set.
 }
 \description{
 Create a data frame by "extracting" the \code{covariates} column
-contained in an object downloaded with the \code{pplr_get_data} function.
+contained in an object downloaded with \code{pplr_get_data()}.
 }
 \examples{
 \dontrun{
@@ -23,4 +22,5 @@ library(dplyr)
 demo_d <- pplr_get_data(proj_metadata_key == 8)
 as.tbl( pplr_cov_unpack( demo_d ) )
 }
+
 }

@@ -4,14 +4,15 @@
 \alias{pplr_metadata_url}
 \title{Get metadata information from a data object}
 \usage{
-pplr_metadata_url(data_object)
+pplr_metadata_url(input)
 }
 \arguments{
-\item{data_object}{An object produced by the function \code{pplr_get_data()}}
+\item{input}{An object produced by the function \code{pplr_get_data()}}
 }
 \description{
 Load the webpage containing the metadata of the data sets downloaded through 
-get_data(). If you downloaded data from multiple projects, this function opens multiple webpages. 
+get_data(). If you downloaded data from multiple projects, 
+this function opens multiple webpages. 
 This is a wrapper of function browseURL in base.
 }
 \examples{

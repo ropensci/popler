@@ -5,16 +5,16 @@
 \alias{pplr_load}
 \title{Save and load \code{pplr_get_data()} outputs}
 \usage{
-pplr_save(object, file)
+pplr_save(input, file)
 
 pplr_load(file)
 }
 \arguments{
-\item{file}{The name of the file. Do not specify a file type, only the 
-path and the name of the object.}
-
 \item{input}{An object of class \code{get_data} that you wish to save for
 later use.}
+
+\item{file}{The name of the file. Do not specify a file type, only the 
+path and the name of the object.}
 }
 \value{
 For \code{pplr_save}: \code{input} (invisibly).

@@ -1,27 +1,30 @@
-#' Unpack the covariates contained in downloaded data sets
+#' @title Unpack the covariates contained in downloaded data sets
 #'
-#' Create a data frame by "extracting" the \code{covariates} column
-#' contained in an object downloaded with the \code{pplr_get_data} function.
-#' @param x object produced by the function pplr_get_data(). \emph{NOTE}: temporarily, 
-#' data can come from 1 study only. 
+#' @description Create a data frame by "extracting" the \code{covariates} column
+#' contained in an object downloaded with \code{pplr_get_data()}.
+#' 
+#' @param input An object of class \code{get_data}.
+#' 
 #' @return A data frame whose columns represent the covariates of the data set.
 #'
-#' @importFrom stringr str_split str_match
-#' @importFrom dplyr %>%
-#' @export
+#' 
 #' @examples
 #' \dontrun{
 #' library(dplyr)
 #' demo_d <- pplr_get_data(proj_metadata_key == 8)
 #' as.tbl( pplr_cov_unpack( demo_d ) )
 #' }
+#' 
+#' @importFrom stringr str_split str_match
+#' @importFrom dplyr %>%
+#' @export
 
 # function to unpack covariates
-pplr_cov_unpack <- function(x){
+pplr_cov_unpack <- function(input){
   # Extract all characters between the brackets and split the string on each comma (',')
   # followed by a space ('\\s')
   key_value_pair_dictionary_list <- stringr::str_split(
-    trimws(stringr::str_match(x$covariates, "\\{(.*)\\}"))[ ,2], 
+    trimws(stringr::str_match(input$covariates, "\\{(.*)\\}"))[ ,2], 
     ",\\s",
     simplify = TRUE)
   

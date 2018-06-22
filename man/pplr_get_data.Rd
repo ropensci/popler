@@ -8,31 +8,65 @@ pplr_get_data(..., add_vars = NULL, subtract_vars = NULL,
   cov_unpack = FALSE)
 }
 \arguments{
-\item{...}{A list of one or two objects: an object produced by browse,
-a logical expression, or both.}
+\item{...}{An object produced by browse, a logical expression, or both. This
+can only accept one of each at a time currently.}
 
 \item{add_vars}{A string to specify which variables the user wants to 
-add to the default variables used in a query.}
+add to the default variables used in a query. See \code{Details} for list of
+default variables.}
 
 \item{subtract_vars}{A string to specify which, among the default 
-variables, the user wishes to discard in queries to the database}
+variables, the user wishes to discard in queries to the database. See 
+\code{Details} for list of default variables.}
 
 \item{cov_unpack}{Should covariates be unpacked? This argument uses
 function `cov_unpack` to extract the variables contained in the 
 variable `covariates`, and combine the new columns with the default output.}
 }
 \value{
-A data frame of the selected data.
-
-This data fame is of class "popler", "get_data", and "data.frame".
+This data fame is of class \code{get_data}, and \code{data.frame}.
 }
 \description{
 This function downloads LTER studies contained in the popler database.
 The user can download data directly, using a logical expression, or using 
 objects created by `browse`.
 }
-\examples{
+\details{
+. By default, the following variables are included when a user calls
+\code{pplr_get_data()}.
 
+\itemize{
+  \item{\code{authors}}
+  \item{\code{authors_contact}} 
+  \item{\code{year}} 
+  \item{\code{day}} 
+  \item{\code{month}}
+  \item{\code{sppcode}} 
+  \item{\code{genus}}
+  \item{\code{species}}
+  \item{\code{datatype}}
+  \item{\code{spatial_replication_level_1_label}}
+  \item{\code{spatial_replication_level_1}}
+  \item{\code{spatial_replication_level_2_label}}
+  \item{\code{spatial_replication_level_2}}
+  \item{\code{spatial_replication_level_3_label}}
+  \item{\code{spatial_replication_level_3}}
+  \item{\code{spatial_replication_level_4_label}}
+  \item{\code{spatial_replication_level_4}}
+  \item{\code{spatial_replication_level_5_label}}
+  \item{\code{spatial_replication_level_5}}
+  \item{\code{proj_metadata_key}}
+  \item{\code{structure_type_1}}
+  \item{\code{structure_type_2}}
+  \item{\code{structure_type_3}}
+  \item{\code{structure_type_4}}
+  \item{\code{treatment_type_1}}
+  \item{\code{treatment_type_2}}
+  \item{\code{treatment_type_3}}
+  \item{\code{covariates}}
+}
+}
+\examples{
 \dontrun{
 # browse a study, then get the data associated with it
 parasite = pplr_browse(proj_metadata_key == 25)
@@ -45,6 +79,9 @@ gh_data_96_99 = pplr_get_data(parasite, year > 1995 & year < 2000)
 insect_sev = pplr_browse(class == "Insecta" & lterid == "SEV")
 insect_25_yrs96_99 = pplr_get_data(insect_sev, year > 1995 & year < 2000)
 
-insect_21_25 = pplr_get_data((proj_metadata_key == 43 | proj_metadata_key == 25) & year < 1995 )
+insect_21_25 = pplr_get_data((proj_metadata_key == 43 | 
+                              proj_metadata_key == 25) & 
+                              year < 1995 )
 }
+
 }

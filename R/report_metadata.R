@@ -1,6 +1,6 @@
-#' Open a report of the metadata of project(s) as an html page
+#' @title Open a report of the metadata of project(s) as an html page
 #'
-#' Generates a readable report of the metadata describing data sets contained in
+#' @description Generates a readable report of the metadata describing data sets contained in
 #' popler. The report contains citations, the links to the original URL of each 
 #' data set, and example code to obtain the metadata and data of the projects
 #' represented in the html page. 
@@ -12,7 +12,7 @@
 #' @param html_file Specify the filename and location for
 #' the generated html file (optional)
 #' 
-#' @return An invisible copy of \code{input}
+#' @return An invisible copy of \code{input}.
 #' 
 #' @importFrom utils browseURL
 #' @importFrom rmarkdown render

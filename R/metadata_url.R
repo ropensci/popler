@@ -1,9 +1,10 @@
-#' Get metadata information from a data object
+#' @title Get metadata information from a data object
 #'
-#' Load the webpage containing the metadata of the data sets downloaded through 
-#' get_data(). If you downloaded data from multiple projects, this function opens multiple webpages. 
+#' @description Load the webpage containing the metadata of the data sets downloaded through 
+#' get_data(). If you downloaded data from multiple projects, 
+#' this function opens multiple webpages. 
 #' This is a wrapper of function browseURL in base. 
-#' @param data_object An object produced by the function \code{pplr_get_data()}
+#' @param input An object produced by the function \code{pplr_get_data()}
 #' @examples
 #' 
 #' \dontrun{
@@ -15,11 +16,10 @@
 #' @importFrom dplyr select filter
 #' @importFrom rlang .data
 #' @export
-# function definition 
 
-pplr_metadata_url <- function(data_object){
+pplr_metadata_url <- function(input){
   # study id(s)
-  proj_ids  <- attributes(data_object)$unique_projects
+  proj_ids  <- attributes(input)$unique_projects
   # load summary_table
   summary_table <- pplr_summary_table_import()
   # main table
@@ -31,7 +31,7 @@ pplr_metadata_url <- function(data_object){
   # test whether object is produced by `browse` or `get_data` ----
   if(is.null(proj_ids)){
     
-    ids <- unique(data_object$proj_metadata_key)
+    ids <- unique(input$proj_metadata_key)
     
   } else {
     ids <- proj_ids
