@@ -234,7 +234,7 @@ class(penguins_98_true)
 
 ------
 
-`popler` contains a number of vignettes that contain additional information on
+`popler` contains two vignettes that contain additional information on
 its various uses. However, if they do not cover your particular use case,
 you still have questions, or you discover a bug, please don't hesitate to create an [issue](https://github.com/AldoCompagnoni/popler/issues).
 
