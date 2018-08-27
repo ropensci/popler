@@ -3,15 +3,15 @@
 #' 
 #' @title  Spatial-temporal replication of data sets 
 #' 
-#' @description These functions are provided to assist examining the amount of 
-#' temporal replication for each spatial replicate in a given dataset. Use 
-#' \code{pplr_site_rep} to produce logical vectors for subsetting or summary 
-#' tables for further exploration. Use \code{pplr_site_rep_plot} to produce
-#' visualizations of entire datasets or subsetted outputs from 
-#' \code{pplr_site_rep} (see examples)
+#' @description Functions to examine the number of temporal replicates contained in each 
+#' spatial replication level of a dataset. 
+#' \code{pplr_site_rep_plot} plots the temporal replicates available for each site.
+#' \code{pplr_site_rep} produces logical vectors that identify the spatial replicates 
+#' with enough temporal replication, or summary tables. 
+
 #' 
-#' @param input An object of class \code{get_data}. This will not work
-#' with output from \code{browse} as the raw data is required to calculate
+#' @param input An object of class \code{get_data}. Note that this is not an 
+#' output from \code{browse}, as the raw data is required to calculate
 #' the amount of replication.
 #' @param freq A number corresponding to the desired annual frequency of 
 #' temporal replication. Studies that are 
@@ -42,13 +42,12 @@
 #' \code{pplr_site_rep}: A \code{tbl} or a logical vector of length 
 #' \code{dim(input)[1]}. Use \code{return_logical} to control.
 #' 
-#' @details \code{pplr_site_rep_plot} produces a figure detailing the amount
-#' of temporal replication at a given site (\code{spatial_replication_level_1}).
+#' @details \code{pplr_site_rep_plot} produces a scatterplot showing the sites 
+#' (\code{spatial_replication_level_1}) and years for which data is available.
 #' 
 #' \code{pplr_site_rep} works with any level of spatial replication and produces
-#' either a summary table of temporal replication 
-#' or a logical vector that can be used for subsetting a data set based on the
-#' desired frequency and length of time.
+#' either a summary table of temporal replication or a logical vector that can be used 
+#' to subset a data set based on the desired frequency and length of time.
 #' 
 #' 
 #' @examples 

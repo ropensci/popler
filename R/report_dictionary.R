@@ -11,7 +11,7 @@
 #' generated html file (optional)
 #' 
 #' @return This function is called for its side effects and does not 
-#' return anything.
+#' return an R object.
 #' 
 #' @importFrom rmarkdown render
 #' @importFrom utils browseURL
