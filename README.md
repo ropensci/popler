@@ -5,7 +5,7 @@
 Popler
 ------
 
-Popler is the R package to browse and query the *Popler* data base. *Popler* is a PostgreSQL data base that contains population-level datasets from the US long term ecological research (LTER) network. This package is currenctly only available on GitHub, but our ultimate goal is to submit it to CRAN.
+Popler is the R package to browse and query the *Popler* data base. *Popler* is a PostgreSQL data base that contains population-level datasets from the US long term ecological research (LTER) network. This package is currently only available on GitHub, but our ultimate goal is to submit it to CRAN.
 
 ### Installation
 
@@ -28,7 +28,7 @@ devtools::install_github('AldoCompagnoni/popler')
 
 ------------------------------------------------------------------------
 
-All exported functions use the `pplr_` prefix and lazy and/or tidy evaluation, meaning you do not need to manually quote most inputs. Once installed, you can explore the variables in the data base using the `pplr_dictionary()` function. This function work with and without inputs. Without inputs, the function returns a data frame showing what each variable means. The input to the function is the name of a variable, for which the function returns its potential contents. Additionally, there is the `pplr_report_dictionary()` function which generates an .Rmd file and renders it into html. This html contains both the meaning of variables, and their content.
+All exported functions in the `popler` R package use the `pplr_` prefix and lazy and/or tidy evaluation, meaning you do not need to manually quote most inputs. We suggest to start exploring the variables in the data base using `pplr_dictionary()`. This function is mean to explore the metadata variables used to describe the datasets contained in *Popler*. `pplr_dictionary()` works with and without inputs. Without inputs, the function returns a data frame showing a description of each metadata variable. The input of `pplr_dictionary()` is supposed to be the name of one of the metadata variables. When `pplr_dictionary()` is provided with the name of a metadata variable, it returns the possible unique values of the variable. Additionally, there is the `pplr_report_dictionary()` function which generates an .Rmd file and renders it into html. This html contains both the meaning of variables, and their unique values.
 
 ``` r
 library(popler)
@@ -40,7 +40,7 @@ pplr_dictionary()
 
 ------------------------------------------------------------------------
 
-Once you have become acquainted with the various types of data in the data base, the next step is to use the `pplr_browse()` function to view the variables that describe each project (henceforth called "metadata variables"). `pplr_browse()` works with and without an input. Without input, the function produces a data frame including the metadata variables describing every study currently contained in the *Popler* database. Note that this data frame is a `tbl` that inherits from the `browse` class. The user can subset this data frame by providing an input to the function (e.g. `duration_years > 5`). For more nuanced subsetting of available studies, the `keyword` argument allows to subset variables using partial matching.
+Once you are familiar with the meaning and content of *Popler*'s metadata variables, `pplr_browse()` provides the metadata of the studies contained in *Popler*. `pplr_browse()` also works with and without an input. Without input, the function produces a data frame including the metadata variables describing every study currently contained in the *Popler* database. Note that this data frame is a `tbl` that inherits from the `browse` class. Inputs to `pplr_browse()` allow users to subset this data frame (e.g. `duration_years > 5`). When subsetting, the unique values provided by `pplr_dictionary()` are particularly useful. For more nuanced subsetting of available datasets, the `keyword` argument allows to subset variables using partial matching. Note that `keyword` will act primarily on information contained in the title of studies.
 
 ``` r
 all_studies <- pplr_browse()
@@ -52,7 +52,7 @@ long_studies <- pplr_browse(duration_years > 20)
 parasite_studies <- pplr_browse(keyword = 'parasite') 
 ```
 
-The default settings of `pplr_browse` do not report all metadata variables contained in popler. To report all variables, set `full_tbl = TRUE`. To directly specify the variables included in the object returned by `pplr_browse` use the `vars` argument.
+The default settings of both `pplr_browse()` and `pplr_dictionary()` report a subset of the metadata variables contained in popler. To report all variables, set `full_tbl = TRUE`.
 
 ``` r
 #  vars are quoted
@@ -66,7 +66,7 @@ all_studies_and_vars <- pplr_browse(full_tbl = TRUE)
 
 ------------------------------------------------------------------------
 
-You can also generate a report for the report containing the metadata for all the projects you subset using `pplr_browse`. Just add the argument `report = TRUE` as an argument of `pplr_browse`. This argument uses `rmarkdown` to render the metadata into human-readable form, and opens an html file into your default browser. Alternatively, you can perform the same action described above by providing the `browse` object produced calling `pplr_browse` to the function `pplr_report_metadata()`.
+You can generate a human-readable report on metadata variables of the projects you subset using `pplr_browse` by providing the function with the argument `report = TRUE` . This argument uses `rmarkdown` to render the metadata into an html file, and opens it into your default browser. Alternatively, you can perform the same action described above by providing the `browse` object produced calling `pplr_browse` to the function `pplr_report_metadata()`.
 
 ``` r
 # generate metadata report for all studies
@@ -86,7 +86,7 @@ pplr_report_metadata(parasite_studies)
 
 ------------------------------------------------------------------------
 
-Once you explored the metadata and decided which projects interest you, it's time to actually download the data! Use `pplr_get_data()` to connect to the data base and download the raw data based on the criteria supplied. Alternatively, if you're happy with the projects represented in the `browse` object you created earlier, you can simply pass that object to `pplr_get_data()`. Note that if your `browse` object contains 5 rows, `pplr_get_data()` will download 5 separate datasets. All objects created with `pplr_get_data()` inherit from `get_data` and `data.frame` classes.
+Once you explored the metadata and decided which projects interest you, it's time to actually download the data! `pplr_get_data()` connects to the data base and downloads the raw data based on the criteria supplied. Alternatively, if you're happy with the projects represented in the `browse` object you created earlier, you can simply pass that object to `pplr_get_data()`. Note that if your `browse` object contains 5 rows, `pplr_get_data()` will download 5 separate datasets. All objects created with `pplr_get_data()` inherit from `get_data` and `data.frame` classes.
 
 ``` r
 # create a browse object and use it to get data
@@ -108,7 +108,7 @@ more_raw_data <- pplr_get_data((proj_metadata_key == 43 |
 
 ------------------------------------------------------------------------
 
-We prodive three ancillary functions to facilitate the use of the objects downloaded through `pplr_get_data()`. First, `pplr_metadata_url()` opens up a webpage containing study details. Before doing scientific analyses, we urge the users to review the peculiarities of each dataset by vetting their online documentation. Second, `pplr_cov_unpack()` transforms the data contained in the `covariates` column of each downloaded dataset into separate columns. This can or cannot be useful depending on the objectives of the user. Third, `pplr_citation()` produces a citation for each downloaded dataset.
+We prodive three ancillary functions to facilitate the use of the objects downloaded through `pplr_get_data()`. First, `pplr_metadata_url()` opens up a webpage containing study details. Before doing scientific analyses, we urge the users to review the peculiarities of each dataset by vetting their online documentation. Second, `pplr_cov_unpack()` transforms the data contained in the `covariates` column of each downloaded dataset into separate columns. This can or cannot be useful depending on the objectives of the user. Note: you can also transform covariates into a data frame directly through `pplr_get_data()` by providing the function with argument `cov_unpack = TRUE`. Third, `pplr_citation()` produces a citation for each downloaded dataset.
 
 ### Data validation
 
@@ -169,4 +169,4 @@ class(penguins_98_true)
 
 ------------------------------------------------------------------------
 
-`popler` contains a number of vignettes that contain additional information on its various uses. However, if they do not cover your particular use case, you still have questions, or you discover a bug, please don't hesitate to create an [issue](https://github.com/AldoCompagnoni/popler/issues).
+`popler` contains two vignettes that contain additional information on its various uses. However, if they do not cover your particular use case, you still have questions, or you discover a bug, please don't hesitate to create an [issue](https://github.com/AldoCompagnoni/popler/issues).
