@@ -3,9 +3,7 @@
 \docType{import}
 \name{reexports}
 \alias{reexports}
-\alias{reexports}
 \alias{filter}
-\alias{reexports}
 \alias{mutate}
 \title{Objects exported from other packages}
 \keyword{internal}

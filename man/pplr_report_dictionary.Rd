@@ -4,7 +4,8 @@
 \alias{pplr_report_dictionary}
 \title{A user-friendly dictionary of the popler metadata}
 \usage{
-pplr_report_dictionary(full_tbl = FALSE, md_file = NULL, html_file = NULL)
+pplr_report_dictionary(full_tbl = FALSE, md_file = NULL,
+  html_file = NULL)
 }
 \arguments{
 \item{full_tbl}{Should the function return the standard 
@@ -18,7 +19,7 @@ generated html file (optional)}
 }
 \value{
 This function is called for its side effects and does not 
-return anything.
+return an R object.
 }
 \description{
 Provides information on the columns of metadata contained 

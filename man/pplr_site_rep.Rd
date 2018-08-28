@@ -11,8 +11,8 @@ pplr_site_rep(input, freq = 1, duration = 10, rep_level = 1,
 pplr_site_rep_plot(input, return_plot = FALSE)
 }
 \arguments{
-\item{input}{An object of class \code{get_data}. This will not work
-with output from \code{browse} as the raw data is required to calculate
+\item{input}{An object of class \code{get_data}. Note that this is not an 
+output from \code{browse}, as the raw data is required to calculate
 the amount of replication.}
 
 \item{freq}{A number corresponding to the desired annual frequency of 
@@ -54,21 +54,19 @@ Use \code{FALSE} to return an invisible copy of the \code{input} object
 \code{dim(input)[1]}. Use \code{return_logical} to control.
 }
 \description{
-These functions are provided to assist examining the amount of 
-temporal replication for each spatial replicate in a given dataset. Use 
-\code{pplr_site_rep} to produce logical vectors for subsetting or summary 
-tables for further exploration. Use \code{pplr_site_rep_plot} to produce
-visualizations of entire datasets or subsetted outputs from 
-\code{pplr_site_rep} (see examples)
+Functions to examine the number of temporal replicates contained in each 
+spatial replication level of a dataset. 
+\code{pplr_site_rep_plot} plots the temporal replicates available for each site.
+\code{pplr_site_rep} produces logical vectors that identify the spatial replicates 
+with enough temporal replication, or summary tables.
 }
 \details{
-\code{pplr_site_rep_plot} produces a figure detailing the amount
-of temporal replication at a given site (\code{spatial_replication_level_1}).
+\code{pplr_site_rep_plot} produces a scatterplot showing the sites 
+(\code{spatial_replication_level_1}) and years for which data is available.
 
 \code{pplr_site_rep} works with any level of spatial replication and produces
-either a summary table of temporal replication 
-or a logical vector that can be used for subsetting a data set based on the
-desired frequency and length of time.
+either a summary table of temporal replication or a logical vector that can be used 
+to subset a data set based on the desired frequency and length of time.
 }
 \examples{
 \dontrun{
