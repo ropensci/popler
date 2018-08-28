@@ -3,7 +3,7 @@ context('cov_unpack')
 
 summary_table <- pplr_summary_table_import()
 
-exp_data <- pplr_get_data(lterid == 'MCR')
+exp_data <- pplr_get_data(lterid == 'PAL')
 
 
 test_that('cov_unpack', {

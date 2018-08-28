@@ -50,15 +50,12 @@ test_that('pplr_site_rep returns correct types', {
   
 })
 
-
-
+data <- pplr_get_data(lterid == 'PAL')
 
 library(ggplot2)
 test_that('pplr_site_rep_plot() returns correct values', {
   skip_on_cran()
-  
-  data <- pplr_get_data(lterid == 'PAL')
-  
+
   expect_is(pplr_site_rep_plot(data, return_plot = TRUE),
             'ggplot')
   
@@ -71,14 +68,13 @@ test_that('pplr_site_rep_plot() returns correct values', {
 test_that('fails correctly', {
   
   skip_on_cran()
-  data <- pplr_get_data(lterid == 'PAL')
   
   expect_error(pplr_site_rep(data, rep_level = 6))
   expect_error(pplr_site_rep(data, duration = 55))
   expect_error(pplr_site_rep(data, freq = 7))
   
   # Pal only has 2 levels of spatial replication
-  expect_error(pplr_site_rep(data, rep_level = 3))
+  expect_error(pplr_site_rep(data, rep_level = 5))
   
   wrong <- pplr_browse(lterid == 'PAL')
   expect_error(pplr_site_rep(wrong))
