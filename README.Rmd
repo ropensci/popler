@@ -11,7 +11,7 @@ output: github_document
 
 ## Popler
 
-Popler is the R package to browse and query the _Popler_ data base. _Popler_ is a PostgreSQL data base that contains population-level datasets from the US long term ecological research (LTER) network. This package is currenctly only available on GitHub, but our ultimate goal is to submit it to CRAN.
+Popler is the R package to browse and query the _Popler_ data base. _Popler_ is a PostgreSQL data base that contains population-level datasets from the US long term ecological research (LTER) network. This package is currently only available on GitHub, but our ultimate goal is to submit it to CRAN.
 
 ### Installation
 
@@ -37,11 +37,9 @@ devtools::install_github('AldoCompagnoni/popler')
 
 ------
 
-All exported functions use the `pplr_` prefix and lazy and/or tidy evaluation, 
-meaning you do not need to manually quote most inputs. Once installed, you can
-explore the variables in the data base using the `pplr_dictionary()` function. 
-This function work with and without inputs. Without inputs, the function returns a data frame showing what each variable means. The input to the function is the name of a variable, for which the function returns its potential contents.
-Additionally, there is the `pplr_report_dictionary()` function which generates an .Rmd file and renders it into html. This html contains both the meaning of variables, and their content.
+All exported functions in the `popler` R package use the `pplr_` prefix and lazy and/or tidy evaluation, meaning you do not need to manually quote most inputs. 
+We suggest to start exploring the variables in the data base using `pplr_dictionary()`. This function is mean to explore the metadata variables used to describe the datasets contained in _Popler_. `pplr_dictionary()` works with and without inputs. Without inputs, the function returns a data frame showing a description of each metadata variable. The input of `pplr_dictionary()` is supposed to be the name of one of the metadata variables. When `pplr_dictionary()` is provided with the name of a metadata variable, it returns the possible unique values of the variable.
+Additionally, there is the `pplr_report_dictionary()` function which generates an .Rmd file and renders it into html. This html contains both the meaning of variables, and their unique values.
 
 ```{r dictionary funs, eval = FALSE}
 
@@ -56,7 +54,7 @@ pplr_dictionary()
 
 ------
 
-Once you have become acquainted with the various types of data in the data base, the next step is to use the `pplr_browse()` function to view the variables that describe each project (henceforth called "metadata variables"). `pplr_browse()` works with and without an input. Without input, the function produces a data frame including the metadata variables describing every study currently contained in the _Popler_ database. Note that this data frame is a `tbl` that inherits from the `browse` class. The user can subset this data frame by providing an input to the function (e.g. `duration_years > 5`). For more nuanced subsetting of available studies, the `keyword` argument allows to subset variables using partial matching. 
+Once you are familiar with the meaning and content of _Popler_'s metadata variables, `pplr_browse()` provides the metadata of the studies contained in _Popler_. `pplr_browse()` also works with and without an input. Without input, the function produces a data frame including the metadata variables describing every study currently contained in the _Popler_ database. Note that this data frame is a `tbl` that inherits from the `browse` class. Inputs to `pplr_browse()` allow users to subset this data frame (e.g. `duration_years > 5`). When subsetting, the unique values provided by `pplr_dictionary()` are particularly useful. For more nuanced subsetting of available datasets, the `keyword` argument allows to subset variables using partial matching. Note that `keyword` will act primarily on information contained in the title of studies.
 
 ```{r browse base, eval = FALSE}
 
@@ -70,7 +68,7 @@ parasite_studies <- pplr_browse(keyword = 'parasite')
 
 ```
 
-The default settings of `pplr_browse` do not report all metadata variables contained in popler. To report all variables, set `full_tbl = TRUE`. To directly specify the variables included in the object returned by `pplr_browse` use the `vars` argument.
+The default settings of both `pplr_browse()` and `pplr_dictionary()` report a subset of the metadata variables contained in popler. To report all variables, set `full_tbl = TRUE`. 
 
 ```{r browse advanced, eval = FALSE}
 
@@ -87,8 +85,7 @@ all_studies_and_vars <- pplr_browse(full_tbl = TRUE)
 
 -----
 
-You can also generate a report for the report containing the
-metadata for all the projects you subset using `pplr_browse`. Just add the argument `report = TRUE` as an argument of `pplr_browse`. This argument uses `rmarkdown` to render the metadata into human-readable form, and opens an html file into your default browser.
+You can generate a human-readable report on metadata variables of the projects you subset using `pplr_browse` by providing the function with the argument `report = TRUE` . This argument uses `rmarkdown` to render the metadata into an html file, and opens it into your default browser.
 Alternatively, you can perform the same action described above by providing the `browse` object produced calling `pplr_browse` to the function `pplr_report_metadata()`.
 
 ``` {r report_metadata, eval = FALSE}
@@ -112,7 +109,7 @@ pplr_report_metadata(parasite_studies)
 
 -----
 
-Once you explored the metadata and decided which projects interest you, it's time to actually download the data! Use `pplr_get_data()` to connect to the data base and download the raw data based on the criteria supplied. Alternatively, if you're happy with the projects represented in the `browse` object you created earlier, you can simply pass that object to `pplr_get_data()`. Note that if your `browse` object contains 5 rows,  `pplr_get_data()` will download 5 separate datasets. All objects created with `pplr_get_data()` inherit from `get_data` and `data.frame` classes.
+Once you explored the metadata and decided which projects interest you, it's time to actually download the data! `pplr_get_data()` connects to the data base and downloads the raw data based on the criteria supplied. Alternatively, if you're happy with the projects represented in the `browse` object you created earlier, you can simply pass that object to `pplr_get_data()`. Note that if your `browse` object contains 5 rows, `pplr_get_data()` will download 5 separate datasets. All objects created with `pplr_get_data()` inherit from `get_data` and `data.frame` classes.
 
 ```{r get_data, eval = FALSE}
 
@@ -136,42 +133,21 @@ more_raw_data <- pplr_get_data((proj_metadata_key == 43 |
 
 -----
 
-We prodive three ancillary functions to facilitate the use of the objects downloaded through `pplr_get_data()`. 
+We prodive three ancillary functions to facilitate the use of the objects downloaded through `pplr_get_data()`.
 First, `pplr_metadata_url()` opens up a webpage containing study details. Before doing scientific analyses, we urge the users to review the peculiarities of each dataset by vetting their online documentation.
-Second, `pplr_cov_unpack()` transforms the data contained in the `covariates` column of each downloaded dataset into separate columns. This can or cannot be useful depending on the objectives of the user. Note: transform covariates into a data frame directly through `pplr_get_data()` by providing the function with argument `cov_unpack = TRUE`.
-Third, `pplr_citation()` produces a citation for each downloaded dataset. 
+Second, `pplr_cov_unpack()` transforms the data contained in the `covariates` column of each downloaded dataset into separate columns. This can or cannot be useful depending on the objectives of the user. Note: you can also transform covariates into a data frame directly through `pplr_get_data()` by providing the function with argument `cov_unpack = TRUE`.
+Third, `pplr_citation()` produces a citation for each downloaded dataset.
 
 
-### Data validation
+### Spatio-temporal replication
 
 -----
 
-Data in `popler` can be replicated spatially at up to 4 levels of nestedness.
-The coarsest resolution is `spatial_replication_level_1`, and most data sets
-have at least 1 additional level of spatial replication (`spatial_replication_level_2`).
-These can refer to plots nested within transects nested within sites, for example.
-`spatial_replication_level_x_label` columns provide this information. As a user,
-you may only be interested in seeing data that is replicated at some minimum frequency
-for some minimum duration. We provide two functions for assisting you in finding
-this information. Note that both require a `get_data` object as `browse` objects
-do not contain enough information to determine these criteria.
+The datasets contained in _Popler_ present many heterogeneities, especially in terms of their spatio-temporal replication. Most studies present at least a few spatial replicates which were not sampled every year. Note that most datasets in _Popler_ present at least one additional  replication level. These spatial replicates are denoted in numbered variables such as `spatial_replication_level_x`, and their names (e.g. plot, subplot, ect.) are contained in variable `spatial_replication_level_x_label`. In case 
 
-`pplr_site_rep()` produces either a logical vector for subsetting an existing 
-`get_data` object or a summary table of temporal replication for a given spatial
-resolution. You can control the minimum frequency of sampling and the minimum 
-duration of sampling using the `freq` and `duration` arguments, respectively. 
-Additionally, you can choose to filter based on whatever level of spatial 
-replication you wish (provided it is present in the data) using the `rep_level`
-argument. `return_logical` allows you to control the format that is returned.
-`TRUE` returns a logical vector corresponding to rows in the `get_data` object
-that are in spatial replicates that meet the criteria. `FALSE` returns a summary
-table describing the number of samples per year at the selected spatial resolution.
+Once you download a dataset, you can examine the temporal replication of the largest spatial replicate (the site) using function `pplr_site_rep_plot()`. This function produces a plot showing whether or not a given _site_ (e.g. `spatial_replication_level_1`) was sampled in a year.
 
-`pplr_site_rep_plot()` produces a plot detailing whether or not a given
-_site_ (e.g. `spatial_replication_level_1`) was sampled in a year. You can use
-the `return_plot` argument to control whether or not to return the `ggplot` 
-object (useful for modifying the plot manually) or an invisible copy of the 
-input data (useful for piping in a sequence of operations).
+Additionally, `pplr_site_rep()` produces either a logical vector for subsetting an existing `get_data` object or a summary table of temporal replication for a given spatial resolution. You can control the minimum frequency of sampling and the minimum duration of sampling using the `freq` and `duration` arguments, respectively. Additionally, you can choose to filter based on whatever level of spatial replication you wish (provided it is present in the data) using the `rep_level` argument. `return_logical` allows you to control the format that is returned. `TRUE` returns a logical vector corresponding to rows in the `get_data` object that are in spatial replicates that meet the criteria. `FALSE` returns a summary table describing the number of samples per year at the selected spatial resolution.
 
 
 ```{r spatial_rep, eval = FALSE}
@@ -180,8 +156,7 @@ input data (useful for piping in a sequence of operations).
 
 library(dplyr)
 
-SEV_studies <- pplr_get_data(lterid == 'SEV')
-
+SEV_studies <- pplr_get_data( lterid == 'SEV' datatype == 'invidual' )
 
 long_SEV_studies <- SEV_studies %>%
   .[pplr_site_rep(input = .,
@@ -192,8 +167,8 @@ long_SEV_studies <- SEV_studies %>%
 # Or, create the summary table
 
 SEV_summary <- SEV_studies %>% 
-  pplr_site_rep(duration = 12,
-                rep_level = 3,
+  pplr_site_rep(duration = 13,
+                rep_level = 1,
                 return_logical = FALSE)
 
 
@@ -234,7 +209,4 @@ class(penguins_98_true)
 
 ------
 
-`popler` contains two vignettes that contain additional information on
-its various uses. However, if they do not cover your particular use case,
-you still have questions, or you discover a bug, please don't hesitate to create an [issue](https://github.com/AldoCompagnoni/popler/issues).
-
+`popler` contains two vignettes with additional information. In case these vignettes do not cover your particular use case, you still have questions, or you discover a bug, please don't hesitate to create an [issue](https://github.com/AldoCompagnoni/popler/issues).
