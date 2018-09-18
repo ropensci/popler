@@ -18,37 +18,42 @@ test_that('produce proper output', {
   # counts <- map_data$data
   # sizes <- map_data$breaks
   
-  expect_is(popler:::ak_map(count_data = popler:::prep_map_data(pplr_browse(lterid == 'ARC'))$data,
-                            x = rlang::quo(long),
-                            y = rlang::quo(lat),
-                            polygon_group = rlang::quo(group),
-                            count_group = rlang::quo(count),
-                            size_breaks = popler:::prep_map_data(pplr_browse(lterid == 'ARC'))$breaks),
-            'ggplot')
+  expect_is(popler:::ak_map(
+    count_data = popler:::prep_map_data(pplr_browse(lterid == 'ARC'))$data,
+    x = rlang::quo(long),
+    y = rlang::quo(lat),
+    polygon_group = rlang::quo(group),
+    count_group = rlang::quo(count),
+    size_breaks = popler:::prep_map_data(pplr_browse(lterid == 'ARC'))$breaks),
+    'ggplot')
   
-  expect_is(popler:::us_map(count_data = popler:::prep_map_data(pplr_browse(lterid == 'SBC'))$data,
-                            x = rlang::quo(long),
-                            y = rlang::quo(lat),
-                            polygon_group = rlang::quo(group),
-                            count_group = rlang::quo(count),
-                            size_breaks = popler:::prep_map_data(pplr_browse(lterid == 'SBC'))$breaks),
-            'ggplot')
+  expect_is(popler:::us_map(
+    count_data = popler:::prep_map_data(pplr_browse(lterid == 'SBC'))$data,
+    x = rlang::quo(long),
+    y = rlang::quo(lat),
+    polygon_group = rlang::quo(group),
+    count_group = rlang::quo(count),
+    size_breaks = popler:::prep_map_data(pplr_browse(lterid == 'SBC'))$breaks),
+    'ggplot')
   
-  expect_is(popler:::an_map(count_data = popler:::prep_map_data(pplr_browse(lterid == 'PAL'))$data,
-                            x = rlang::quo(long),
-                            y = rlang::quo(lat),
-                            polygon_group = rlang::quo(group),
-                            count_group = rlang::quo(count),
-                            size_breaks = popler:::prep_map_data(pplr_browse(lterid == 'PAL'))$breaks),
-            'ggplot')
+  expect_is(popler:::an_map(
+    count_data = popler:::prep_map_data(
+      pplr_browse(lterid == 'PAL'))$data,
+    x = rlang::quo(long),
+    y = rlang::quo(lat),
+    polygon_group = rlang::quo(group),
+    count_group = rlang::quo(count),
+    size_breaks = popler:::prep_map_data(pplr_browse(lterid == 'PAL'))$breaks),
+    'ggplot')
   
-  expect_is(popler:::mc_map(count_data = popler:::prep_map_data(pplr_browse(lterid == 'MCR'))$data,
-                            x = rlang::quo(long),
-                            y = rlang::quo(lat),
-                            polygon_group = rlang::quo(group),
-                            count_group = rlang::quo(count),
-                            size_breaks = popler:::prep_map_data(pplr_browse(lterid == 'MCR'))$breaks),
-            'ggplot')
+  expect_is(popler:::mc_map(
+    count_data = popler:::prep_map_data(pplr_browse(lterid == 'MCR'))$data,
+    x = rlang::quo(long),
+    y = rlang::quo(lat),
+    polygon_group = rlang::quo(group),
+    count_group = rlang::quo(count),
+    size_breaks = popler:::prep_map_data(pplr_browse(lterid == 'MCR'))$breaks),
+    'ggplot')
   
   expect_is(pplr_maps(pplr_browse(lterid == 'SEV'),
                       return_plot = TRUE),
