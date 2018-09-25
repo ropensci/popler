@@ -26,7 +26,8 @@ pplr_metadata_url <- function(input){
   main_t <- dplyr::select(summary_table, 
                           .data$proj_metadata_key, 
                           .data$metalink,
-                          .data$doi)
+                          .data$doi) %>% 
+              unique
   
   
   # test whether object is produced by `browse` or `get_data` ----
@@ -55,7 +56,7 @@ Print 'N' if you want to refine the search(Y/N):") )
     for(i in seq_len(length(ids))){
       
       # store doi link (if present)
-      doi_link <- dplyr::filter(main_t,.data$proj_metadata_key == ids[i])$doi
+      doi_link <- dplyr::filter(main_t, .data$proj_metadata_key == ids[i])$doi
       
       # use url only if you don't have doi
       if( doi_link == 'NA'){
