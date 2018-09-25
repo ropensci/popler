@@ -198,7 +198,8 @@ pplr_summary_table_update <- function(){
   out_proj$n_spat_levs  <- apply(!is.na(out_proj[sr_colnames]), 1, sum) 
   
   # reorder out_proj columns
-  out_proj  <- out_proj[c(1:11,46:47,12:36,58:59,37:45,48:57)]
+  # out_proj  <- out_proj[c(1:11,46:47,12:36,58:59,37:45,48:57)]
+  out_proj  <- out_proj[c(1:11, 46:47, 12:36, 61:62, 37:45, 48, 52:60, 49:51)]
   
   # return unique taxonomic information for each proj_metadata_key
   taxas    <- taxa_cols[! taxa_cols %in% c("taxa_table_key", 

@@ -25,7 +25,9 @@ pplr_metadata_url <- function(input){
   # main table
   main_t <- dplyr::select(summary_table, 
                           .data$proj_metadata_key, 
-                          .data$metalink)
+                          .data$metalink,
+                          .data$doi) %>% 
+              unique
   
   
   # test whether object is produced by `browse` or `get_data` ----
@@ -52,9 +54,19 @@ Print 'N' if you want to refine the search(Y/N):") )
   # open browsers --------------------------------------------------------
   if(n == "y"){
     for(i in seq_len(length(ids))){
-      link <- unique(dplyr::filter(main_t,
-                                   .data$proj_metadata_key == ids[i])$metalink)
-      browseURL(link)
+      
+      # store doi link (if present)
+      doi_link <- dplyr::filter(main_t, .data$proj_metadata_key == ids[i])$doi
+      
+      # use url only if you don't have doi
+      if( doi_link == 'NA'){
+        link <- unique(dplyr::filter(main_t,
+                                     .data$proj_metadata_key == ids[i])$metalink)
+        browseURL(link)
+      }else{
+        browseURL(doi_link)
+      }
+      
     }
   } 
 
