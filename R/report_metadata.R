@@ -127,7 +127,7 @@ su <- gsub("m2","m$^{2}$",A$samplingunits[N])
 * **number of unique taxa:** `r n_taxa[N]`  
 * **popler project ID:** `r A$proj_metadata_key[N]`  
 * [**citation**](#c`r N`)  
-* [**metadata link**](`r A$metalink[N]`)  
+* [**metadata link**](`r links_get(A)[N]`)  
 
 ##### Study design information  
 
