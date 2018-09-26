@@ -184,7 +184,9 @@ select_by_criteria <- function(x, criteria){
 #' @noRd
 default_vars = function(){ 
   return(c("title","proj_metadata_key","lterid",
-           "datatype","studytype",
+           "datatype",
+           "structured_data",
+           "studytype",
            "duration_years", "community", "studystartyr", "studyendyr",
            "structured_type_1","structured_type_2","structured_type_3",
            "structured_type_4",
