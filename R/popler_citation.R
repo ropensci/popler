@@ -33,7 +33,7 @@ pplr_citation <- function(input, bibtex_path = NULL){
   for(i in seq_len(nrow(input))){
     
     # DOI not present: citation based on URL
-    if( input$doi == 'NA'){
+    if( input$doi[i] == 'NA'){
     
       # remove periods
       input$authors[i] <- gsub("[.]", "", input$authors[i])
