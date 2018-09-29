@@ -33,7 +33,7 @@ pplr_citation <- function(input, bibtex_path = NULL){
   for(i in seq_len(nrow(input))){
     
     # DOI not present: citation based on URL
-    if( input$doi[i] == 'NA'){
+    if( input$doi_citation[i] == 'NA'){
     
       # remove periods
       input$authors[i] <- gsub("[.]", "", input$authors[i])
@@ -53,68 +53,60 @@ pplr_citation <- function(input, bibtex_path = NULL){
       tmp <- unlist(strsplit(trimws(input$authors[i], "both"), ","))
       
       # create a "person" object for each author
-      new_aut <- person(trimws(tmp[1], "both"))
+      new_aut <- format_author(tmp[1])
       if(length(tmp) > 1) {
         for(j in 2:length(tmp)){
-          new_aut <- c(new_aut, person(trimws(tmp[j], "both")))
+          new_aut <- c(new_aut, format_author(tmp[j]) )
         }
       }
-      
+
       # if the et al flag was triggered, add an "et al" person
       if(etal){
         new_aut <- c(new_aut, person(given = "et al")) 
       }
       
+      # use DOI url if available 
+      if( input$doi[i] == 'NA' ){
+        link_out <- input$metalink[i] 
+      } else{
+        link_out <- input$doi[i] 
+      }
+        
       # create a bibentry for each proj_metadata_key
       bib <- c(bib, bibentry(
         bibtype = "Misc",
-        title = input$title[i],
-        author = new_aut,
-        year = input$studyendyr[i],
-        note = input$lter_name[i],
-        url = input$metalink[i]))
-      }
+        title   = input$title[i],
+        author  = new_aut,
+        year    = input$studyendyr[i],
+        note    = input$lter_name[i],
+        url     = link_out))
+      
+    }
     # DOI-based citation
     else{
     
       # author, title, and year affiliated with DOI citation
       authors_l  <- strsplit(input$doi_citation[i], '[0-9]{4}')[[1]][1] %>% 
-                      trimws( 'both' ) %>% 
+                      # gsub('Lead PI N\\.','Lead PI NTL', .) %>% 
                       gsub("\\.$",'',.) %>% 
-                      strsplit(',')  
+                      strsplit(',')  %>% 
+                      lapply(trimws,'both') %>% 
+                      unlist
       
-      # format for bibentry
-      format_author <- function(x){
-        
-        # initials
-        init_n <- x %>% 
-                  regmatches(.,
-                             gregexpr("[[:alpha:]]{1}\\.",
-                             .)) %>%
-                    unlist
-        
-        # last name
-        last_n <- x %>% 
-                  regmatches(.,
-                             gregexpr("[[:alpha:]]{2,20}",
-                             .)) %>%
-                    unlist
-        
-        return( paste(init_n, last_n, sep=' ') )
-        
-      }
-      
-      author_doi  <- lapply(authors_l, format_author) %>% 
+      author_doi  <- lapply(authors_l, format_doi_author) %>% 
                         unlist %>% 
-                        paste0(collapse=', ')
+                        paste0(collapse=', ') %>% 
+                        # Accommodate weird case with NTL studies
+                        gsub('Lead,  PI,','Lead PI NTL,', .)
 
-      title_doi  <- strsplit(input$doi_citation[i], '.[0-9]{4}\\. ')[[1]][2] %>% 
-                      strsplit(split='https') %>% 
-                      unlist %>% 
-                      .[1] %>% 
-                      # remove white space and double dots 
-                      trimws('both')
-      
+      title_doi   <- regmatches(input$doi_citation[i],
+                                gregexpr(' [0-9]{4}\\.(?s)(.*)http',
+                                input$doi_citation[i], perl=T) ) %>% 
+                        gsub('^ [0-9]{4}\\.','',.) %>% 
+                        gsub('http$','',.) %>% 
+                        gsub('\\.\\.','.',.) %>% 
+                        trimws('both')
+
       year_doi   <- regmatches(input$doi_citation[i], 
                               gregexpr("[[:digit:]]{4}", 
                               input$doi_citation[i])) %>% 
@@ -152,4 +144,55 @@ pplr_citation <- function(input, bibtex_path = NULL){
   return(list(bibliography = bib,
               Bibtex = toBibtex(bib),
               acknowledgement = acknowledgement))
+}
+
+
+#' @noRd
+# format authros coming from column "doi_citatin"
+format_doi_author <- function(author_string){
+  
+  # initials
+  init_n <- author_string %>% 
+              regmatches(.,
+                         gregexpr("^[[:alpha:]]{1}\\.| [[:alpha:]]{1}$| [[:alpha:]]{1}\\.$",
+                         .)) %>%
+                unlist %>% 
+                trimws('both')
+  
+  # last name
+  last_n <- author_string %>% 
+              regmatches(.,
+                         gregexpr("[[:alpha:]]{2,20}",
+                         .)) %>%
+                unlist
+  
+  return( paste(init_n, last_n, sep=' ') )
+  
+}
+
+
+#' @noRd
+# format authros not coming from column "doi_citatin"
+format_author <- function(author_string){
+  
+  first_n  <- author_string %>% 
+                trimws( 'both' ) %>% 
+                strsplit( ' ' ) %>% 
+                unlist %>% .[1] %>% 
+                substr(1,1)
+  second_n <- author_string %>% 
+                trimws( 'both' ) %>% 
+                strsplit( ' ' ) %>% 
+                unlist %>% .[2]
+  # third name accommodates separated last names (e.g. del Moral, van Pelt)
+  third_n  <- author_string %>% 
+                trimws( 'both' ) %>% 
+                strsplit( ' ' ) %>% 
+                unlist %>% .[3]
+  
+  if( is.na(third_n) ) third_n = NULL
+  
+  return( paste(second_n, third_n, first_n,sep=' ') %>% 
+            person )
+  
 }
