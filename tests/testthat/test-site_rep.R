@@ -71,7 +71,7 @@ test_that('fails correctly', {
   
   expect_error(pplr_site_rep(data, rep_level = 6))
   expect_error(pplr_site_rep(data, duration = 55))
-  expect_error(pplr_site_rep(data, freq = 7))
+  # expect_error(pplr_site_rep(data, freq = 7))
   
   # Pal only has 2 levels of spatial replication
   expect_error(pplr_site_rep(data, rep_level = 5))

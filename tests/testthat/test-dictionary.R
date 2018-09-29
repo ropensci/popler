@@ -6,8 +6,8 @@ test_that("dictionary() function ", {
   skip_on_cran()
   
   # n of variables in "informational message"
-  expect_equal(nrow(pplr_dictionary()), 18)
-  expect_equal(nrow(pplr_dictionary(full_tbl = TRUE)), 76)
+  expect_equal(nrow(pplr_dictionary()), 19)
+  expect_equal(nrow(pplr_dictionary(full_tbl = TRUE)), 77)
   
   # n of list elements
   expect_equal(length(pplr_dictionary(species)), 1)
