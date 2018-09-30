@@ -350,3 +350,17 @@ pplr_summary_table_import <- function() {
   
   return(summary_table)
 }
+
+#' @noRd
+# gets DOI or, if not present, URL.
+links_get = function( sum_tab_df ){
+  
+  links   <- sum_tab_df$doi
+  no_doi  <- which( links == 'NA' )
+  links   <- replace( links, 
+                      no_doi, 
+                      sum_tab_df$metalink[no_doi] )
+  
+  return(links)
+  
+}

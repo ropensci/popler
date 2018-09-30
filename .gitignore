@@ -4,7 +4,7 @@ tests/testthat/Rplots.pdf
 .Rproj.user
 browse.html
 browse.Rmd
-inst/doc
+#inst/doc
 .RData
 
 dictionary\.html

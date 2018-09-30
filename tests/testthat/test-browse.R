@@ -160,8 +160,8 @@ test_that("browse() function ", {
   
  
   # No search criteria
-  expect_equal(ncol(pplr_browse() ), 19)
-  expect_equal(ncol(pplr_browse(full_tbl = TRUE)), 60 )
+  expect_equal(ncol(pplr_browse() ), 20)
+  expect_equal(ncol(pplr_browse(full_tbl = TRUE)), 63 )
   
   # functioning of "vars"
   expect_equal(names(pplr_browse(vars="lterid")), 
@@ -173,12 +173,12 @@ test_that("browse() function ", {
   # functioning of ...
   SBC <- pplr_browse(lterid == 'SBC')
   
-  expect_equal(ncol(SBC), 19)
+  expect_equal(ncol(SBC), 20)
   expect_true(all(popler:::default_vars()[1:18] %in% names(SBC)))
   
   a_few <- pplr_browse(lterid == 'SEV' | lterid == 'MVC',
                        full_tbl = TRUE)
-  expect_equal(ncol(a_few), 60)
+  expect_equal(ncol(a_few), 63)
   
   
   # functioning of keywords
@@ -187,11 +187,11 @@ test_that("browse() function ", {
   expect_true(inherits(parasites,
                        'tbl_df'))
 
-  expect_equal(dim(parasites)[2], 19) # 18 columns of data + 1 for taxonomic
+  expect_equal(dim(parasites)[2], 20) # 18 columns of data + 1 for taxonomic
   
   
   rodents <- pplr_browse(keyword = 'rodent', full_tbl = TRUE)
-  expect_equal(ncol(rodents), 60) # all info
+  expect_equal(ncol(rodents), 63) # all info
   
   #functioning error messages
   expect_error(pplr_browse(structured_type_3 == "stages" & 

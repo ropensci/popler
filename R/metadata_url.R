@@ -56,16 +56,21 @@ Print 'N' if you want to refine the search(Y/N):") )
     for(i in seq_len(length(ids))){
       
       # store doi link (if present)
-      doi_link <- dplyr::filter(main_t, .data$proj_metadata_key == ids[i])$doi
+      link <- dplyr::filter(main_t, 
+                                .data$proj_metadata_key == ids[i]) %>% 
+                # grab DOI - or url if DOI not present 
+                links_get
       
-      # use url only if you don't have doi
-      if( doi_link == 'NA'){
-        link <- unique(dplyr::filter(main_t,
-                                     .data$proj_metadata_key == ids[i])$metalink)
-        browseURL(link)
-      }else{
-        browseURL(doi_link)
-      }
+      browseURL(link)
+      
+      # # use url only if you don't have doi
+      # if( doi_link == 'NA'){
+      #   link <- unique(dplyr::filter(main_t,
+      #                                .data$proj_metadata_key == ids[i])$metalink)
+      #   browseURL(link)
+      # }else{
+      #   browseURL(doi_link)
+      # }
       
     }
   } 

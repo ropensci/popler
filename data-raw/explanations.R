@@ -11,6 +11,7 @@ explanations = data.frame(variable = c('proj_metadata_key',
                                        'lter_project_fkey',
                                        'title','samplingunits',
                                        'datatype',
+                                       'structured_data',
                                        'structured_type_1',
                                        'structured_type_1_units',
                                        'structured_type_2',
@@ -59,6 +60,7 @@ explanations = data.frame(variable = c('proj_metadata_key',
                                         "title of project",
                                         "unit of measure for abundance",
                                         "type of abundance data (e.g. count,biomass)",
+                                        "are abundance observations grouped (e.g. based on age)?",
                                         "1st type of indidivual structure (if any)",
                                         "unit of measure of 1st type of individual structure",
                                         "2nd type of indidivual structure (if any)",
@@ -128,6 +130,7 @@ explanations = data.frame(variable = c('proj_metadata_key',
 
 explain_short = data.frame( variable = c('title','proj_metadata_key',
                                          'lterid','datatype',
+                                         'structured_data',
                                          'studytype','duration_years',
                                          'community',
                                          'structure','treatment',
@@ -138,6 +141,7 @@ explain_short = data.frame( variable = c('title','proj_metadata_key',
                             description=c("title of project","unique project id",
                                           "lter name",
                                           "type of abundance data (e.g. count,biomass)",
+                                          "are abundance observations grouped (e.g. based on age)?",
                                           "experimental or observational study?",
                                           "duration of project in years",
                                           "does data set contain multiple taxa?",
@@ -149,6 +153,14 @@ explain_short = data.frame( variable = c('title','proj_metadata_key',
                                           "family","genus"),
                             stringsAsFactors = F)
 
-int.data <- list(explanations = explanations,
-                 explain_short = explain_short)
-devtools::use_data(int.data, internal = T)
+db <- list( dbname = 'popler_3',
+            server = 'ec2-54-214-212-101.us-west-2.compute.amazonaws.com', 
+            uid    = 'other_user',
+            pwd    = 'bigdata',
+            port   = 5432 )  
+
+int.data <- list(explanations  = explanations,
+                 explain_short = explain_short,
+                 db            = db)
+
+devtools::use_data(int.data, internal = T, overwrite = T)

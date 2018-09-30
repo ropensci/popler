@@ -33,7 +33,7 @@ pplr_report_dictionary <- function(full_tbl=FALSE, md_file=NULL, html_file=NULL)
     TOC <- int.data$explanations
     
     # remove contents that do not work
-    TOC <- TOC[-76, ]
+    TOC <- TOC[-77, ]
     
   } else {
     TOC <- int.data$explain_short

@@ -474,14 +474,8 @@ data_message <- function(x){
                           collapse=", "),
                    "."),
             "\n
-            IMPORTANT NOTICE:\n
-            If you are about to use this data in a ",
-            "formal publication as courtesy, please:
-            1) Contact the investigators of each project. 
-            2) Acknowledge funding sources, if these are provided ",
-            "in the metadata.   
-            Access metadata by using function metadata_url() on this ", 
-            "object. \n")
+To learn more about study design, use metadata_url()
+To cite the study, use pplr_citation().\n")
   
   else {
     message("\n", paste0("You have downloaded data from ",
@@ -490,15 +484,9 @@ data_message <- function(x){
                          paste0(unique(x$proj_metadata_key),
                                collapse = ", "),
                          "."),
-            "\n
-            IMPORTANT NOTICE:\n
-            If you are about to use this data in a ",
-            "formal publication as courtesy, please:
-            1) Contact the investigators of each project. 
-            2) Acknowledge funding sources, if these are provided ",
-            "in the metadata.   
-            Access metadata by using function metadata_url() on this ", 
-            "object. \n")
+"\n
+To learn more about study designs, use metadata_url()
+To cite the study, use pplr_citation().\n")
   }
   
 }
