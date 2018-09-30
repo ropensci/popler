@@ -1,8 +1,8 @@
 ## Test environments
-* local Windows 10 install, R 3.5.0
+* local Windows 10 install, R 3.5.1
 * ubuntu 12.04 (on travis-ci), R-oldrelease, R-release, and R-devel
 * MacOS Sierra 10.12.6 (on Travis-CI), R-oldrelease, R-release
-* Windows Server 2012 (on Appveyor-CI) -- R-oldrelease, R-release, and R-devel
+* Windows Server 2012 (on Appveyor-CI) -- R-oldrelease, R-release
 * win-builder (devel and release)
 
 All of the above passed with the following results: 
