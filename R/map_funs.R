@@ -16,7 +16,7 @@ prep_map_data <- function(input) {
         latlon_count <- rbind(latlon_count,
                               data.frame(lat = as.numeric(colnames(B)[j]),
                                          long = as.numeric(rownames(B)[i]),
-                                         count=B[i, j]))
+                                         count = B[i, j]))
       }
       
     }
@@ -41,7 +41,7 @@ prep_map_data <- function(input) {
     sbreaks <- c(1, 2, 3)
   }
   
-  plot_data <- list(data = latlon_count,
+  plot_data <- list(data = latlon_count[-1, ],
                     breaks = sbreaks)
   
   return(plot_data)
@@ -101,7 +101,9 @@ pplr_maps <- function(input, return_plot = FALSE) {
   # AN only - legend on bottom
   
   if(any(counts$lat > 50, na.rm = TRUE)) {
-    ak_plot <- ak_map(count_data = counts, 
+    for_plot <- dplyr::filter(counts, .data$lat > 50)
+    
+    ak_plot <- ak_map(count_data = for_plot, 
                       x = long,
                       y = lat,
                       polygon_group = group,
@@ -111,7 +113,11 @@ pplr_maps <- function(input, return_plot = FALSE) {
   }
   
   if(any(counts$lat < 50 & counts$lat > 0, na.rm = TRUE)) {
-    us_plot <- us_map(count_data = counts, 
+    
+    for_plot <- dplyr::filter(counts, 
+                              .data$lat < 50 & .data$lat > 0)
+    
+    us_plot <- us_map(count_data = for_plot, 
                       x = long,
                       y = lat,
                       polygon_group = group,
@@ -121,7 +127,10 @@ pplr_maps <- function(input, return_plot = FALSE) {
   }
   
   if(any(counts$lat < -40, na.rm = TRUE)) {
-    an_plot <- an_map(count_data = counts, 
+    
+    for_plot <- dplyr::filter(counts, .data$lat < -40)
+    
+    an_plot <- an_map(count_data = for_plot, 
                       x = long,
                       y = lat,
                       polygon_group = group,
@@ -131,7 +140,11 @@ pplr_maps <- function(input, return_plot = FALSE) {
   }
   
   if(any(counts$lat > -40 & counts$lat < 0, na.rm = TRUE)) { 
-    mc_plot <- mc_map(count_data = counts,
+    
+    for_plot <- dplyr::filter(counts,
+                              .data$lat > -40 & .data$lat < 0)
+    
+    mc_plot <- mc_map(count_data = for_plot,
                       x = long,
                       y = lat,
                       polygon_group = group,
@@ -144,7 +157,7 @@ pplr_maps <- function(input, return_plot = FALSE) {
   
   if(length(plots) == 4) {
     plot_all(plots)
-  } # all plots
+  }
   
   if(length(plots) == 3){
     if(!'mc' %in% names(plots)) plot_3_no_mc(plots)
@@ -160,7 +173,7 @@ pplr_maps <- function(input, return_plot = FALSE) {
     if(all(c('us', 'mc') %in% names(plots))) plot_2_us_mc(plots)
     if(all(c('us', 'ak') %in% names(plots))) plot_2_us_ak(plots)
     if(all(c('mc', 'ak') %in% names(plots))) plot_2_ak_mc(plots)
-  } # 2 plots
+  }
   
   if(length(plots) == 1) {
     if("an" %in% names(plots)) {
