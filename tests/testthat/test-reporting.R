@@ -4,6 +4,7 @@ context('test report_dictionary')
 library(fs)
 library(ggplot2)
 
+data_obj <- pplr_get_data( proj_metadata_key == 11 )
 
 test_that('Output file types are correct', {
   skip_on_cran()
@@ -59,7 +60,7 @@ test_that('report_metadata can use all types of input', {
   
   # Get_data
   
-  pplr_report_metadata(pplr_get_data(lterid == 'MCR'),
+  pplr_report_metadata(data_obj,
                        md_file = tempfile(fileext = '.Rmd'),
                        html_file = tempfile(fileext = '.html'))
   

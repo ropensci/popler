@@ -1,6 +1,6 @@
 # test the browse_popler function 
 
-summary_table <- pplr_summary_table_import()
+summary_table <- popler:::pplr_summary_table_import()
 
 # Main utility functions ---------------------------------------------------------------------
 context("browse(): Informational messages")
