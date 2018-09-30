@@ -156,6 +156,29 @@ pplr_site_rep <- function(input,
     new_data$month <- 6
   }
   
+  # Some of the data sets will have some days entered, but will be missing others.
+  # Consequently, they generate NAs when lubridate tries to parse them and are dropped
+  # from calculations
+  
+  NA_months <- NA_days <- integer(0)
+  
+  if(any(is.na(new_data$month))) {
+    warning('Some, but not all, "month" entries are missing and ',
+            'will not be included in the calculations of replication ',
+            '"duration" or "frequency".',
+            call. = FALSE)
+    NA_months <- which(is.na(new_data$month))
+  }
+  
+  if(any(is.na(new_data$day))) {
+    warning('Some, but not all, "day" entries are missing and ',
+            'will not be included in the calculations of replication ',
+            '"duration" or "frequency".',
+            call. = FALSE)
+    NA_days <- which(is.na(new_data$day))
+    
+  }
+  
   sample_date <- rlang::quo(sample_date)
   
   # create formatted sample date
@@ -163,7 +186,7 @@ pplr_site_rep <- function(input,
                                                 dates,
                                                 sample_date))
   
-  new_data$sample_date <- lubridate::ydm(new_data$sample_date)
+  new_data$sample_date <- suppressWarnings(lubridate::ydm(new_data$sample_date))
   
   sample_date <- rlang::quo(sample_date)
   
@@ -250,6 +273,9 @@ pplr_site_rep <- function(input,
   
   if(return_logical) {
     out <- new_data$group_col %in% site_ids
+    
+    out[c(NA_days, NA_months)] <- FALSE
+    
   } else {
     
     summary <- summary %>%
