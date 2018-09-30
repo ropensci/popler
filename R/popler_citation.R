@@ -81,37 +81,41 @@ pplr_citation <- function(input, bibtex_path = NULL){
         note    = input$lter_name[i],
         url     = link_out))
       
-    }
+    } else {
     # DOI-based citation
-    else{
+    
     
       # author, title, and year affiliated with DOI citation
-      authors_l  <- strsplit(input$doi_citation[i], '[0-9]{4}')[[1]][1] %>% 
-                      # gsub('Lead PI N\\.','Lead PI NTL', .) %>% 
-                      gsub("\\.$",'',.) %>% 
+      authors_l_temp  <- strsplit(input$doi_citation[i], '[0-9]{4}')[[1]][1]
+      
+      authors_l <- gsub("\\.$",'', authors_l_temp) %>% 
                       strsplit(',')  %>% 
-                      lapply(trimws,'both') %>% 
+                      lapply(trimws, 'both') %>% 
                       unlist
       
-      author_doi  <- lapply(authors_l, format_doi_author) %>% 
+      author_doi_temp  <- lapply(authors_l, format_doi_author) %>% 
                         unlist %>% 
-                        paste0(collapse=', ') %>% 
+                        paste0(collapse = ', ')
                         # Accommodate weird case with NTL studies
-                        gsub('Lead,  PI,','Lead PI NTL,', .)
+      author_doi <- gsub('Lead,  PI,','Lead PI NTL,', author_doi_temp)
 
-      title_doi   <- regmatches(input$doi_citation[i],
-                                gregexpr(' [0-9]{4}\\.(?s)(.*)http',
-                                input$doi_citation[i], perl=T) ) %>% 
-                        gsub('^ [0-9]{4}\\.','',.) %>% 
-                        gsub('http$','',.) %>% 
-                        gsub('\\.\\.','.',.) %>% 
+      title_doi_temp_1 <- regmatches(input$doi_citation[i],
+                              gregexpr(' [0-9]{4}\\.(?s)(.*)http',
+                                       input$doi_citation[i], perl = TRUE) ) 
+      
+      title_doi_temp_2 <- gsub('^ [0-9]{4}\\.','', title_doi_temp_1) 
+      
+      title_doi_temp_3 <- gsub('http$','',title_doi_temp_2) 
+      
+      title_doi <- gsub('\\.\\.','.',title_doi_temp_3) %>% 
                         trimws('both')
 
-      year_doi   <- regmatches(input$doi_citation[i], 
+      year_doi_temp   <- regmatches(input$doi_citation[i], 
                               gregexpr("[[:digit:]]{4}", 
                               input$doi_citation[i])) %>% 
-                              unlist %>% 
-                              .[1]
+                              unlist
+      
+      year_doi <- year_doi_temp[1]
       
       bib <- c(bib, bibentry(
                bibtype = "Misc",
@@ -152,18 +156,16 @@ pplr_citation <- function(input, bibtex_path = NULL){
 format_doi_author <- function(author_string){
   
   # initials
-  init_n <- author_string %>% 
-              regmatches(.,
-                         gregexpr("^[[:alpha:]]{1}\\.| [[:alpha:]]{1}$| [[:alpha:]]{1}\\.$",
-                         .)) %>%
+  init_n <- regmatches(author_string,
+                       gregexpr("^[[:alpha:]]{1}\\.| [[:alpha:]]{1}$| [[:alpha:]]{1}\\.$",
+                                author_string)) %>%
                 unlist %>% 
                 trimws('both')
   
   # last name
-  last_n <- author_string %>% 
-              regmatches(.,
-                         gregexpr("[[:alpha:]]{2,20}",
-                         .)) %>%
+  last_n <- regmatches(author_string,
+                       gregexpr("[[:alpha:]]{2,20}",
+                                author_string)) %>%
                 unlist
   
   return( paste(init_n, last_n, sep=' ') )
@@ -175,20 +177,26 @@ format_doi_author <- function(author_string){
 # format authros not coming from column "doi_citatin"
 format_author <- function(author_string){
   
-  first_n  <- author_string %>% 
+  first_n_temp  <- author_string %>% 
                 trimws( 'both' ) %>% 
                 strsplit( ' ' ) %>% 
-                unlist %>% .[1] %>% 
+                unlist 
+  
+  first_n <- first_n_temp[1] %>% 
                 substr(1,1)
-  second_n <- author_string %>% 
-                trimws( 'both' ) %>% 
-                strsplit( ' ' ) %>% 
-                unlist %>% .[2]
+  
+  second_n_temp <- author_string %>% 
+    trimws( 'both' ) %>% 
+    strsplit( ' ' ) %>% 
+    unlist 
+  
+  second_n <- second_n_temp[2]
   # third name accommodates separated last names (e.g. del Moral, van Pelt)
-  third_n  <- author_string %>% 
+  third_n_temp  <- author_string %>% 
                 trimws( 'both' ) %>% 
                 strsplit( ' ' ) %>% 
-                unlist %>% .[3]
+                unlist
+  third_n <- third_n_temp[3]
   
   if( is.na(third_n) ) third_n = NULL
   
