@@ -30,6 +30,11 @@ notifications:
     - brad.ochocki@gmail.com 
     - aldo.compagnoni@gmail.com  
     
+script: 
+  - |
+    R CMD build .
+    travis_wait 30 R CMD check popler.tar.gz
+    
 after_success:
   - Rscript -e 'covr::codecov()'
 
