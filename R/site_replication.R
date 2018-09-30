@@ -269,8 +269,6 @@ pplr_site_rep <- function(input,
       
     }
     
-    
-    
     out <- dplyr::select(summary,
                          !!! rlang::syms(levels), 
                          .data$year,

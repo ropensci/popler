@@ -50,7 +50,7 @@ test_that('pplr_site_rep returns correct types', {
   
 })
 
-data <- pplr_get_data(lterid == 'PAL')
+data <- pplr_get_data(proj_metadata_key == 11)
 
 library(ggplot2)
 test_that('pplr_site_rep_plot() returns correct values', {
@@ -71,7 +71,7 @@ test_that('fails correctly', {
   
   expect_error(pplr_site_rep(data, rep_level = 6))
   expect_error(pplr_site_rep(data, duration = 55))
-  # expect_error(pplr_site_rep(data, freq = 7))
+  expect_error(pplr_site_rep(data, freq = 7))
   
   # Pal only has 2 levels of spatial replication
   expect_error(pplr_site_rep(data, rep_level = 5))
