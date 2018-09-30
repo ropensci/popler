@@ -18,6 +18,3 @@ summary table
 The \code{summary_table} is often called internally by popler functions,
  but can also be accessed directly by calling \code{pplr_summary_table_import()}.
 }
-\seealso{
-\code{\link{pplr_summary_table_check}}
-}

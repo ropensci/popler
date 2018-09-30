@@ -86,24 +86,16 @@ call_update = function(query){
   return(eval(parse(text = TextToParse)))
 }
 
-#' Take a \code{browse} object and update it with \code{full_tbl = TRUE}.
-#' @param input An object of class either \code{browse} or
-#' \code{get_data}.
-#' @param ... unused
-#' 
-#' @export
+
+#' @noRd
 # given a browse() object or a get_data() object, returns an identical browse
 # object with full_tbl=TRUE
 rebrowse <- function(input, ...){
   UseMethod("rebrowse")
 }
 
-#' @name rebrowse.browse
-#' @rdname rebrowse
-#' 
-#' @inheritParams rebrowse
-#' 
-#' @export
+
+#' @noRd 
 rebrowse.browse <- function(input, ...) {
   pmk <- paste0(input$proj_metadata_key, collapse=",")
   return(eval(parse(text = paste0("pplr_browse(proj_metadata_key %in% c(",
@@ -111,12 +103,7 @@ rebrowse.browse <- function(input, ...) {
                                   "), full_tbl=TRUE)"))))
 }
 
-#' @name rebrowse.get_data
-#' @rdname rebrowse
-#' 
-#' @inheritParams rebrowse
-#' 
-#' @export
+#' @noRd
 rebrowse.get_data <- function(input, ...) {
   pmk <- paste0(attributes(input)$unique_projects, collapse=",")
   return(eval(parse(text = paste0("pplr_browse(proj_metadata_key %in% c(", 
@@ -148,8 +135,6 @@ factor_to_character <- function(x, full_tbl = FALSE){
 #' 
 #' @note The \code{summary_table} is often called internally by popler functions,
 #'  but can also be accessed directly by calling \code{pplr_summary_table_import()}. 
-#' 
-#' @seealso \code{\link{pplr_summary_table_check}}
 #' 
 #' @export
 #' 
@@ -231,14 +216,8 @@ pplr_summary_table_update <- function(){
   message("Finished.")
 }
 
-#' @title Check last time summary_table was updated
-#' 
-#' @description Checks the main table's age. If it's more than 6 weeks old, 
-#' returns a message suggesting an update.
-#' 
-#' @seealso \code{\link{pplr_summary_table_update}}
-#' 
-#' @export
+
+#' @noRd
 
 pplr_summary_table_check = function(){
   
@@ -320,20 +299,7 @@ query_get = function(connection, query){
 # Source for idea
 # https://stackoverflow.com/questions/30357330/r-cmd-check-no-visible-binding-for-global-variable-mypkgdata
 
-#' Imports the \code{summary_table} object to R
-#' @description Imports the \code{summary_table} object to the top level environment
-#' when called by the user.
-#' @return A table summarizing each type of data in the popler data base.
-#' 
-#' @details This function is often called internally to load the summary table
-#' and extract some metadata that is used in that functional context. Loading
-#' summary table may be useful for exploring what data is in popler in case
-#' the vignettes prove insufficiently graphic. However, be aware
-#' it is loaded by functions each time they are called, so any manipulations
-#' by the user at the top level will not be passed to those functions.
-#' 
-#' @export
-
+#' @noRd
 pplr_summary_table_import <- function() {
   # create empty environment for loading
   pkgEnv <- new.env(parent = emptyenv())
