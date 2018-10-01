@@ -1,13 +1,13 @@
 context('pplr_site_rep')
 
-data_obj <- pplr_get_data( proj_metadata_key == 11 )
+data_obj <- pplr_get_data( proj_metadata_key == 6 )
 
 test_that('pplr_site_rep returns correct types', {
   skip_on_cran()
   
   ids <- pplr_site_rep(data_obj, 
                        freq = 2, 
-                       duration = 12,
+                       duration = 6,
                        rep_level = 2, 
                        return_logical = TRUE)
   
@@ -17,7 +17,7 @@ test_that('pplr_site_rep returns correct types', {
   
   summary_tab <- pplr_site_rep(data_obj,
                                freq = 2,
-                               duration = 12,
+                               duration = 6,
                                rep_level = 2,
                                return_logical = FALSE)
   
@@ -31,7 +31,7 @@ test_that('pplr_site_rep returns correct types', {
   
   ids2 <- pplr_site_rep(data_obj,
                         freq = 0.5,
-                        duration = 12,
+                        duration = 4,
                         rep_level = 2,
                         return_logical = TRUE)
   
@@ -40,7 +40,7 @@ test_that('pplr_site_rep returns correct types', {
   
   summary_tab_2 <- pplr_site_rep(data_obj,
                                  freq = 0.5,
-                                 duration = 12,
+                                 duration = 4,
                                  rep_level = 2,
                                  return_logical = FALSE)
   
@@ -71,7 +71,7 @@ test_that('fails correctly', {
   expect_error(pplr_site_rep(data_obj, duration = 55))
   expect_error(pplr_site_rep(data_obj, freq = 7))
   
-  # Pal only has 2 levels of spatial replication
+  # project 6 only has 4 levels of spatial replication
   expect_error(pplr_site_rep(data_obj, rep_level = 5))
   
   wrong <- pplr_browse(lterid == 'PAL')
