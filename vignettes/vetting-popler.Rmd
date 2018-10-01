@@ -18,12 +18,12 @@ The `popler` R package was built to foster scientific synthesis using LTER long-
  3. Study characteristics. 
  4. Geographic location.
 
-Vetting the database based on these criteria is very intuitive. However, `popler` also facilitates identifying data sets in many other, more flexible ways. Below we provide several examples on how to select LTER data based on the four types of features described above. Moreover, in the final section we also show how to carry out more complicated types of searches.
+Vetting the database based on these criteria is intuitive. However, `popler` also facilitates identifying data sets in other ways. Below we provide several examples on how to select LTER data based on the four types of features described above. Moreover, in the final section we also show how to carry out more complicated types of searches.
 
 ### 1. Replication
 #### Temporal replication
 
-If you are interested in long-term data, you will likely want to select projects based on how long the data was collected for. This is very straightforward using the 
+If you are interested in long-term data, you will likely want to select projects based on how many years the data was collected for. This is straightforward: 
 
 ```{r, warning = FALSE, message = FALSE}
 
@@ -45,8 +45,7 @@ Note that `samplefreq` is **not** a default variable included in the `pplr_dicti
 
 ###1. Spatial replication
 
-#### Pre-data download
-
+#### Before downloading data
 
 If you wish to select data sets based on their spatial replication, you need to consider that `popler` organizes data in nested spatial levels. For example, in many plant studies data is collected at the *plot* level, which can be nested within *block*, which in turn can be nested within *site*. `popler` labels spatial levels using numbers: 1 is the coarsest level of replication which contains all other spatial replicates. In the example above, spatial level 1 is *site*, spatial level 2 is *block*, and spatial level 3 is *plot*. `popler` allows for a total of 5 spatial levels. Given the above, you can select studies based on three criteria:
 
@@ -61,31 +60,30 @@ Below we provide respective three examples for each one of these respective sear
 ```{r}
 pplr_browse(tot_spat_rep > 100)
 pplr_browse(spatial_replication_level_5_number_of_unique_reps > 1)
-
-#pplr_browse(n_spat_levs == 3)
+pplr_browse(n_spat_levs == 3)
 ```
 
-####Post-data download
+#### After downloading data
 
 Users can also explore the spatial and temporal replication of the data more explicitly after downloading it with `pplr_get_data()`. `pplr_site_rep()` provides two options for exploring data that meet temporal replication requirements at a given spatial resolution. You can choose to filter your data by specifying a minimum sampling frequency per year and a minimum number of years that sample with that frequency. Because this function uses the sampling dates to calculate the frequency, it provides additional information that is not contained in the `samplefreq` column of the main metadata table.
 
 
 ```{r, eval = FALSE}
-# download some data
-
+# download some data (note: this download is >100MB)
 SEV <- pplr_get_data(lterid == "SEV")
 
-# Create a summary table containing names of replication levels that contain 3 samples per year for 15 years from the Sevilleta LTER. 
-SEV_long_studies <- pplr_site_rep(SEV, freq = 3, duration = 15, return_logical = FALSE)
+# Create a summary table containing names of replication levels that contain 3 samples per year for 10 years from the Sevilleta LTER. 
+SEV_long_studies <- pplr_site_rep(SEV, 
+                                  freq = 3, 
+                                  duration = 10, 
+                                  return_logical = FALSE)
 
-
-# you can also just subset it directly using the function and specifying it to return a logical vector
-
+# you can also subset it directly using the function and specifying it to return a logical vector
 subset_vec <- pplr_site_rep(SEV,
                             freq = 3,
-                            duration = 15,
+                            duration = 10,
                             return_logical = TRUE)
-
+# store subset of data
 SEV_long_data <- SEV[subset_vec, ]
 
 
@@ -103,22 +101,19 @@ library(ggplot2)
 pplr_site_rep_plot(SEV_long_data, return_plot = TRUE) +
   ggtitle("Long Term Data from Sevilleta LTER")
   
-
 # or return an invisible copy of the input data and keep piping
-
 library(dplyr)
-
 SEV_long_data %>%
   pplr_site_rep_plot(return_plot = FALSE) %>%
   pplr_report_metadata()
-
 
 ```
 
 
 ###2. Taxonomic group
 
-`popler` contains a wealth of taxonomic information from each project. To select information based on taxonomic groups, simply specify which group and which category you wish to select. The default settings of popler provide seven taxonomic groups: kingdom, phylum, class, order, family, genus, and species in each request. Additionally, a column called `sppcode` is included.
+`popler` is not limited to specific taxonomic groups, and it currently contains mostly data on animals and plants. To select information based on taxonomic groups, simply specify which group and which category you wish to select. The default settings of popler provide seven taxonomic groups: kingdom, phylum, class, order, family, genus, and species in each request. Column `sppcode` provides the identifier, usually an alphanumeric code, associated with each taxonomic entity in the original dataset.
+Note that not all LTER studies provide full taxonomic information; hence, browsing studies by taxonomic information will provide partial results (in the example below, not all insects studies will be identified).
 
 ```{r, warning = FALSE, message = FALSE}
 pplr_dictionary(class)
@@ -148,7 +143,8 @@ Metadata information provides a few variables to select studies based on their a
  - `treatment_type`: type of treatments, if study is experimental.
  - `community`: does project provide data on multiple species?
 
-Below we provie several three examples on how to use these three fields. 
+Below we show
+how to use these three fields. 
 
 ```{r, warning = FALSE, message = FALSE}
 pplr_dictionary(community)
@@ -172,7 +168,7 @@ pplr_browse(lat_lter > 40 & lng_lter < -100) # single-species studies
 
 ### 5. More complicated searches
 
-Popler allows carrying out more complicated searches than those suggested above. In particular, it allows to i) combine to simultaneously search several types of metadata variables, and ii) use keywords. In the first case, simply provide the function `pplr_browse()` with a logical statement regarding more than one metadata variable. For example, if you want studies on plants with at least 4 nested spatial levels, and 10 years of data:
+Popler allows carrying out more complicated searches by allowing to i)  simultaneously search several types of metadata variables, and ii) search studies matching a string pattern. In the first case, simply provide the function `pplr_browse()` with a logical statement regarding more than one metadata variable. For example, if you want studies on plants with at least 4 nested spatial levels, and 10 years of data:
 
 ```{r, eval = FALSE}
 
@@ -180,4 +176,19 @@ pplr_browse(kingdom == "Plantae" & n_spat_levs == 4 & duration_years > 10)
 
 ```
 
+In the second case, the keyword argument in function `pplr_browse()` will search for string patterns within the metadata of each study. For example, in case we were interested in studies using traps:
 
+```{r, eval = FALSE}
+
+pplr_browse(keyword = 'trap')
+
+```
+
+Note that the keyword argument works with regular expressions as well:
+
+```{r, eval = FALSE}
+
+# look for studies that include the words "trap" or "spatial"
+pplr_browse(keyword = 'trap|spatial')
+
+```
