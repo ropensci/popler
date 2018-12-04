@@ -123,6 +123,79 @@ factor_to_character <- function(x, full_tbl = FALSE){
   
 }
 
+# service functions that 'talk' to API -----------------------------------------
+
+popler_base <- "https://popler.space"
+cc          <- function(l) Filter(Negate(is.null), l)
+
+# get actual data from the API
+pop_GET <- function(path, args, ...) {
+  cli <- crul::HttpClient$new(url = popler_base, opts = list(...))
+  res <- cli$get(path = path, query = cc(args))
+  res$raise_for_status()
+  txt <- res$parse("UTF-8")
+  dat <- jsonlite::fromJSON(txt)
+  dat$data <- tibble::as_tibble(dat$data)
+  return(dat)
+}
+
+#' search 
+#' 
+#' @export
+#' @param limit number of records to return, default: 10
+#' @param offset record number to start at, default: first record
+#' @param ... curl options passed on to [crul::HttpClient]
+#' @examples
+#' # basic example
+#' pop_summary()
+#' # pass in curl options for debugging, seeing http request details
+#' pop_summary(verbose = TRUE)
+pop_summary <- function(limit = 10, offset = 0, ...) {
+  args <- list(limit = limit, offset = offset)
+  pop_GET("summary", args, ...)
+}
+
+#' search 
+#' 
+#' @export
+#' @param proj_metadata_key project metadat key
+#' @param limit number of records to return, default: 10
+#' @param offset record number to start at, default: first record
+#' @param ... curl options passed on to [crul::HttpClient]
+#' @examples
+#' # basic example
+#' pop_search(proj_metadata_key = 13)
+#' # pass in curl options for debugging, seeing http request details
+#' pop_search(proj_metadata_key = 13, verbose = TRUE)
+pop_search <- function(proj_metadata_key, limit = 10, offset = 0, ...) {
+  args <- list(proj_metadata_key = proj_metadata_key, 
+    limit = limit, offset = offset)
+  pop_GET("search", args, ...)
+}
+
+#' @noRd
+# set offsets and limits to download whole datasets through the API
+# (The API only downloads 1000 rows at a time)
+offset_limit <- function( route_function ){
+  
+  # count the number of rows in the dataset
+  count_summ  <- route_function( limit = 10, offset = 0 )$count
+  
+  # total number of "offsets" and "limits"
+  n_download  <- count_summ %/% 1000
+  rest        <- count_summ %% 1000
+  
+  # "offsets" and "limits"
+  download_v  <- 1000 * c(0:n_download )
+  limit_v     <- rep(1000, length(download_v) )
+
+  if( rest != 0 ) limit_v[length(download_v)] <- rest
+  
+  list(offset_v   = download_v,
+       limit_v    = limit_v )
+
+}
+
 # generate main data table summary ---------------------------------------------
 
 #' @title Update \code{popler}'s summary table
@@ -143,27 +216,88 @@ pplr_summary_table_update <- function(){
   
   message("Please wait while popler updates its summary table... this may take several minutes.")
   
-  # set database connection
-  conn <- db_open()
+  # set up list of variables to retain
   
   # list all columns
-  proj_cols   <- query_get(conn, "SELECT column_name FROM information_schema.columns WHERE table_name = 'project_table'")[,1]
-  lter_cols   <- query_get(conn, "SELECT column_name FROM information_schema.columns WHERE table_name = 'lter_table'")[,1]
-  taxa_cols   <- query_get(conn, "SELECT column_name FROM information_schema.columns WHERE table_name = 'taxa_table'")[,1]
+  taxa_cols <- c("taxa_table_key","site_in_project_taxa_key", "sppcode",                 
+                "kingdom", "subkingdom", "infrakingdom",            
+                "superdivision", "division", "subdivision",             
+                "superphylum", "phylum", "subphylum",               
+                "clss", "subclass", "ordr",                    
+                "family", "genus", "species",
+                "common_name", "authority", "metadata_taxa_key")
+
+  lter_cols <- c( "lterid", "lter_name", "lat_lter",                      
+                  "lng_lter", "currently_funded", "current_principle_investigator",
+                  "current_contact_email", "alt_contact_email", "homepage" )
+
+  proj_cols <- c( "proj_metadata_key",                                
+                   "lter_project_fkey",                                
+                   "title",                                            
+                   "samplingunits",                                    
+                   "datatype",                                         
+                   "structured_type_1",                                
+                   "structured_type_1_units",                         
+                   "structured_type_2",                          
+                   "structured_type_2_units",
+                   "structured_type_3",                                
+                   "structured_type_3_units",                          
+                   "studystartyr",                                     
+                   "studyendyr",                                       
+                   "samplefreq",                                       
+                   "studytype",                                        
+                   "community",                                        
+                   "spatial_replication_level_1_extent",               
+                   "spatial_replication_level_1_extent_units",         
+                   "spatial_replication_level_1_label",                
+                   "spatial_replication_level_1_number_of_unique_reps",
+                   "spatial_replication_level_2_extent",               
+                   "spatial_replication_level_2_extent_units",         
+                   "spatial_replication_level_2_label",                
+                   "spatial_replication_level_2_number_of_unique_reps",
+                   "spatial_replication_level_3_extent",               
+                   "spatial_replication_level_3_extent_units",         
+                   "spatial_replication_level_3_label",                
+                   "spatial_replication_level_3_number_of_unique_reps",
+                   "spatial_replication_level_4_extent",              
+                   "spatial_replication_level_4_extent_units",
+                   "spatial_replication_level_4_label",                
+                   "spatial_replication_level_4_number_of_unique_reps",
+                   "spatial_replication_level_5_extent",               
+                   "spatial_replication_level_5_extent_units",
+                   "spatial_replication_level_5_label",        
+                   "spatial_replication_level_5_number_of_unique_reps",
+                   "treatment_type_1",
+                   "treatment_type_2",                                 
+                   "treatment_type_3",                                 
+                   "control_group",                                    
+                   "derived",                                          
+                   "authors",                                          
+                   "authors_contact",
+                   "metalink",                                  
+                   "knbid",                                        
+                   "structured_type_4",                                
+                   "structured_type_4_units",
+                   "duration_years",
+                   "doi",                                              
+                   "doi_citation",                                     
+                   "structured_data") 
+  
   search_cols <- paste( c(proj_cols,lter_cols,taxa_cols), collapse = ", ")
   
   search_cols[!search_cols %in% c("currently_funded",
                                   "homepage",
                                   "current_principle_investigator")]
-  # open database connection, query result
-  out <- query_get(conn, 
-                   paste("SELECT", search_cols,
-                         "FROM project_table
-                         JOIN site_in_project_table ON project_table.proj_metadata_key = site_in_project_table.project_table_fkey
-                         JOIN taxa_table ON site_in_project_table.site_in_project_key = taxa_table.site_in_project_taxa_key
-                         JOIN study_site_table ON site_in_project_table.study_site_table_fkey = study_site_table.study_site_key
-                         JOIN lter_table ON study_site_table.lter_table_fkey = lter_table.lterid"))
+
+  # read summary table piecewise
+  out_l  <- Map( function(lim,off) pop_summary( limit = lim, offset = off )$data, 
+               query_in$limit_v,
+               query_in$offset_v )
   
+  # put it all together
+  out <- Reduce( function(...) rbind(...), out_l ) %>% 
+            as.data.frame
+
   # Select project-specific information 
   proj_info             <- out[,c(proj_cols,lter_cols)]
   
@@ -209,9 +343,6 @@ pplr_summary_table_update <- function(){
   # store main data table--------------------------------------------------
   st_file <- paste0(system.file("extdata", package = "popler"),"/summary_table.rda")
   save(summary_table, file = st_file)
-  
-  # close database connection
-  db_close(conn)
   
   message("Finished.")
 }
