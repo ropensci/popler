@@ -313,11 +313,28 @@ pplr_summary_table_update <- function(){
   search_cols[!search_cols %in% c("currently_funded",
                                   "homepage",
                                   "current_principle_investigator")]
-
+  
+  # set limits 
+  query_in <- offset_limit_summary( )
+  
+  # set up progress bar
+  total    <- query_in$limit_v %>% length
+  prog_bar <- txtProgressBar(min = 0, max = total, style = 3)
+  
+  # actually download summary table
+  downld_summary <- function(lim,off,i){
+                      setTxtProgressBar(prog_bar, i)
+                      pop_summary( limit = lim, offset = off )$data
+                    }
+  
   # read summary table piecewise
-  out_l  <- Map( function(lim,off) pop_summary( limit = lim, offset = off )$data, 
-               query_in$limit_v,
-               query_in$offset_v )
+  out_l  <- Map( downld_summary,
+                 query_in$limit_v,
+                 query_in$offset_v,
+                 1:length(query_in$limit_v) )
+  
+  # notify that the brunt of the wait is over
+  message("Download complete, just a few moments to format the summary table!")
   
   # put it all together
   out <- Reduce( function(...) rbind(...), out_l ) %>% 
@@ -374,7 +391,7 @@ pplr_summary_table_update <- function(){
 
 
 #' @noRd
-
+#' Check whether the summary table has been recently updated
 pplr_summary_table_check = function(){
   
   wks_passed <- floor(as.numeric(difftime(Sys.time(),
@@ -400,9 +417,8 @@ db_open <- function() {
     }
     
     inputs <- int.data$db
-    
-    
-  
+
+      
     con <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(), 
                                   host     = inputs$server, 
                                   dbname   = inputs$dbname, 
