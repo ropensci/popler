@@ -178,11 +178,17 @@ pop_search <- function(proj_metadata_key, limit = 10, offset = 0, ...) {
 #' @noRd
 # set offsets and limits to download whole datasets through the API
 # (The API only downloads 1000 rows at a time)
-offset_limit <- function( route_function ){
-  
-  # count the number of rows in the dataset
-  count_summ  <- route_function( limit = 10, offset = 0 )$count
-  
+offset_limit <- function( route_function, proj_id = NULL ){
+
+  if( route_function == 'pop_summary' ){
+    # count the number of rows in the dataset
+    count_summ  <- route_function( limit = 10, offset = 0 )$count  
+  }
+  if( route_function == 'pop_search' ){
+    # count the number of rows in the dataset
+    count_summ  <- route_function( proj_id, limit = 10, offset = 0 )$count
+  }
+    
   # total number of "offsets" and "limits"
   n_download  <- count_summ %/% 1000
   rest        <- count_summ %% 1000
