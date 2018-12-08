@@ -407,41 +407,6 @@ pplr_summary_table_check = function(){
   
 }
 
-#' @noRd
-#' @importFrom RPostgreSQL PostgreSQL dbConnect
-# open a connection to the popler database
-db_open <- function() {
-    
-    if (!requireNamespace("RPostgreSQL", quietly = TRUE)) {
-      stop("RPostgreSQL package required to connect to postgres db", call. = FALSE)
-    }
-    
-    inputs <- int.data$db
-
-      
-    con <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(), 
-                                  host     = inputs$server, 
-                                  dbname   = inputs$dbname, 
-                                  user     = inputs$uid, 
-                                  password = inputs$pwd, 
-                                  port     = inputs$port)
-    
-    #info <- RPostgreSQL::dbGetInfo(con)
-    #dbplyr::src_sql("postgres", con, info=info, disco=popler:::popler_disconnector(con,"postgres",silent))
-    #src_sql("postgres", con, info=info, disco=popler:::popler_disconnector(con,"postgres",silent))
-}
-  
-  
-  
-
-# a wrapper function to (quietly) close popler database connections
-
-#' @importFrom RPostgreSQL dbDisconnect
-#' @noRd 
-db_close <- function(connection){
-    # RPostgreSQL::dbDisconnect(connection$con,quiet=T)
-  RPostgreSQL::dbDisconnect(connection,quiet=TRUE)
-}
 
 #' @noRd
 # evaluate a string using the local environment, return the evaluation as string
