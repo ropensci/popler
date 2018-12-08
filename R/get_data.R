@@ -1,16 +1,10 @@
 #' @title Download data from the popler database
 #'
-#' @description This function downloads LTER studies contained in the popler database.
+#' @description This function downloads datasets associated with LTER studies contained in the popler database.
 #' The user can download data directly, using a logical expression, or using 
 #' objects created by `browse`.
 #' @param ... An object produced by browse, a logical expression, or both. This
 #' can only accept one of each at a time currently. 
-#' @param add_vars A string to specify which variables the user wants to 
-#' add to the default variables used in a query. See \code{Details} for list of
-#' default variables.
-#' @param subtract_vars A string to specify which, among the default 
-#' variables, the user wishes to discard in queries to the database. See 
-#' \code{Details} for list of default variables.
 #' @param cov_unpack Should covariates be unpacked? This argument uses
 #'  function `cov_unpack` to extract the variables contained in the 
 #'  variable `covariates`, and combine the new columns with the default output.
@@ -64,9 +58,8 @@
 #' insect_sev = pplr_browse(class == "Insecta" & lterid == "SEV")
 #' insect_25_yrs96_99 = pplr_get_data(insect_sev, year > 1995 & year < 2000)
 #' 
-#' insect_21_25 = pplr_get_data((proj_metadata_key == 43 | 
-#'                               proj_metadata_key == 25) & 
-#'                               year < 1995 )
+#' insect_21_25 = pplr_get_data( (proj_metadata_key == 43 | 
+#'                                proj_metadata_key == 25) )
 #'}
 #'
 #' @importFrom dplyr %>% select
@@ -75,21 +68,9 @@
 
 # Function that connects and gathers the information from the database
 
-pplr_get_data <- function(..., add_vars = NULL, subtract_vars = NULL,
-                     cov_unpack = FALSE){
-  # open connection to database
-  conn <- db_open()
+pplr_get_data <- function(..., cov_unpack = FALSE){
+
   # define possible variables ------------------------------------------
-  
-  # possible variables 
-  possible_vars  <- vars_query(conn)
-  # all potential variables in a query
-  all_vars       <- possible_vars$all_vars
-  # default variables 
-  default_vars   <- possible_vars$default_vars
-  # selected variables -------------------------------------------------
-  # extract the variables contained in the logical expressions specified 
-  # in '...'
   
   # concatenate logical expressions specified in the '...' argument
   # expressions can be specified explicitly, implicitly (through an 
@@ -100,27 +81,11 @@ pplr_get_data <- function(..., add_vars = NULL, subtract_vars = NULL,
   # "structure" or "treatment"
   updated_calls <- call_update(c_calls)
   
-  # extract the variables specified in the calls' expressions
-  # this is done to include `expr_vars` in the query, if some
-  # of `expr_vars` do not match `default_vars`.
-  expr_vars <- expr_vars_get(all_vars, updated_calls)
-  
-  # variables that appear either as default, added manually, or inherited
-  # from a logical operation
-  subset_vars <- unique(c(default_vars, add_vars, expr_vars))
-  # 'subset_vars' minus variables subtracted manually via argument
-  # 'subtract_vars' 
-  vars_select <- paste( setdiff(subset_vars, subtract_vars), collapse = ", ")
-  
-  
-  # translate R logical expressions in '...' into SQL ---------------------
-  sql_condition <- parse_to_sql_search(updated_calls)
-  
-  
+
   # query -----------------------------------------------------------------
   
   # query popler online
-  output_data <- pplr_query(conn, vars_select, sql_condition)
+  output_data <- pplr_query( )
   
   if(dim(output_data)[1] < 1) {
     stop('No data found. Check to make sure query is correct',
@@ -167,8 +132,6 @@ pplr_get_data <- function(..., add_vars = NULL, subtract_vars = NULL,
   
   # Informational message
   data_message(output_data)
-  
-  db_close(conn)
   
   return(output_data)
   
@@ -253,24 +216,6 @@ concatenate_queries <- function(...){
   # return a single logical call
   return(eval(parse(text = TextToParse)))
   
-}
-
-#' @noRd
-# Identify which "search_expr" belong to "all_vars"
-expr_vars_get <- function(all_cols, inherit_logical){
-  inherit_elem <- as.character(inherit_logical)
-  
-  # change column names 
-  inherit_elem <- colname_change("clss", "class", inherit_elem)
-  inherit_elem <- colname_change("ordr", "order", inherit_elem)
-  
-  inds <- NULL
-  for(i in seq_len(length(all_cols))){
-    if(any(grepl(all_cols[i], inherit_elem))){
-      inds <- c(inds, i)  
-    }
-  }
-  return(unique(all_cols[inds]))
 }
 
 
