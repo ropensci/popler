@@ -51,12 +51,9 @@
 #' parasite = pplr_browse(proj_metadata_key == 25)
 #' gh_data = pplr_get_data(parasite)
 #' 
-#' # further subset this data set, based on year
-#' gh_data_96_99 = pplr_get_data(parasite, year > 1995 & year < 2000)
-#' 
 #' # insect data sets from the SEV lter site
 #' insect_sev = pplr_browse(class == "Insecta" & lterid == "SEV")
-#' insect_25_yrs96_99 = pplr_get_data(insect_sev, year > 1995 & year < 2000)
+#' insect_25_yrs96_99 = pplr_get_data(insect_sev)
 #' 
 #' insect_21_25 = pplr_get_data( (proj_metadata_key == 43 | 
 #'                                proj_metadata_key == 25) )
@@ -84,9 +81,15 @@ pplr_get_data <- function(..., cov_unpack = FALSE){
 
   # query -----------------------------------------------------------------
   
-  # query popler online
-  output_data <- pplr_query( )
+  # get id of studies
+  id_vec      <- summary_table %>% 
+                    subset( eval(updated_calls) ) %>% 
+                    .$proj_metadata_key %>% 
+                    unique
   
+  # query popler online
+  output_data <- pplr_query( id_vec )
+
   if(dim(output_data)[1] < 1) {
     stop('No data found. Check to make sure query is correct',
          call. = FALSE)
