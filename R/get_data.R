@@ -232,26 +232,40 @@ pplr_query <- function( proj_id ){
   }
   
   # set in limits and offsets
-  query_in <- offset_limit_search( proj_id )
+  query_l   <- lapply(proj_id, offset_limit_search)
+  
+  # collapse in a single lits (if needed)
+  if( length(query_l) > 1){
+    ids_vec           <- purrr::map2(proj_id, query_l, 
+                                     function(x,y) rep(x,length(y$limit_v)) )
+    query_in          <- purrr::pmap(query_l, function(x,y) c(x,y) )
+    query_in$proj_id  <- ids_vec %>% unlist
+  }else{
+    query_in          <- query_l
+    query_in$proj_id  <- rep(proj_id, length(query_l$limit_v) )
+  }
   
   # set up progress bar
   total     <- query_in$limit_v %>% length
   prog_bar  <- txtProgressBar(min = 0, max = total, style = 3)
   
   # actually download summary table
-  downld_dataset <- function(lim,off,i){
+  downld_dataset <- function(lim,off,id,i){
                       setTxtProgressBar(prog_bar, i)
-                      pop_search( proj_id, limit = lim, offset = off )$data
+                      pop_search( id, limit = lim, offset = off )$data
                     }
   
   # download dataset piecewise; with progress bar!
   df_l      <- Map( downld_dataset,
                     query_in$limit_v,
                     query_in$offset_v,
+                    query_in$proj_id,
                     1:length(query_in$limit_v) )
   
   # put it all in one  together
-  out_data <- Reduce( function(...) rbind(...), df_l ) %>% as.data.frame
+  out_data <- Reduce( function(...) bind_rows(...), df_l ) %>% 
+                as.data.frame %>% 
+                .[,-grep('count_table_key',names(.))]
 
   return(out_data)
   
