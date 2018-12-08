@@ -350,113 +350,36 @@ expr_vars_get <- function(all_cols, inherit_logical){
 
 # query popler
 #' @noRd
-pplr_query <- function(conn, vars_select, sql_condition){
+pplr_query <- function( proj_id ){
   
-  if(length(sql_condition) == 0) {
+  if( !('proj_id' %in% ls()) ) {
     stop("No logical expression specified. Please specify what ",
          "data you wish to download from popler" )
   }
-  # table specific variables
-  vars <- list()
-  vars$count_table <- gsub("treatment_type_", 
-                           "count_table.treatment_type_",
-                           vars_select)
-  vars$biomass_table <- gsub("treatment_type_", 
-                             "biomass_table.treatment_type_",
-                             vars_select)
-  vars$percent_cover_table <- gsub("treatment_type_", 
-                                   "percent_cover_table.treatment_type_",
-                                   vars_select)
-  vars$density_table <- gsub("treatment_type_", 
-                             "density_table.treatment_type_",
-                             vars_select)
-  vars$individual_table <- gsub("treatment_type_",
-                                "individual_table.treatment_type_",
-                                vars_select)
   
-  output_data <- query_get(conn, paste(
-    # Count data
-    "SELECT",vars$count_table,", count_observation",
-    "FROM count_table",
-    "JOIN taxa_table ",
-    "ON count_table.taxa_count_fkey = taxa_table.taxa_table_key",
-    "JOIN site_in_project_table ON taxa_table.site_in_project_taxa_key =",
-    "site_in_project_table.site_in_project_key",
-    "JOIN project_table ON site_in_project_table.project_table_fkey =",
-    "project_table.proj_metadata_key",
-    "JOIN study_site_table ON site_in_project_table.study_site_table_fkey =",
-    "study_site_table.study_site_key",
-    "JOIN lter_table ON study_site_table.lter_table_fkey =",
-    "lter_table.lterid",
-    "WHERE", sql_condition,
-    
-    "UNION ALL",
-    # Biomass data
-    "SELECT",vars$biomass_table,", biomass_observation",
-    "FROM biomass_table",
-    "JOIN taxa_table ",
-    "ON biomass_table.taxa_biomass_fkey = taxa_table.taxa_table_key",
-    "JOIN site_in_project_table ON taxa_table.site_in_project_taxa_key =",
-    "site_in_project_table.site_in_project_key",
-    "JOIN project_table ON site_in_project_table.project_table_fkey =",
-    "project_table.proj_metadata_key",
-    "JOIN study_site_table ON site_in_project_table.study_site_table_fkey =",
-    "study_site_table.study_site_key",
-    "JOIN lter_table ON study_site_table.lter_table_fkey =",
-    "lter_table.lterid",
-    "WHERE", sql_condition,
-    
-    "UNION ALL",
-    # percent cover data
-    "SELECT",vars$percent_cover_table,", percent_cover_observation",
-    "FROM percent_cover_table",
-    "JOIN taxa_table ",
-    "ON percent_cover_table.taxa_percent_cover_fkey ",
-    "= taxa_table.taxa_table_key",
-    "JOIN site_in_project_table ON taxa_table.site_in_project_taxa_key =",
-    "site_in_project_table.site_in_project_key",
-    "JOIN project_table ON site_in_project_table.project_table_fkey =",
-    "project_table.proj_metadata_key",
-    "JOIN study_site_table ON site_in_project_table.study_site_table_fkey =",
-    "study_site_table.study_site_key",
-    "JOIN lter_table ON study_site_table.lter_table_fkey =",
-    "lter_table.lterid",
-    "WHERE", sql_condition,
-    
-    "UNION ALL",
-    # individual data
-    "SELECT",vars$individual_table,", individual_observation",
-    "FROM individual_table",
-    "JOIN taxa_table ",
-    "ON individual_table.taxa_individual_fkey = taxa_table.taxa_table_key",
-    "JOIN site_in_project_table ON taxa_table.site_in_project_taxa_key =",
-    "site_in_project_table.site_in_project_key",
-    "JOIN project_table ON site_in_project_table.project_table_fkey =",
-    "project_table.proj_metadata_key",
-    "JOIN study_site_table ON site_in_project_table.study_site_table_fkey =",
-    "study_site_table.study_site_key",
-    "JOIN lter_table ON study_site_table.lter_table_fkey =",
-    "lter_table.lterid",
-    "WHERE", sql_condition,
-    
-    "UNION ALL",
-    # density data
-    "SELECT",vars$density_table,", density_observation",
-    "FROM density_table",
-    "JOIN taxa_table ",
-    "ON density_table.taxa_density_fkey = taxa_table.taxa_table_key",
-    "JOIN site_in_project_table ON taxa_table.site_in_project_taxa_key =",
-    "site_in_project_table.site_in_project_key",
-    "JOIN project_table ON site_in_project_table.project_table_fkey =",
-    "project_table.proj_metadata_key",
-    "JOIN study_site_table ON site_in_project_table.study_site_table_fkey =",
-    "study_site_table.study_site_key",
-    "JOIN lter_table ON study_site_table.lter_table_fkey =",
-    "lter_table.lterid",
-    "WHERE", sql_condition
-  ))
+  # set in limits and offsets
+  query_in <- offset_limit_search( proj_id )
   
-  return(output_data)
+  # set up progress bar
+  total     <- query_in$limit_v %>% length
+  prog_bar  <- txtProgressBar(min = 0, max = total, style = 3)
+  
+  # actually download summary table
+  downld_dataset <- function(lim,off,i){
+                      setTxtProgressBar(prog_bar, i)
+                      pop_search( proj_id, limit = lim, offset = off )$data
+                    }
+  
+  # download dataset piecewise; with progress bar!
+  df_l      <- Map( downld_dataset,
+                    query_in$limit_v,
+                    query_in$offset_v,
+                    1:length(query_in$limit_v) )
+  
+  # put it all in one  together
+  out_data <- Reduce( function(...) rbind(...), df_l ) %>% as.data.frame
+
+  return(out_data)
   
 }
 
