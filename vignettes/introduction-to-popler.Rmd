@@ -86,7 +86,7 @@ pplr_report_metadata(SEV)
 `pplr_browse()` can also single out projects based on partial matching of all of the variables that are made of strings. Specify the string you want to search using the `keyword` argument: 
 
 ```{r eval = FALSE}
-pplr_browse(keyword == "parasite", report = TRUE)
+pplr_browse(keyword = "parasite", report = TRUE)
 ```
 
 ## Download data
@@ -104,7 +104,7 @@ A few examples on how to the use of `pplr_get_data()` are:
 ``` {r eval = FALSE}
 poa_metadata    <- pplr_browse(genus == "Poa" & species == "fendleriana") 
 poa_data        <- pplr_get_data(poa_metadata) # option 1
-poa_data_09     <- pplr_get_data(poa_metadata, year > 2008) # option 2
+poa_data_09     <- pplr_get_data(poa_metadata, duration_years > 10) # option 2
 parasite_data   <- pplr_get_data(proj_metadata_key == 25) # option 3
 
 ```

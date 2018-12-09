@@ -82,19 +82,20 @@ pplr_get_data <- function(..., cov_unpack = FALSE){
   # query -----------------------------------------------------------------
   
   # get id of studies
-  id_vec      <- summary_table %>% 
-                    subset( eval(updated_calls) ) %>% 
-                    .$proj_metadata_key %>% 
-                    unique
+  id_vec        <- summary_table %>% 
+                      subset( eval(updated_calls) ) %>% 
+                      .$proj_metadata_key %>% 
+                      unique
   
-  # query popler online
-  output_data <- pplr_query( id_vec )
-
-  if(dim(output_data)[1] < 1) {
+  # Check if you actually found a dataset
+  if( length(id_vec) == 0 ){
     stop('No data found. Check to make sure query is correct',
          call. = FALSE)
   }
-  
+
+  # query popler online
+  output_data <- pplr_query( id_vec )
+
   # format output ---------------------------------------------------------
   
   # replace -99999, but only for numeric variables
@@ -235,14 +236,17 @@ pplr_query <- function( proj_id ){
   query_l   <- lapply(proj_id, offset_limit_search)
   
   # collapse in a single lits (if needed)
-  if( length(query_l) > 1){
-    ids_vec           <- purrr::map2(proj_id, query_l, 
-                                     function(x,y) rep(x,length(y$limit_v)) )
-    query_in          <- purrr::pmap(query_l, function(x,y) c(x,y) )
-    query_in$proj_id  <- ids_vec %>% unlist
+  if( length(query_l) > 1 ){
+    ids_vec  <- purrr::map2(proj_id, query_l, 
+                            function(x,y) rep(x,length(y$limit_v)) )
+    query_in <- list( limit_v  = lapply(query_l, function(x) x$limit_v)  %>% 
+                                    Reduce(function(...) c(...), .),
+                      offset_v = lapply(query_l, function(x) x$offset_v) %>% 
+                                    Reduce(function(...) c(...), .),
+                      proj_id  = ids_vec %>% unlist)
   }else{
-    query_in          <- query_l
-    query_in$proj_id  <- rep(proj_id, length(query_l$limit_v) )
+    query_in          <- query_l[[1]]
+    query_in$proj_id  <- rep(proj_id, length(query_in$limit_v) )
   }
   
   # set up progress bar
