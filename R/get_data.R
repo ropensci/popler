@@ -98,6 +98,16 @@ pplr_get_data <- function(..., cov_unpack = FALSE){
 
   # format output ---------------------------------------------------------
   
+  # set to numeric DATE information
+  output_data <- output_data %>% 
+                    mutate( year  = as.numeric(year),
+                            month = as.numeric(month),
+                            day   = as.numeric(day) )
+  
+  # set to numeric the observation variable
+  obs_id      <- grep('observation', names(output_data) )
+  output_data[,obs_id] <- output_data[,obs_id] %>% as.numeric
+  
   # replace -99999, but only for numeric variables
   
   # function 
@@ -107,12 +117,7 @@ pplr_get_data <- function(..., cov_unpack = FALSE){
   num_repl                <- sapply(output_data, 
                                     is.numeric) %>% as.vector()
   output_data[,num_repl]  <- plyr::colwise(replace_99)(as.data.frame(output_data[,num_repl]))
-  # output_data[,num_repl] <- lapply(output_data[ ,num_repl],
-  #                                   function(x) {
-  #                                     replace(x, x == -99999, NA)
-  #                                   }
-  #                                  ) %>% as.data.frame()
-  
+
   # remove variables that whose content is just "NA"
   output_data <- base::Filter(function(x) !all(x == "NA"), output_data)
   
