@@ -70,17 +70,17 @@ Users can also explore the spatial and temporal replication of the data more exp
 
 ```{r, eval = FALSE}
 # download some data (note: this download is >100MB)
-SEV <- pplr_get_data(lterid == "SEV")
+SEV <- pplr_get_data(proj_metadata_key == 21)
 
-# Create a summary table containing names of replication levels that contain 3 samples per year for 10 years from the Sevilleta LTER. 
+# Create a summary table containing names of replication levels that contain 2 samples per year for 10 years. 
 SEV_long_studies <- pplr_site_rep(SEV, 
-                                  freq = 3, 
+                                  freq = 2, 
                                   duration = 10, 
                                   return_logical = FALSE)
 
 # you can also subset it directly using the function and specifying it to return a logical vector
 subset_vec <- pplr_site_rep(SEV,
-                            freq = 3,
+                            freq = 2,
                             duration = 10,
                             return_logical = TRUE)
 # store subset of data
