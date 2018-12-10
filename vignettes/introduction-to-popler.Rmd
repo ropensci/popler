@@ -109,7 +109,7 @@ parasite_data   <- pplr_get_data(proj_metadata_key == 25) # option 3
 
 ```
 
-Note that `pplr_get_data()` will download entire datasets that satisfy a specific conditions. Hence, for example, in the example above where `genus == "Poa" & species == "fendleriana"`, the function will download three datasets which will include data on _Poa fendleriana_, along with the many other taxa that happen to co-occur with _Poa fendleriana_ in those datasets.
+Here, we emphasize two important characteristics of `pplr_get_data()`. First, similarly to `pplr_browse()`, the function selects datasets based on the variables described in `pplr_dictionary()`. Second, `pplr_get_data()` will download entire datasets that satisfy user-defined conditions. Hence, for example, in the example above where `genus == "Poa" & species == "fendleriana"`, the function will download three datasets which will include data on _Poa fendleriana_, along with the many other taxa that happen to co-occur with _Poa fendleriana_ in those datasets. 
 In case you are using a slow internet connection, datasets may take some time to download. Therefore, `popler` provides two utility functions for saving downloaded data locally and efficiently. They are thin wrappers around `saveRDS` and `readRDS` that allow you to store large data sets in highly compressed formats. `.rds` files also have the advantage of rapid read and write times from R, making them optimal for saving data sets for later usage. Note that you should *not* specify the file type when specifying the path.
 
 ```{r eval = FALSE}
