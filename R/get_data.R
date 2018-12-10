@@ -99,12 +99,19 @@ pplr_get_data <- function(..., cov_unpack = FALSE){
   # format output ---------------------------------------------------------
   
   # replace -99999, but only for numeric variables
-  num_repl <- sapply(output_data, is.numeric) %>% as.vector()
-  output_data[,num_repl] <- lapply(output_data[ ,num_repl],
-                                    function(x) {
-                                      replace(x, x == -99999, NA)
-                                    }
-                                   ) %>% as.data.frame()
+  
+  # function 
+  replace_99              <- function(x) replace(x, x == -99999, NA)
+  
+  # substitute
+  num_repl                <- sapply(output_data, 
+                                    is.numeric) %>% as.vector()
+  output_data[,num_repl]  <- plyr::colwise(replace_99)(as.data.frame(output_data[,num_repl]))
+  # output_data[,num_repl] <- lapply(output_data[ ,num_repl],
+  #                                   function(x) {
+  #                                     replace(x, x == -99999, NA)
+  #                                   }
+  #                                  ) %>% as.data.frame()
   
   # remove variables that whose content is just "NA"
   output_data <- base::Filter(function(x) !all(x == "NA"), output_data)
