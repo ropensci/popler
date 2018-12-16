@@ -58,7 +58,7 @@ pplr_report_dictionary()
 
 `pplr_browse()` accesses and subsets the popler metadata table directly. Calling the function returns a table that contains the metadata of all the projects in `popler`:
 
-```{r, eval = FALSE}
+```{r, eval=FALSE}
 all_studies <- pplr_browse()
 ```
 
@@ -71,7 +71,7 @@ poa_metadata
 
 Moreover, akin to `pplr_report_dictionary()`, browse can generate a report and open it as an html page. To do so, set the `report` variable to `TRUE`. Alternatively, you can pass an object created by `browse()` to `pplr_report_metadata()` to create the same report.  
 
-```{r eval = FALSE}
+```{r, eval = FALSE}
 
 pplr_browse(lterid == "SEV", report = TRUE)
 

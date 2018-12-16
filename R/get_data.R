@@ -81,6 +81,8 @@ pplr_get_data <- function(..., cov_unpack = FALSE){
 
   # query -----------------------------------------------------------------
   
+  summary_table <- pplr_summary_table_import()
+  
   # get id of studies
   id_vec        <- summary_table %>% 
                       subset( eval(updated_calls) ) %>% 
