@@ -1,11 +1,5 @@
 
 #' @noRd
-# NOTE FROM SCL-------------------------------
-# I would propose to create these as either a list or a set of separate 
-# data frames in .RData file that is then stored in either (depending on
-# internal or external usage) the /data or the /inst/extdata folder. 
-# Either way is fairly straightforward. See http://r-pkgs.had.co.nz/data.html
-# for more details on this. 
 # data frame of variable explanations
 explanations = data.frame(variable = c('proj_metadata_key',
                                        'lter_project_fkey',
