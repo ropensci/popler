@@ -153,14 +153,7 @@ explain_short = data.frame( variable = c('title','proj_metadata_key',
                                           "family","genus"),
                             stringsAsFactors = F)
 
-db <- list( dbname = 'popler_3',
-            server = 'ec2-54-214-212-101.us-west-2.compute.amazonaws.com', 
-            uid    = 'other_user',
-            pwd    = 'bigdata',
-            port   = 5432 )  
-
 int.data <- list(explanations  = explanations,
-                 explain_short = explain_short,
-                 db            = db)
+                 explain_short = explain_short)
 
 devtools::use_data(int.data, internal = T, overwrite = T)

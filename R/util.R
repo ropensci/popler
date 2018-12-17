@@ -421,21 +421,9 @@ colname_change = function(from, to, x){
   return(x)
 }
 
-# a function to pull sql queries and return dataframes
-
-#' @importFrom dplyr %>% tbl
-#' @importFrom dbplyr sql
-#' @noRd
-
-query_get = function(connection, query){
-  # accepts a connection and a string query input
-  # outputs a dataframe
-  return(dplyr::tbl(connection, dbplyr::sql(query)) %>% data.frame())
-}
 
 # Source for idea
 # https://stackoverflow.com/questions/30357330/r-cmd-check-no-visible-binding-for-global-variable-mypkgdata
-
 #' @noRd
 pplr_summary_table_import <- function() {
   # create empty environment for loading
