@@ -29,7 +29,13 @@ notifications:
     - levisc8@gmail.com
     - brad.ochocki@gmail.com 
     - aldo.compagnoni@gmail.com  
-    
+
+# safelist
+branches:
+  only:
+  - master
+  - api
+
 script: 
   - |
     R CMD build .
