@@ -452,6 +452,34 @@ links_get = function( sum_tab_df ){
                       no_doi, 
                       sum_tab_df$metalink[no_doi] )
   
-  return(links)
+  # return multiple links if '; ' present
+  id_smcol <- grep('; ', links)
+  
+  # if we find "; ", return many links per study
+  if( length(id_smcol) > 0 ){
+    
+    # warn user that they will get a lot of links
+    if( length(id_smcol) > 1 ){
+      message(paste0("NOTE! Studies ",
+                   sum_tab_df$proj_metadata_key[id_smcol],
+                   " are linked to multiple URLs") 
+              )
+    }else{
+      message(paste0("NOTE! Study ",
+                     sum_tab_df$proj_metadata_key[id_smcol],
+                     " is linked to multiple URLs")
+             )
+    }
+    
+    # split links string into separate links
+    split_links <- function(x) strsplit(x, '; ') %>% unlist(recursive = F)
+
+    links_out   <- split_links(links)
+         
+  }else{
+    links_out   <- links
+  }
+    
+  return(links_out)
   
 }

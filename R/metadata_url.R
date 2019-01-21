@@ -61,7 +61,8 @@ Print 'N' if you want to refine the search(Y/N):") )
                 # grab DOI - or url if DOI not present 
                 links_get
       
-      browseURL(link)
+      # apply recusrively in case of multiple links
+      sapply(link,browseURL)
       
       # # use url only if you don't have doi
       # if( doi_link == 'NA'){
