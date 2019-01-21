@@ -35,7 +35,10 @@ branches:
   only:
   - master
   - api
-
+	
+r_packages:
+  - libgit2
+	
 script: 
   - |
     R CMD build .
