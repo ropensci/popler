@@ -458,23 +458,31 @@ links_get = function( sum_tab_df ){
   # if we find "; ", return many links per study
   if( length(id_smcol) > 0 ){
     
-    # warn user that they will get a lot of links
-    if( length(id_smcol) > 1 ){
-      message(paste0("NOTE! Studies ",
-                   sum_tab_df$proj_metadata_key[id_smcol],
-                   " are linked to multiple URLs") 
-              )
-    }else{
-      message(paste0("NOTE! Study ",
-                     sum_tab_df$proj_metadata_key[id_smcol],
-                     " is linked to multiple URLs")
-             )
-    }
-    
     # split links string into separate links
     split_links <- function(x) strsplit(x, '; ') %>% unlist(recursive = F)
 
     links_out   <- split_links(links)
+
+    # total number of URLs
+    tot_url     <- length(links_out) - length(links)
+    
+    # warn user that they will get a lot of links
+    if( length(id_smcol) > 1 ){
+      message(paste0("NOTE! Studies ",
+                   sum_tab_df$proj_metadata_key[id_smcol],
+                   " are linked to a total of", 
+                   tot_url,
+                   " URLs") 
+              )
+    }else{
+      message(paste0("NOTE! Study ",
+                     sum_tab_df$proj_metadata_key[id_smcol],
+                     " is linked to ",
+                     tot_url,
+                     " URLs")
+             )
+    }
+    
          
   }else{
     links_out   <- links
