@@ -16,13 +16,17 @@ sudo: false
 dist: trusty
 cache: packages
 
-# Apparently R-devel for OSX is a pain on most CI platforms, so I'm excluding
+# 1. Apparently R-devel for OSX is a pain on most CI platforms, so I'm excluding
 # it from our builds. See below for more details on the problem
 # https://community.rstudio.com/t/r-devel-error-on-travis-ci-and-appveyor/2708
+# moreover, I am excluding R-oldrel for osx, and testing it using intalling
+# libgit2 through brew_packages.
 matrix:
   exclude:
   - os: osx
-    r: devel
+    r: 
+      - devel
+      - oldrel
   include:
     os: osx
     osx_image: xcode8
