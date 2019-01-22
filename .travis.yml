@@ -24,9 +24,9 @@ cache: packages
 matrix:
   exclude:
   - os: osx
-    r: 
-      - devel
-      - oldrel
+    r: devel
+  - os: osx
+    r: oldrel   
   include:
     os: osx
     osx_image: xcode8
