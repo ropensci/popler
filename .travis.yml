@@ -6,6 +6,9 @@ r:
   - release
   - devel
 
+brew_packages:
+  - libgit2
+
 # Operating systems to build on 
 os:
   - linux
@@ -36,10 +39,6 @@ branches:
   - master
   - api
 	
-addons:
-  homebrew:
-    packages:
-    - libgit2
 	
 script: 
   - |
