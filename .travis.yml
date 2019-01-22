@@ -6,8 +6,7 @@ r:
   - release
   - devel
 
-brew_packages:
-  - libgit2
+brew_packages: [libgit2],
 
 # Operating systems to build on 
 os:
@@ -38,13 +37,12 @@ branches:
   only:
   - master
   - api
-	
-	
+
 script: 
   - |
     R CMD build .
     travis_wait 40 R CMD check popler*.tar.gz
-    
+
 after_success:
   - travis_wait 40 Rscript -e 'covr::codecov()'
 
