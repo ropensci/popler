@@ -1,6 +1,6 @@
 context('cov_unpack') 
 
-data_obj <- pplr_get_data( proj_metadata_key == 11 )
+data_obj <- pplr_get_data( proj_metadata_key == 1 )
 
 test_that('cov_unpack', {
   
