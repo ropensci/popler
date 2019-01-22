@@ -6,8 +6,6 @@ r:
   - release
   - devel
 
-brew_packages: [libgit2],
-
 # Operating systems to build on 
 os:
   - linux
@@ -25,6 +23,10 @@ matrix:
   exclude:
   - os: osx
     r: devel
+  include:
+    os: osx
+    osx_image: xcode8
+    brew_packages: libgit2
     
 notifications:
   email:
