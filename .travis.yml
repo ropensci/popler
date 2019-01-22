@@ -36,7 +36,10 @@ branches:
   - master
   - api
 	
-r_packages: libgit2
+addons:
+  homebrew:
+    packages:
+    - libgit2
 	
 script: 
   - |
