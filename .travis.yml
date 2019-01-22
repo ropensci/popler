@@ -36,8 +36,7 @@ branches:
   - master
   - api
 	
-r_packages:
-  - libgit2
+r_packages: libgit2
 	
 script: 
   - |
