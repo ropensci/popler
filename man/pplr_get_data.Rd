@@ -4,20 +4,11 @@
 \alias{pplr_get_data}
 \title{Download data from the popler database}
 \usage{
-pplr_get_data(..., add_vars = NULL, subtract_vars = NULL,
-  cov_unpack = FALSE)
+pplr_get_data(..., cov_unpack = FALSE)
 }
 \arguments{
 \item{...}{An object produced by browse, a logical expression, or both. This
 can only accept one of each at a time currently.}
-
-\item{add_vars}{A string to specify which variables the user wants to 
-add to the default variables used in a query. See \code{Details} for list of
-default variables.}
-
-\item{subtract_vars}{A string to specify which, among the default 
-variables, the user wishes to discard in queries to the database. See 
-\code{Details} for list of default variables.}
 
 \item{cov_unpack}{Should covariates be unpacked? This argument uses
 function `cov_unpack` to extract the variables contained in the 
@@ -27,7 +18,7 @@ variable `covariates`, and combine the new columns with the default output.}
 This data fame is of class \code{get_data}, and \code{data.frame}.
 }
 \description{
-This function downloads LTER studies contained in the popler database.
+This function downloads datasets associated with LTER studies contained in the popler database.
 The user can download data directly, using a logical expression, or using 
 objects created by `browse`.
 }
@@ -72,16 +63,12 @@ objects created by `browse`.
 parasite = pplr_browse(proj_metadata_key == 25)
 gh_data = pplr_get_data(parasite)
 
-# further subset this data set, based on year
-gh_data_96_99 = pplr_get_data(parasite, year > 1995 & year < 2000)
-
 # insect data sets from the SEV lter site
 insect_sev = pplr_browse(class == "Insecta" & lterid == "SEV")
-insect_25_yrs96_99 = pplr_get_data(insect_sev, year > 1995 & year < 2000)
+insect_25_yrs96_99 = pplr_get_data(insect_sev)
 
-insect_21_25 = pplr_get_data((proj_metadata_key == 43 | 
-                              proj_metadata_key == 25) & 
-                              year < 1995 )
+insect_21_25 = pplr_get_data( (proj_metadata_key == 43 | 
+                               proj_metadata_key == 25) )
 }
 
 }

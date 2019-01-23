@@ -128,7 +128,7 @@ factor_to_character <- function(x, full_tbl = FALSE){
 popler_base <- "https://popler.space"
 cc          <- function(l) Filter(Negate(is.null), l)
 
-#' @importFrom crul jsonlite tibble
+#' @import crul jsonlite tibble
 #' @noRd
 # get actual data from the API
 pop_GET <- function(path, args, ...) {
@@ -141,7 +141,7 @@ pop_GET <- function(path, args, ...) {
   return(dat)
 }
 
-#' search 
+#' search
 #' 
 #' @export
 #' @param limit number of records to return, default: 10

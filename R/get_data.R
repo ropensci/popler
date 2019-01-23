@@ -239,6 +239,7 @@ concatenate_queries <- function(...){
 
 # query popler
 #' @noRd
+#' @importFrom dplyr bind_rows
 pplr_query <- function( proj_id ){
   
   if( !('proj_id' %in% ls()) ) {
