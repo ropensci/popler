@@ -16,7 +16,7 @@ the generated markdown file (optional)}
 A list of references from \code{input}.
 }
 \description{
-Returns a bibliography, Bibtex citations, and an acknowledgement template.
+Returns a bibliography, Bibtex citations, and acknowledgement template.
 }
 \examples{
 \dontrun{

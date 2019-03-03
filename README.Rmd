@@ -39,7 +39,7 @@ devtools::install_github('AldoCompagnoni/popler')
 
 All exported functions in the `popler` R package use the `pplr_` prefix and lazy and/or tidy evaluation, meaning you do not need to manually quote most inputs. 
 We suggest to start exploring the variables in the data base using `pplr_dictionary()`. This function is mean to explore the metadata variables used to describe the datasets contained in _Popler_. `pplr_dictionary()` works with and without inputs. Without inputs, the function returns a data frame showing a description of each metadata variable. The input of `pplr_dictionary()` is supposed to be the name of one of the metadata variables. When `pplr_dictionary()` is provided with the name of a metadata variable, it returns the possible unique values of the variable.
-Additionally, there is the `pplr_report_dictionary()` function which generates an .Rmd file and renders it into html. This html contains both the meaning of variables, and their unique values.
+Additionally, there is the `pplr_report_dictionary()` function which generates an `Rmd` file and renders it into html. This html contains both the meaning of variables, and their unique values.
 
 ```{r dictionary funs, eval = FALSE}
 
@@ -133,7 +133,7 @@ more_raw_data <- pplr_get_data((proj_metadata_key == 43 |
 
 -----
 
-We prodive three ancillary functions to facilitate the use of the objects downloaded through `pplr_get_data()`.
+We provide three ancillary functions to facilitate the use of the objects downloaded through `pplr_get_data()`.
 First, `pplr_metadata_url()` opens up a webpage containing study details. Before doing scientific analyses, we urge the users to review the peculiarities of each dataset by vetting their online documentation.
 Second, `pplr_cov_unpack()` transforms the data contained in the `covariates` column of each downloaded dataset into separate columns. This can or cannot be useful depending on the objectives of the user. Note: you can also transform covariates into a data frame directly through `pplr_get_data()` by providing the function with argument `cov_unpack = TRUE`.
 Third, `pplr_citation()` produces a citation for each downloaded dataset.
@@ -143,7 +143,7 @@ Third, `pplr_citation()` produces a citation for each downloaded dataset.
 
 -----
 
-The datasets contained in _Popler_ present many heterogeneities, especially in terms of their spatio-temporal replication. Most studies present at least a few spatial replicates which were not sampled every year. Note that most datasets in _Popler_ present at least one additional  replication level. These spatial replicates are denoted in numbered variables such as `spatial_replication_level_x`, and their names (e.g. plot, subplot, ect.) are contained in variable `spatial_replication_level_x_label`. In case 
+The datasets contained in _Popler_ present many heterogeneities, especially in terms of their spatio-temporal replication. Most studies present at least a few spatial replicates which were not sampled every year. Note that most datasets in _Popler_ present at least one additional  replication level. These spatial replicates are denoted in numbered variables such as `spatial_replication_level_x`, and their names (e.g. plot, subplot, etc.) are contained in variable `spatial_replication_level_x_label`. In case 
 
 Once you download a dataset, you can examine the temporal replication of the largest spatial replicate (the site) using function `pplr_site_rep_plot()`. This function produces a plot showing whether or not a given _site_ (e.g. `spatial_replication_level_1`) was sampled in a year.
 

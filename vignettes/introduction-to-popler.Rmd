@@ -18,7 +18,7 @@ The popler R package is an interface that allows browsing and querying populatio
 
 ## Installation
 
-The popler R package is currently in the development phase, and it should be downloaded directly from its [GitHub page](https://github.com/AldoCompagnoni/popler). Before doing this, make sure to install the [Devtools R package](https://cran.r-project.org/web/packages/devtools/README.html). Once devtools is installed on your machine, install and load popler:
+The popler R package is currently in the development phase, and it should be downloaded directly from its [GitHub page](https://github.com/AldoCompagnoni/popler). Before doing this, make sure to install the [devtools R package](https://cran.r-project.org/web/packages/devtools/README.html). Once devtools is installed on your machine, install and load popler:
 
 ```{r,warnings = FALSE, message = FALSE}
 # devtools::install_github("AldoCompagnoni/popler", build_vignettes = TRUE)
@@ -141,12 +141,12 @@ In `popler`, datasets are objects produced by `pplr_get_data()` have the same st
 
 Spatial replicates are identified using variables that match the patterns  `spatial_replication_level_X` and `spatial_replication_level_X_label`. Here `X` is a number referring to one of the *nested* levels of spatial replication. This can vary from 1 to 5, with 1 referring to the largest spatial replication level - the one within which are nested all smaller spatial replicates. So for example, `spatial_replication_level_1` can represent a site, and `spatial_replication_level_2` represents a plot. In this specific case, `spatial_replication_level_1_label` will contain the string 'site', and `spatial_replication_level_2_label` will contain the string 'plot'.
 
-Taxonomic units are identified through species codes in the `sppcode` variable, or through the `genus` and `species` variables. The `sppcode` variable usually contains alphanumeric codes. are not always available. The `genus` and `species` variables are Latin binomial name. Occasionally, some datasets will contain higer taxonomic classifications (such as `family`, `class`, ect.).
+Taxonomic units are identified through species codes in the `sppcode` variable, or through the `genus` and `species` variables. The `sppcode` variable usually contains alphanumeric codes. The `genus` and `species` variables are Latin binomial name. Occasionally, some datasets will contain higher taxonomic classifications (such as `family`, `class`, etc.).
 
 ### Spatio-temporal replication
 
 Users can explore the level of temporal replication at each nested level of spatial replication using the `pplr_site_rep_plot()` and `pplr_site_rep()`  functions. `pplr_site_rep_plot()` produces a scatterplot that shows which sites (`spatial_replication_level_1`) were sampled in a given year.
-`pplr_site_rep()` allows the user to subset `pplr_get_data()` based on a specific level of spatial replication, and the frequency and duration of temporal replication. `pplr_site_rep()` returns a logical vectoras to subset the `pplr_get_data()` object. For additional examples on how to explore and vet `popler` data, see `vignette('vetting-popler', package = 'popler')`.
+`pplr_site_rep()` allows the user to subset `pplr_get_data()` based on a specific level of spatial replication, and the frequency and duration of temporal replication. `pplr_site_rep()` returns a logical vectors to subset the `pplr_get_data()` object. For additional examples on how to explore and vet `popler` data, see `vignette('vetting-popler', package = 'popler')`.
 
 ## Extra covariates
 

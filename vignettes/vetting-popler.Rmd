@@ -11,7 +11,7 @@ vignette: >
 
 ## Introduction: identifying groups of data sets
 
-The `popler` R package was built to foster scientific synthesis using LTER long-term population data. The premise of such synthesis is using data from many research projects that share characteristics of scientific interest. To identify projects sharing salient attributes, `popler` uses the metadata information associated with each LTER project. In particular, it is farily easy to select projects based on one or more of the following features:
+The `popler` R package was built to foster scientific synthesis using LTER long-term population data. The premise of such synthesis is using data from many research projects that share characteristics of scientific interest. To identify projects sharing salient attributes, `popler` uses the metadata information associated with each LTER project. In particular, it is fairly easy to select projects based on one or more of the following features:
 
  1. Replication, temporal or spatial.
  2. Taxonomic group(s).
