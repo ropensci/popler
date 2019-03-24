@@ -9,8 +9,29 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r, include=FALSE, message=FALSE}
+#### Setting up packages and data #####
+##############################################################################
+#------- Install any required packages that are not currently installed -----
+##############################################################################
+adm.req <-c("readxl")
+
+# Load currently installed, required packages
+tmp <- lapply(adm.req, require, character.only = T)
+
+# Find the required packages that still need to be installed
+adm.need <- adm.req[!(paste0("package:",adm.req) %in% search())]
+
+# Install required packages that are not currently installed
+if(length(adm.need)>0){ install.packages(adm.need,dependencies=T) }
+
+# Now, make sure all packages are loaded
+tmp <- lapply(adm.req, require, character.only = T)
+
+# print tmp if you want a print out of which packages loaded successfully
+tmp
+
+knitr::opts_chunk$set(message=FALSE, warning=FALSE)
 ```
 
 ## Popler Overview
@@ -54,7 +75,6 @@ Metadata related to the extent of a spatial sampling unit is recorded when
 available (i.e. km2, m2, cm2, etc.). Note, higher levels of spatial replication 
 indicate smaller areas of sampling extent. 
 
-
 **Never do we aggregate data by levels of spatial replication prior to storing them in Popler.**
 
 #### Spatial Replication Level 1
@@ -81,69 +101,151 @@ knitr::include_graphics("img/full-schema.png")
 ```
 
 ## 1. LTER Table
+LTER research station data.
 
 ```{r, out.width = "600px", echo=FALSE}
 knitr::include_graphics("img/lter-table.png")
 ```
 
+```{r, echo=FALSE}
+lter <- read_excel("data/metadata.xlsx", sheet='lter')
+knitr::kable(lter, booktabs = TRUE)
+```
+
 ## 2. Study Site Table
+
+Individual ‘site’ labels (spatial replication level 1) used across research projects. 
+Different research project can use the same ‘site’ label if data were collected at 
+permanent LTER sampling locations.
 
 ```{r, out.width = "600px", echo=FALSE}
 knitr::include_graphics("img/study-site-table.png")
 ```
 
+```{r, echo=FALSE}
+lter <- read_excel("data/metadata.xlsx", sheet='study_site')
+knitr::kable(lter, booktabs = TRUE)
+```
+
+
 ## 3. Project Table
+Metadata on projects that collected population dynamics data.
 
 ```{r, out.width = "600px", echo=FALSE}
 knitr::include_graphics("img/project-table.png")
 ```
 
+```{r, echo=FALSE}
+lter <- read_excel("data/metadata.xlsx", sheet='project')
+knitr::kable(lter, booktabs = TRUE)
+```
+
+
 ## 4. Sites Within Project Table
+Site level information regarding start and end years, number of observations and 
+number of taxonomic units observed within each site level.
 
 ```{r, out.width = "600px", echo=FALSE}
 knitr::include_graphics("img/site-in-project-table.png")
 ```
 
+```{r, echo=FALSE}
+lter <- read_excel("data/metadata.xlsx", sheet='site_in_project')
+knitr::kable(lter, booktabs = TRUE)
+```
+
 ## 5. Taxonomic Table
+Taxonomic information recorded within a project. Taxonomic information is at the 
+level of individual sites (spatial replication level 1). 
 
 ```{r, out.width = "600px", echo=FALSE}
 knitr::include_graphics("img/taxa-table.png")
 ```
 
+```{r, echo=FALSE}
+lter <- read_excel("data/metadata.xlsx", sheet='taxa')
+knitr::kable(lter, booktabs = TRUE)
+```
+
 ## 6. Accepted Taxonomic Table
+Taxonomic information after being processed with species list provided by LTER 
+locations or through the use of taxsize. Taxonomic information is at the level 
+of individual sites (spatial replication level 1).
 
 ```{r, out.width = "600px", echo=FALSE}
 knitr::include_graphics("img/taxa-accepted-table.png")
 ```
 
+```{r, echo=FALSE}
+lter <- read_excel("data/metadata.xlsx", sheet='accepted_taxa')
+knitr::kable(lter, booktabs = TRUE)
+```
+
 ## 7. Count Table
+The observed count data after being processed (null values filled in and
+reshaped for database insertion).
 
 ```{r, out.width = "600px", echo=FALSE}
 knitr::include_graphics("img/count-table.png")
 ```
 
+```{r, echo=FALSE}
+lter <- read_excel("data/metadata.xlsx", sheet='count')
+knitr::kable(lter, booktabs = TRUE)
+```
+
 ## 8. Biomass Table
+The observed biomass data after being processed (null values filled in and
+reshaped for database insertion).
+
 
 ```{r, out.width = "600px", echo=FALSE}
 knitr::include_graphics("img/biomass-table.png")
 ```
 
+```{r, echo=FALSE}
+lter <- read_excel("data/metadata.xlsx", sheet='biomass')
+knitr::kable(lter, booktabs = TRUE)
+```
+
 ## 9. Density Table
+The observed density data after being processed (null values filled in and
+reshaped for database insertion).
+
 
 ```{r, out.width = "600px", echo=FALSE}
 knitr::include_graphics("img/density-table.png")
 ```
 
+```{r, echo=FALSE}
+lter <- read_excel("data/metadata.xlsx", sheet='density')
+knitr::kable(lter, booktabs = TRUE)
+```
+
 ## 10. Percent Cover Table
+The observed percent cover data after being processed (null values filled in and
+reshaped for database insertion).
+
 
 ```{r, out.width = "600px", echo=FALSE}
 knitr::include_graphics("img/percent-cover-table.png")
 ```
 
+```{r, echo=FALSE}
+lter <- read_excel("data/metadata.xlsx", sheet='percent_cover')
+knitr::kable(lter, booktabs = TRUE)
+```
+
 ## 11. Indiviual Table
+The observed density data after being processed (null values filled in and
+reshaped for database insertion).
+
 
 ```{r, out.width = "600px", echo=FALSE}
 knitr::include_graphics("img/individual-table.png")
 ```
 
-
+```{r, echo=FALSE}
+lter <- read_excel("data/metadata.xlsx", sheet='individual')
+knitr::kable(lter, booktabs = TRUE)
+```
