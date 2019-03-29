@@ -1,4 +1,6 @@
 
+# explanations ---------------------------------------------------------
+
 #' @noRd
 # data frame of variable explanations
 explanations = data.frame(variable = c('proj_metadata_key',
@@ -147,7 +149,154 @@ explain_short = data.frame( variable = c('title','proj_metadata_key',
                                           "family","genus"),
                             stringsAsFactors = F)
 
+
+# data for tests -------------------------------------------------------
+
+ 
+# format data 
+download_popler_test_data <- function( proj_id ){
+  
+  # all service functions 
+  
+  # connect to the database
+  popler_connector <- function(dbname=NULL, host=NULL, port=NULL, user=NULL, password=NULL, silent=TRUE) {
+  
+    if (!requireNamespace("RPostgreSQL", quietly = TRUE)) {
+      stop("RPostgreSQL package required to connect to postgres db", call. = FALSE)
+    }
+    user <- if(is.null(user)){
+      if(identical(Sys.getenv("TRAVIS"), "true")){"postgres"} else {""}
+      } else user
+    con <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(),
+                     host     = if(is.null(host))     "" else host,
+                     dbname   = if(is.null(dbname))   "" else dbname,
+                     user     = user,
+                     password = if(is.null(password)) "" else password,
+                     port     = if(is.null(port))     "" else port)
+  }
+  
+  # database open function
+  db_open <- function(){
+    popler_connector(dbname="",
+                      host="",
+                      port=,
+                      user="",
+                      password="",
+                      silent=TRUE)
+  }
+  
+  # get query 
+  query_get <- function(connection, query){
+    # accepts a connection and a string query input
+    # outputs a dataframe
+    return(dplyr::tbl(connection, dbplyr::sql(query)) %>% data.frame())
+  }
+  
+  # open connection
+  conn      <- db_open()
+  
+  # produce efficient query (uses WITH clause)
+  efficienty_query <- function( proj_id ){
+    
+    paste0('
+    WITH project_taxa_table AS (
+         select authors, authors_contact,   -- 126
+                datatype,
+                spatial_replication_level_1_label, spatial_replication_level_2_label, spatial_replication_level_3_label, spatial_replication_level_4_label, spatial_replication_level_5_label, proj_metadata_key, structured_type_1, structured_type_2, structured_type_3, structured_type_4,
+                sppcode, genus, species, taxa_table.taxa_table_key
+         FROM   taxa_table            
+           JOIN site_in_project_table ON taxa_table.site_in_project_taxa_key =site_in_project_table.site_in_project_key 
+           JOIN project_table         ON site_in_project_table.project_table_fkey = project_table.proj_metadata_key 
+           JOIN study_site_table      ON site_in_project_table.study_site_table_fkey =study_site_table.study_site_key 
+           JOIN lter_table            ON study_site_table.lter_table_fkey = lter_table.lterid 
+    WHERE proj_metadata_key = ',proj_id,' )
+    
+    SELECT authors, authors_contact, year, day, month, sppcode, genus, species, datatype, spatial_replication_level_1_label, spatial_replication_level_1, spatial_replication_level_2_label, spatial_replication_level_2, spatial_replication_level_3_label, spatial_replication_level_3, spatial_replication_level_4_label, spatial_replication_level_4, spatial_replication_level_5_label, spatial_replication_level_5, proj_metadata_key, structure_type_1, structure_type_2, structure_type_3, structure_type_4, count_table.treatment_type_1, count_table.treatment_type_2, count_table.treatment_type_3, covariates , count_observation 
+    FROM project_taxa_table
+      JOIN count_table ON count_table.taxa_count_fkey = project_taxa_table.taxa_table_key  
+    UNION ALL 
+    
+    SELECT authors, authors_contact, year, day, month, sppcode, genus, species, datatype, spatial_replication_level_1_label, spatial_replication_level_1, spatial_replication_level_2_label, spatial_replication_level_2, spatial_replication_level_3_label, spatial_replication_level_3, spatial_replication_level_4_label, spatial_replication_level_4, spatial_replication_level_5_label, spatial_replication_level_5, proj_metadata_key, structure_type_1, structure_type_2, structure_type_3, structure_type_4, biomass_table.treatment_type_1, biomass_table.treatment_type_2, biomass_table.treatment_type_3, covariates , biomass_observation 
+    FROM project_taxa_table
+      JOIN biomass_table ON biomass_table.taxa_biomass_fkey = project_taxa_table.taxa_table_key
+    UNION ALL  
+    
+    SELECT authors, authors_contact, year, day, month, sppcode, genus, species, datatype, spatial_replication_level_1_label, spatial_replication_level_1, spatial_replication_level_2_label, spatial_replication_level_2, spatial_replication_level_3_label, spatial_replication_level_3, spatial_replication_level_4_label, spatial_replication_level_4, spatial_replication_level_5_label, spatial_replication_level_5, proj_metadata_key, structure_type_1, structure_type_2, structure_type_3, structure_type_4, percent_cover_table.treatment_type_1, percent_cover_table.treatment_type_2, percent_cover_table.treatment_type_3, covariates , percent_cover_observation 
+    FROM project_taxa_table
+      JOIN percent_cover_table ON percent_cover_table.taxa_percent_cover_fkey = project_taxa_table.taxa_table_key
+    UNION ALL  
+    
+    SELECT authors, authors_contact, year, day, month, sppcode, genus, species, datatype, spatial_replication_level_1_label, spatial_replication_level_1, spatial_replication_level_2_label, spatial_replication_level_2, spatial_replication_level_3_label, spatial_replication_level_3, spatial_replication_level_4_label, spatial_replication_level_4, spatial_replication_level_5_label, spatial_replication_level_5, proj_metadata_key, structure_type_1, structure_type_2, structure_type_3, structure_type_4, individual_table.treatment_type_1, individual_table.treatment_type_2, individual_table.treatment_type_3, covariates , individual_observation 
+    FROM project_taxa_table
+      JOIN individual_table ON individual_table.taxa_individual_fkey = project_taxa_table.taxa_table_key
+    UNION ALL
+    
+    SELECT authors, authors_contact, year, day, month, sppcode, genus, species, datatype, spatial_replication_level_1_label, spatial_replication_level_1, spatial_replication_level_2_label, spatial_replication_level_2, spatial_replication_level_3_label, spatial_replication_level_3, spatial_replication_level_4_label, spatial_replication_level_4, spatial_replication_level_5_label, spatial_replication_level_5, proj_metadata_key, structure_type_1, structure_type_2, structure_type_3, structure_type_4, density_table.treatment_type_1, density_table.treatment_type_2, density_table.treatment_type_3, covariates , density_observation 
+    FROM project_taxa_table
+      JOIN density_table ON density_table.taxa_density_fkey = project_taxa_table.taxa_table_key')
+  
+  }
+  
+  # service function
+  colname_change <- function(from, to, x){
+    names(x) <- gsub(from, to, names(x))
+    return(x)
+  }
+
+  # download raw data
+  output_data <- query_get(conn, efficienty_query( proj_id ))
+  
+  
+  # set to numeric DATE information
+  output_data <- output_data %>% 
+                    mutate( year  = as.numeric(year),
+                            month = as.numeric(month),
+                            day   = as.numeric(day) )
+  
+  # set to numeric the observation variable
+  obs_id      <- grep('observation', names(output_data) )
+  output_data[,obs_id] <- output_data[,obs_id] %>% as.numeric
+  
+  # replace -99999, but only for numeric variables
+  replace_99              <- function(x) replace(x, x == -99999, NA)
+  
+  # substitute
+  num_repl                <- sapply(output_data, 
+                                    is.numeric) %>% as.vector()
+  output_data[,num_repl]  <- plyr::colwise(replace_99)(as.data.frame(output_data[,num_repl]))
+  
+  # remove variables that whose content is just "NA"
+  output_data <- base::Filter(function(x) !all(x == "NA"), output_data)
+  
+  # Change "ordr" and "clss" to "order" and "class"
+  output_data <- colname_change("clss", "class", output_data)
+  output_data <- colname_change("ordr", "order", output_data)
+  output_data <- colname_change("count_observation", "abundance_observation", 
+                                output_data)
+  
+  # assign class
+  data_obj <- structure(output_data, 
+                unique_projects = unique(output_data$proj_metadata_key),
+                unique_authors  = unique(output_data[ ,c("proj_metadata_key",
+                                                         "authors",
+                                                         "authors_contact")]),
+                class = c("get_data", class(output_data)) 
+                )
+
+}
+
+# download datasets used for tests
+data_1   <- download_popler_test_data( 1 )
+data_221 <- download_popler_test_data( 221 )
+data_6   <- download_popler_test_data( 6 )
+
+
+# store internal data --------------------------------------------------
+
 int.data <- list(explanations  = explanations,
-                 explain_short = explain_short)
+                 explain_short = explain_short,
+                 data1         = data_1,
+                 data221       = data_221,
+                 data6         = data_6 )
 
 devtools::use_data(int.data, internal = T, overwrite = T)
