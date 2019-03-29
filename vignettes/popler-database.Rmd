@@ -35,34 +35,26 @@ knitr::opts_chunk$set(message=FALSE, warning=FALSE)
 ```
 
 ## Popler Overview
-Popler is a centralized database for population dynamics datasets gathered throughout 
+Popler is a database of population and individual-level data gathered throughout 
 NSF's Long Term Ecological Resarch (LTER) stations. 
 
-We define population dynamics datasets as follows:
+We define population data datasets as time series of the size or density of a population of a taxonomic unit. The size of a population can be quantified as a count, biomass, or cover class. These measures are always repeated temporally and often repeated spatially.
+We define individual-level data as information on the attributes of the individuals, or a subset thereof, that make up a population.
 
-- Time series data of a randomly sampled population measuring changes in abundance, 
-density, biomass, cover class or individual measures on a temporally regular 
-interval over a standardized set of spatial units and sampling effort. 
-The interval of time must encompass the life cycle of the organism such that 
-birth and deaths occur during the interval.
 
-### Temporal Referencing
-All temporal information within a dataset is stored using exact 
-sampling dates up to the day resolution, when available. Since not all datasets 
-have the same temporal resolution Popler stores date time information in three 
+### Temporal replication
+All temporal information within a dataset is stored using 
+sampling dates up to the daily resolution, when available. Since not all datasets have the same temporal resolution, popler stores date time information in three 
 separate columns; **day, month, and year**. In any of the date time columns, 
 `NULL`  or `-99999` values indicate that the information was not available 
 from the raw data. 
 
 **Never do we perform any temporal aggregations of data prior to storing them in Popler.**
 
-### Spatial Referencing
-We have chosen to reference sampling locations (spatial levels) by the unit of replication 
-a sample represents in an experimental design. 
+### Spatial replication
+We have chosen to reference sampling locations (spatial levels) by the unit of replication a sample represents in an experimental design. 
 
-For example, a study performed at 5 sites, with 3 transects at each site, and 4 
-quadrats within each transect is referenced as having 3 levels of spatial 
-replication:
+Most datasets contain spatially nested data. For example, a study performed at 5 sites, with 3 transects at each site, and 4 quadrats within each transect is referenced as having 3 levels of nested spatial replication:
 
 - Level 1: the site level, 
 - Level 2: the transect level
@@ -71,37 +63,29 @@ replication:
 This referencing scheme allows us to standardize and align datasets collected 
 from a variety of different sampling designs and across different data types. 
 
-Metadata related to the extent of a spatial sampling unit is recorded when 
-available (i.e. km2, m2, cm2, etc.). Note, higher levels of spatial replication 
+Metadata on the extent of each spatial sampling unit is recorded when 
+available (i.e. km2, m, cm3, etc.). Note, higher levels of spatial replication 
 indicate smaller areas of sampling extent. 
 
 **Never do we aggregate data by levels of spatial replication prior to storing them in Popler.**
 
 #### Spatial Replication Level 1
-By referencing sampling locations in the above manner a ‘site’ label within a dataset
-represent the highest level of spatial replication (level 1).  With permanent 'sites' 
-existing at LTER stations and reused across studies, ‘site’ lables 
-allow querying of data collected for particular spatial locations regardless of the 
-original study a dataset was derived from.
+The first level of spatial replication is also the highest level of nested spatial replication. We call level 1 a ‘site’ within a dataset
+represent the highest level of spatial replication (level 1). LTER stations contain permanent 'sites' which are reused across studies. Therefore, ‘site’ lables allow querying data collected at a particular site regardless of the original study a dataset was derived from.
 
-When possible, latitude and longitude coordinates are also recorded if available in 
-the source metadata; -99999 values exist within these fields for studies that do not 
-record geographic location for their 'site' label. 
+Whenever available in the source metadata, these 'sites' are associated with latitude and longitude coordinates are also recorded if available; -99999 values exist within these fields for studies that do not record geographic location for their 'site' label. 
 
 
 ## The Popler Database Schema
 
-The following depicts the relationship structure among 14 tables. Below we will
-discuss this schema, table contents, and give definitions. Three
-tables will not be discussed as two are climate related data tables yet to be populated
-and one is a table for database migration information.
+The following image depicts the relationship structure among the 14 tables of popler. Below we will discuss this schema, table contents, and give definitions. Three tables will not be discussed as two are climate related data tables yet to be populated and one is a table for database migration information.
 
 ```{r, out.width = "675px", echo=FALSE}
 knitr::include_graphics("img/full-schema.png")
 ```
 
 ## 1. LTER Table
-LTER research station data.
+Data on the LTER research station.
 
 ```{r, out.width = "600px", echo=FALSE}
 knitr::include_graphics("img/lter-table.png")
@@ -114,9 +98,7 @@ knitr::kable(lter, booktabs = TRUE)
 
 ## 2. Study Site Table
 
-Individual ‘site’ labels (spatial replication level 1) used across research projects. 
-Different research project can use the same ‘site’ label if data were collected at 
-permanent LTER sampling locations.
+Labels identifying ‘site’ (spatial replication level 1) used across research projects. Different research project can use the same ‘site’ label if data were collected at permanent LTER sampling locations.
 
 ```{r, out.width = "600px", echo=FALSE}
 knitr::include_graphics("img/study-site-table.png")
@@ -129,7 +111,7 @@ knitr::kable(lter, booktabs = TRUE)
 
 
 ## 3. Project Table
-Metadata on projects that collected population dynamics data.
+Metadata related to each separate dataset.
 
 ```{r, out.width = "600px", echo=FALSE}
 knitr::include_graphics("img/project-table.png")
@@ -155,8 +137,7 @@ knitr::kable(lter, booktabs = TRUE)
 ```
 
 ## 5. Taxonomic Table
-Taxonomic information recorded within a project. Taxonomic information is at the 
-level of individual sites (spatial replication level 1). 
+Taxonomic information recorded within a project. In this table, taxonomic information refers to each individual site (spatial replication level 1). 
 
 ```{r, out.width = "600px", echo=FALSE}
 knitr::include_graphics("img/taxa-table.png")
@@ -168,8 +149,7 @@ knitr::kable(lter, booktabs = TRUE)
 ```
 
 ## 6. Accepted Taxonomic Table
-Taxonomic information after being processed with species list provided by LTER 
-locations or through the use of taxsize. Taxonomic information is at the level 
+Table containing "accepted" taxonomic information: this is an attempt to associate taxonomic units in the raw data of popler to taxonomic units accepted in the literature. This taxonomic information is also at the level 
 of individual sites (spatial replication level 1).
 
 ```{r, out.width = "600px", echo=FALSE}
@@ -182,8 +162,7 @@ knitr::kable(lter, booktabs = TRUE)
 ```
 
 ## 7. Count Table
-The observed count data after being processed (null values filled in and
-reshaped for database insertion).
+Population data where abundance is quantified as number of individuals. Null values filled in.
 
 ```{r, out.width = "600px", echo=FALSE}
 knitr::include_graphics("img/count-table.png")
@@ -195,8 +174,7 @@ knitr::kable(lter, booktabs = TRUE)
 ```
 
 ## 8. Biomass Table
-The observed biomass data after being processed (null values filled in and
-reshaped for database insertion).
+Population data where abundance is quantified in terms of biomass.
 
 
 ```{r, out.width = "600px", echo=FALSE}
@@ -209,8 +187,7 @@ knitr::kable(lter, booktabs = TRUE)
 ```
 
 ## 9. Density Table
-The observed density data after being processed (null values filled in and
-reshaped for database insertion).
+Population data where abundance is quantified in terms of density.
 
 
 ```{r, out.width = "600px", echo=FALSE}
@@ -223,8 +200,7 @@ knitr::kable(lter, booktabs = TRUE)
 ```
 
 ## 10. Percent Cover Table
-The observed percent cover data after being processed (null values filled in and
-reshaped for database insertion).
+Population data where abundance is quantified in terms of cover.
 
 
 ```{r, out.width = "600px", echo=FALSE}
@@ -237,8 +213,7 @@ knitr::kable(lter, booktabs = TRUE)
 ```
 
 ## 11. Indiviual Table
-The observed density data after being processed (null values filled in and
-reshaped for database insertion).
+Individual-level data. The `structure_type` columns refer to the attributes of individuals (e.g. size, age, sex, etc.)
 
 
 ```{r, out.width = "600px", echo=FALSE}
