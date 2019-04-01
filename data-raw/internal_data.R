@@ -177,11 +177,11 @@ download_popler_test_data <- function( proj_id ){
   
   # database open function
   db_open <- function(){
-    popler_connector(dbname="",
-                      host="",
-                      port=,
-                      user="",
-                      password="",
+    popler_connector(dbname="" ,
+                      host="" ,
+                      port= ,
+                      user="" ,
+                      password="" ,
                       silent=TRUE)
   }
   
@@ -246,42 +246,43 @@ download_popler_test_data <- function( proj_id ){
   # download raw data
   output_data <- query_get(conn, efficienty_query( proj_id ))
   
+  return(output_data)
   
-  # set to numeric DATE information
-  output_data <- output_data %>% 
-                    mutate( year  = as.numeric(year),
-                            month = as.numeric(month),
-                            day   = as.numeric(day) )
-  
-  # set to numeric the observation variable
-  obs_id      <- grep('observation', names(output_data) )
-  output_data[,obs_id] <- output_data[,obs_id] %>% as.numeric
-  
-  # replace -99999, but only for numeric variables
-  replace_99              <- function(x) replace(x, x == -99999, NA)
-  
-  # substitute
-  num_repl                <- sapply(output_data, 
-                                    is.numeric) %>% as.vector()
-  output_data[,num_repl]  <- plyr::colwise(replace_99)(as.data.frame(output_data[,num_repl]))
-  
-  # remove variables that whose content is just "NA"
-  output_data <- base::Filter(function(x) !all(x == "NA"), output_data)
-  
-  # Change "ordr" and "clss" to "order" and "class"
-  output_data <- colname_change("clss", "class", output_data)
-  output_data <- colname_change("ordr", "order", output_data)
-  output_data <- colname_change("count_observation", "abundance_observation", 
-                                output_data)
-  
-  # assign class
-  data_obj <- structure(output_data, 
-                unique_projects = unique(output_data$proj_metadata_key),
-                unique_authors  = unique(output_data[ ,c("proj_metadata_key",
-                                                         "authors",
-                                                         "authors_contact")]),
-                class = c("get_data", class(output_data)) 
-                )
+  # # set to numeric DATE information
+  # output_data <- output_data %>% 
+  #                   mutate( year  = as.numeric(year),
+  #                           month = as.numeric(month),
+  #                           day   = as.numeric(day) )
+  # 
+  # # set to numeric the observation variable
+  # obs_id      <- grep('observation', names(output_data) )
+  # output_data[,obs_id] <- output_data[,obs_id] %>% as.numeric
+  # 
+  # # replace -99999, but only for numeric variables
+  # replace_99              <- function(x) replace(x, x == -99999, NA)
+  # 
+  # # substitute
+  # num_repl                <- sapply(output_data, 
+  #                                   is.numeric) %>% as.vector()
+  # output_data[,num_repl]  <- plyr::colwise(replace_99)(as.data.frame(output_data[,num_repl]))
+  # 
+  # # remove variables that whose content is just "NA"
+  # output_data <- base::Filter(function(x) !all(x == "NA"), output_data)
+  # 
+  # # Change "ordr" and "clss" to "order" and "class"
+  # output_data <- colname_change("clss", "class", output_data)
+  # output_data <- colname_change("ordr", "order", output_data)
+  # output_data <- colname_change("count_observation", "abundance_observation", 
+  #                               output_data)
+  # 
+  # # assign class
+  # data_obj <- structure(output_data, 
+  #               unique_projects = unique(output_data$proj_metadata_key),
+  #               unique_authors  = unique(output_data[ ,c("proj_metadata_key",
+  #                                                        "authors",
+  #                                                        "authors_contact")]),
+  #               class = c("get_data", class(output_data)) 
+  #               )
 
 }
 
@@ -295,8 +296,8 @@ data_6   <- download_popler_test_data( 6 )
 
 int.data <- list(explanations  = explanations,
                  explain_short = explain_short,
-                 data1         = data_1,
-                 data221       = data_221,
-                 data6         = data_6 )
+                 data_1        = data_1,
+                 data_221      = data_221,
+                 data_6        = data_6 )
 
 devtools::use_data(int.data, internal = T, overwrite = T)
