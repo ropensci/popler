@@ -1,10 +1,11 @@
 #' A user-friendly dictionary of the popler metadata
 #'
-#' Provides information on the columns of metadata contained 
-#' in the popler database, and the kind of data contained in those columns.
+#' Provides information on the variables of metadata contained in the popler 
+#' database, and the kind of data contained in those variables.
 #' 
-#' @param full_tbl Should the function return the standard 
-#' columns, or the full main table?
+#' @param full_tbl logical; if \code{TRUE} function returns the variables 
+#' contained in the full main table. If \code{FALSE}, functions returns only the
+#' standard variables. Default is \code{FALSE}.
 #' @param md_file Specify the filename and location for 
 #' the generated markdown file (optional)
 #' @param html_file Specify the filename and location for the 

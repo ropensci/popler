@@ -7,7 +7,7 @@ reclass <- function(x, result) {
 reclass.browse <- function(.data, result) {
   
   class(result) <- unique(c(class(.data), class(result)))
-  attributes(result) <- attributes(.data)
+  attr(result, 'search_expr') <- attr(.data, 'search_expr') 
   
   return(result)
   

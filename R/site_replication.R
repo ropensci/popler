@@ -1,39 +1,42 @@
 #' @name pplr_site_rep
 #' @rdname pplr_site_rep
 #' 
-#' @title  Spatial-temporal replication of data sets 
+#' @title Spatial-temporal replication of data sets 
 #' 
-#' @description Functions to examine the number of temporal replicates contained in each 
-#' spatial replication level of a dataset. 
-#' \code{pplr_site_rep_plot} plots the temporal replicates available for each site.
-#' \code{pplr_site_rep} produces logical vectors that identify the spatial replicates 
-#' with enough temporal replication, or summary tables. 
-
+#' @description Functions to examine the number of temporal replicates 
+#' contained within each spatial replication level of a dataset. 
+#' \code{pplr_site_rep_plot} plots the temporal replicates available for 
+#' each site.
+#' \code{pplr_site_rep} produces logical vectors that identify the spatial 
+#' replicates with enough temporal replication, or summary tables.
 #' 
-#' @param input An object of class \code{get_data}. Note that this is not an 
-#' output from \code{browse}, as the raw data is required to calculate
-#' the amount of replication.
+#' @param input An object of produced by \code{pplr_get_data}. Note that this
+#' is not an output from \code{pplr_browse}, as the raw data is required to 
+#' calculate the amount of replication.
 #' @param freq A number corresponding to the desired annual frequency of 
-#' temporal replication. Studies that are 
-#' replicated more frequently will be included in the counts and those that 
-#' replicated less frequently will be excluded. If \code{return_logical = TRUE},
-#' rows included in sites that are replicated at the desired frequency will have
-#' a \code{TRUE} value, and rows that are not will have \code{FALSE} value. Values
-#' greater than 1 correspond to sampling multiple times per year. For example, 
-#' \code{freq = 2} indicates a desired sampling frequency of every 6 months. 
-#' Values less than 1 indicate sampling intervals of greater than 1 year. For
-#' example, \code{freq = 0.5} indicates a desired sampling frequency of once
-#' every 2 years.
-#' @param duration An integer corresponding to the desired duration of temporal
-#' replication. Rows corresponding to sites with more replication will be 
-#' included, while those with less will be excluded.
-#' @param rep_level An integer corresponding to the level of spatial replication
-#' desired. Values between 1 and 5 are possible (though higher levels may not be
-#' present for some datasets). Higher values correspond to higher levels of 
-#' spatial nestedness. The default value of \code{rep_level = 1} corresponds to 
-#' entire sites.
-#' @param return_logical Indicates whether to return a summary table of class
-#' \code{tbl} or a logical vector. The default is \code{TRUE}.
+#' replicates. Studies that are replicated more frequently will be 
+#' included in the counts and those that replicated less frequently will be 
+#' excluded. 
+#' If \code{return_logical = TRUE}, rows that contain information from sites 
+#' that are replicated at the desired frequency will have a \code{TRUE} value, 
+#' and rows that are not will have a \code{FALSE} value. 
+#' Values greater than 1 will select sampling done multiple times per year. 
+#' For example, \code{freq = 2} indicates a desired sampling frequency of 6
+#' months. Conversely, \code{freq = 0.5} indicates a desired sampling done 
+#' once every 2 years.
+#' @param duration An integer corresponding to the desired number of yearly
+#' replicates. Rows containing site information from sites with more 
+#' replication will be included, while those with less will be excluded.
+#' @param rep_level An integer corresponding to the level of spatial 
+#' replication over which verify yearly temporal replication. Values between 1 and 5 
+#' are possible (though higher levels may not be present for some datasets). 
+#' Higher values correspond to higher levels of spatial nestedness. 
+#' The default value of \code{rep_level = 1} corresponds to sites.
+#' @param return_logical logical; if \code{TRUE}, the function returns a logical
+#' vector. This vector can be used to subset the dataset. If \code{FALSE}, the 
+#' function returns a summary table of class \code{tbl}. This table shows, in 
+#' variable \code{number_of_samples}, how many temporal replicates per year 
+#' are contained by each spatial replicate. Default is \code{TRUE}.
 #' 
 #'
 #' @return \code{pplr_site_rep_plot}: \code{input} object (invisibly) or a
@@ -108,19 +111,21 @@ pplr_site_rep <- function(input,
                           rep_level = 1,
                           return_logical = TRUE) {
   
+  # test that input is indeed a 'get_data' object
   if(!inherits(input, 'get_data')) {
     stop('"input" must be an object of class "get_data".')
   }
   
+  # test that rep_level is an integer between 1 and 5
   if(rep_level < 1 & rep_level > 5) {
     stop('"rep_level" must be an integer between 1 and 5.')
   }
 
   # create symbols for rep_levels
   levels <- seq_len(rep_level)
-  
   levels <- paste0('spatial_replication_level_', levels, sep = "")
   
+  # test that the levels specified by user are actually available in dataset
   if(!all(levels %in% names(input))) {
     stop('requested "rep_level" is not available for this data set.\n',
          'Please try again with a lower value for "rep_level".',

@@ -1,12 +1,15 @@
-#' @title Unpack the covariates contained in downloaded data sets
+#' @title Unpack the covariates contained in the dataset downloaded via 
+#' \code{pplr_get_data()}
 #'
 #' @description Create a data frame by "extracting" the \code{covariates} column
-#' contained in an object downloaded with \code{pplr_get_data()}.
+#' contained in an dataset downloaded with \code{pplr_get_data()}.
 #' 
 #' @param input An object of class \code{get_data}.
 #' 
-#' @return A data frame whose columns represent the covariates of the data set.
-#'
+#' @return A data frame whose columns represent the covariates of the dataset
+#' downloaded via \code{pplr_get_data()}. Note that these covariates are 
+#' contained in the \code{covariates} column datasets downloaded using
+#' \code{pplr_get_data()}.
 #' 
 #' @examples
 #' \dontrun{

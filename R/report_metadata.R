@@ -1,11 +1,11 @@
 #' @title Open a report of the metadata of project(s) as an html page
 #'
-#' @description Generates a readable report of the metadata describing data sets contained in
-#' popler. The report contains citations, the links to the original URL of each 
-#' data set, and example code to obtain the metadata and data of the projects
-#' represented in the html page. 
+#' @description Generates a readable report of the metadata describing data sets 
+#' contained in popler. The report contains citations, the links to the original 
+#' URL of each data set, and example code to obtain the metadata and data of the
+#' projects represented in the html page. 
 #' 
-#' @param input A popler object returned from \code{pplr_browse()} or 
+#' @param input A popler object returned by \code{pplr_browse()} or 
 #' \code{pplr_get_data()}
 #' @param md_file Specify the filename and location for the generated markdown
 #' file (optional)

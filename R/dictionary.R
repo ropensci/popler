@@ -1,14 +1,15 @@
-#' Dictionary of the popler metadata
+#' Dictionary of the popler metadata variables
 #'
-#' Provides information on the metadata variables contained
-#' in the popler database, and the kind of data contained in 
-#' those variables.
+#' @description Describes the metadata variables contained
+#' in the popler database, and shows their content.
 #' 
 #' @param ... A sequence of (unquoted) variables specifying one
 #' or more variables of popler's main table for which dictionary 
 #' information is needed
-#' @param full_tbl Should the function return the standard columns,
-#' or the full main table?
+#' @param full_tbl logical; If \code{TRUE}, the function
+#' returns a table describing the variables of the full main table.
+#' If \code{FALSE}, the function returns a table describing the standard 
+#' variables. Default is \code{FALSE}.
 #' 
 #' @export
 #' @examples

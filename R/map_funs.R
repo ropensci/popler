@@ -55,11 +55,10 @@ prep_map_data <- function(input) {
 #' 
 #' @param input An object created by either \code{pplr_browse()} or
 #' \code{pplr_get_data()}
-#' @param return_plot A logical indicating whether to return a copy of the 
-#' \code{input} data or the \code{ggplot} object created by the function. Use
-#' \code{TRUE} to return the \code{ggplot} object for subsequent modification.
-#' Use \code{FALSE} to return an invisible copy of the \code{input} object (
-#' useful for piping). Default is \code{FALSE}.
+#' @param return_plot logical; if \code{TRUE} function returns the \code{ggplot} 
+#' object for subsequent modification.
+#' If \code{FALSE}, function returns an invisible copy of the \code{input} 
+#' object (useful for piping). Default is \code{FALSE}.
 #' 
 #' @return The \code{input} object (invisibly) or a \code{ggplot2} object.
 #' 

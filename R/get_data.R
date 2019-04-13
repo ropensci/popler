@@ -1,15 +1,15 @@
 #' @title Download data from the popler database
 #'
-#' @description This function downloads datasets associated with LTER studies contained in the popler database.
-#' The user can download data directly, using a logical expression, or using 
-#' objects created by `browse`.
-#' @param ... An object produced by browse, a logical expression, or both. This
-#' can only accept one of each at a time currently. 
-#' @param cov_unpack Should covariates be unpacked? This argument uses
-#'  function `cov_unpack` to extract the variables contained in the 
-#'  variable `covariates`, and combine the new columns with the default output.
+#' @description This function downloads datasets contained in the popler database. 
+#' The user can download data directly, using a logical expression, or indirectly, 
+#' using objects created by \code{pplr_browse}.
+#' @param ... An object produced by \code{pplr_browse} or a logical expression.
+#' @param cov_unpack logical; if \code{TRUE}, function \code{pplr_cov_unpack} 
+#' is applied to the variable \code{covariates} of the downloaded dataset in 
+#' order to extract the variables contained in therein and combine the new
+#' columns with the default output. Default is \code{FALSE}.
 #'  
-#' @return This data fame is of class \code{get_data}, and \code{data.frame}. 
+#' @return This data fame is of class \code{get_data}, and \code{data.frame}.
 #' 
 #' 
 #' @details. By default, the following variables are included when a user calls
