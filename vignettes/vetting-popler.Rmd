@@ -32,7 +32,7 @@ pplr_browse(duration_years > 10)
 
 ```
 
-Note that most LTER projects contemplate sampling at a yearly or sub-yearly frequency. Thus, studies longer than 10 years generally guarantee a longitudinal series of 10 or more observations. Note that the `duration_years` variable is calculated as `studyendyr - studystartyr`. Thus, an additional variable named `samplefreq` characterizes the approximate sample frequency of each study. 
+Note that most LTER projects contemplate sampling at a yearly or sub-yearly frequency. Thus, studies longer than 10 years often guarantee a longitudinal series of 10 or more observations. Note that the `duration_years` variable is calculated as `studyendyr - studystartyr`. Thus, an additional variable named `samplefreq` characterizes the approximate sample frequency of each study. 
 
 ```{r, warning = FALSE, message = FALSE}
 
@@ -41,13 +41,13 @@ pplr_browse(samplefreq == "monthly")
 
 ```
 
-Note that `samplefreq` is **not** a default variable included in the `pplr_dictionary` or `pplr_browse()` functions. This can be viewed by specifying the `full_tbl = TRUE` argument in either function.
+Note that `samplefreq` is **not** a default variable included in the `pplr_dictionary` or `pplr_browse()` functions. This can be viewed by specifying the `full_tbl = TRUE` argument in either of the above functions.
 
 ###1. Spatial replication
 
 #### Before downloading data
 
-If you wish to select data sets based on their spatial replication, you need to consider that `popler` organizes data in nested spatial levels. For example, in many plant studies data is collected at the *plot* level, which can be nested within *block*, which in turn can be nested within *site*. `popler` labels spatial levels using numbers: 1 is the coarsest level of replication which contains all other spatial replicates. In the example above, spatial level 1 is *site*, spatial level 2 is *block*, and spatial level 3 is *plot*. `popler` allows for a total of 5 spatial levels. Given the above, you can select studies based on three criteria:
+If you wish to select data sets based on their spatial replication, you need to consider that `popler` organizes data in nested spatial levels. For example, in many plant studies data is collected at the *plot* level, which can be nested within *block*, which in turn can be nested within *site*. `popler` labels spatial levels using numbers. Spatial level 1 is the coarsest level of replication which contains all other spatial replicates. In the example above, spatial level 1 is *site*, spatial level 2 is *block*, and spatial level 3 is *plot*. `popler` allows for a total of 5 spatial levels. Given the above, you can select studies based on three criteria:
 
  1. The total number of spatial replicates.
  
@@ -55,7 +55,7 @@ If you wish to select data sets based on their spatial replication, you need to 
  
  3. The number of nested spatial replicates.
 
-Below we provide respective three examples for each one of these respective searches.
+Below we provide three examples for each one of these respective cases.
 
 ```{r}
 pplr_browse(tot_spat_rep > 100)
@@ -65,7 +65,9 @@ pplr_browse(n_spat_levs == 3)
 
 #### After downloading data
 
-Users can also explore the spatial and temporal replication of the data more explicitly after downloading it with `pplr_get_data()`. `pplr_site_rep()` provides two options for exploring data that meet temporal replication requirements at a given spatial resolution. You can choose to filter your data by specifying a minimum sampling frequency per year and a minimum number of years that sample with that frequency. Because this function uses the sampling dates to calculate the frequency, it provides additional information that is not contained in the `samplefreq` column of the main metadata table.
+Users can also explore the spatial and temporal replication of the data more explicitly after downloading it with `pplr_get_data()` through two function: `pplr_site_rep()` and `pplr_site_rep_plot()`.
+
+`pplr_site_rep()` provides two options for exploring data that meet temporal replication requirements at a given spatial resolution. The user can choose to filter data by specifying a minimum sampling frequency per year and a minimum number of years that sample with that frequency. Because this function uses the sampling dates to calculate the frequency, it provides additional information that is not contained in the `samplefreq` column of the main metadata table.
 
 
 ```{r, eval = FALSE}
@@ -90,8 +92,7 @@ SEV_long_data <- SEV[subset_vec, ]
 
 ```
 
-
-Users can also visualize the frequency of sampling at the coarsest level of spatial replication using the `pplr_site_rep_plot()` function. This generates a `ggplot` that denotes whether or not a particular site was sampled in a particular year.
+Users can also visualize the frequency of sampling at the coarsest level of spatial replication using the `pplr_site_rep_plot()` function. This generates a `ggplot` that denotes whether or not a particular site was sampled in a particular year. Note that the coarsest level of spatial replication is called _site_ and it is contained in the variable `spatial_replication_level_1`.
 
 ```{r, eval = FALSE}
 
@@ -120,7 +121,7 @@ pplr_dictionary(class)
 pplr_browse(class == "Insecta")
 ```
 
-Note that taxonomic information returned in `pplr_browse()` is housed in a data structure called a _list column_. Each entry of this list column is itself a list that contains a `data.frame` with eight columns. Users can access this information using the following syntax.
+Note that the taxonomic information returned in `pplr_browse()` is housed in a data structure called _list column_. Each entry of this list column is itself a list that contains a `data.frame` with eight columns. Users can access this information using the following syntax.
 
 ```{r, warning = FALSE, message = FALSE}
 
@@ -129,7 +130,7 @@ insects <- pplr_browse(class == 'Insecta')
 # access the taxonomic table from the first project in the insects object
 insects$taxas[[1]]
 
-# second table
+# second table (etc.)
 insects$taxas[[2]]
 
 ```
@@ -137,14 +138,14 @@ insects$taxas[[2]]
 
 ###3. Study characteristics
 
-Metadata information provides a few variables to select studies based on their a straightforward way. In particular:
+Metadata information provides a few variables to select studies based on their design. In particular:
 
- - `studytype`: indicates whether the study is observational or experimental. 
+ - `studytype`: indicates whether the study is observational or experimental. Options are `obs` or `exp` for observational and experimental studies, respectively.
  - `treatment_type`: type of treatments, if study is experimental.
- - `community`: does project provide data on multiple species?
+ - `community`: indicates whether the project provides data on multiple species. Options are `yes` or `no`.
+ - `structured_data`: indicates whether the project provides information on population structure. For example, a population can be sub-divided in age, size, or developmental classes. Options are `yes` or `no`.
 
-Below we show
-how to use these three fields. 
+Below we show how to use these three fields. 
 
 ```{r, warning = FALSE, message = FALSE}
 pplr_dictionary(community)
@@ -155,15 +156,16 @@ nrow( pplr_browse(treatment == "fire") ) # 21 fire studies
 
 pplr_dictionary(studytype)
 nrow( pplr_browse(studytype == "obs") ) # 78 observational studies
+
 ```
 
 ### 4. Geographic location.
 
-To select studies based on the latitude and longitude of the LTER headquarters, simply use the `lat_lter` and `lng_lter` numeric variables: 
+To select studies based on the latitude and longitude of LTER headquarters around which datasets were, or are being collected, simply use the `lat_lter` and `lng_lter` numeric variables: 
 
 ```{r, warning = FALSE, message = FALSE}
-pplr_dictionary( lat_lter,lng_lter )
-pplr_browse(lat_lter > 40 & lng_lter < -100) # single-species studies
+pplr_dictionary( lat_lter, lng_lter )
+pplr_browse( lat_lter > 40 & lng_lter < -100 ) # single-species studies
 ```
 
 ### 5. More complicated searches

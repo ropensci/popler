@@ -27,13 +27,13 @@ library(popler)
 
 ## Metadata: *what* type of data is contained in the popler database?
 
-`popler` provides data from hundreds of research projects. The metadata of these projects allow understanding *what* population data is provided by each project. The `popler` R package provides three functions to explore these metadata.
+`popler` provides data from hundreds of research projects. The metadata of these projects allow understanding *what* population data are  provided by each project. The `popler` R package provides three functions to explore these metadata.
 
 ### pplr_dictionary()
 
 `pplr_dictionary()` shows:
 
-- what are the variables contained in the metadata of each project and their meaning 
+- what the variables contained in the metadata of each project and their meaning are. 
 - what data these variables contain.
 
 To see metadata variables and their meaning:  
@@ -69,7 +69,7 @@ poa_metadata  <- pplr_browse(genus == "Poa" & species == "fendleriana")
 poa_metadata
 ```
 
-Moreover, akin to `pplr_report_dictionary()`, browse can generate a report and open it as an html page. To do so, set the `report` variable to `TRUE`. Alternatively, you can pass an object created by `browse()` to `pplr_report_metadata()` to create the same report.  
+Moreover, akin to `pplr_report_dictionary()`, browse can generate a report and open it as an html page. To do so, set the `report` variable to `TRUE`. Alternatively, you can pass an object created by `pplr_browse()` to `pplr_report_metadata()` to create the same report.  
 
 ```{r, eval = FALSE}
 
@@ -83,7 +83,7 @@ pplr_report_metadata(SEV)
 
 #### The keyword argument
 
-`pplr_browse()` can also single out projects based on partial matching of all of the variables that are made of strings. Specify the string you want to search using the `keyword` argument: 
+`pplr_browse()` can also single out projects based on partial matching across the metadata variables that contain characters. Specify the character string you want to search using the `keyword` argument (note that this function ignores variables that contain numeric values):
 
 ```{r eval = FALSE}
 pplr_browse(keyword = "parasite", report = TRUE)
@@ -91,26 +91,31 @@ pplr_browse(keyword = "parasite", report = TRUE)
 
 ## Download data
 
-Once you identified one or more datasets of interest, download their raw data using `pplr_get_data()`. You can download data in three ways:
+Once you identified one or more datasets of interest, download their raw data using `pplr_get_data()`. You can use this function to download data in three ways:
 
-1. Passing an object created through `pplr_browse()`
+1. Providing `pplr_get_data()` with an object created through `pplr_browse()`.
 
-2. Passing an object created by `pplr_browse()` and an additional logical expression to further subset this
+2. Providing `pplr_get_data()` with an object created by `pplr_browse()`, and with an additional logical expression to further subset this object of class `browse`.
 
-3. Passing a logical expression directly to `pplr_get_data()`
+3. Providing `pplr_get_data()` with a logical expression. This logical expression will typically indicate the specific project(s) the user is interested in downloading.
 
-A few examples on how to the use of `pplr_get_data()` are:
+Below are examples on the three ways to use `pplr_get_data()`:
 
 ``` {r eval = FALSE}
+# option 1
 poa_metadata    <- pplr_browse(genus == "Poa" & species == "fendleriana") 
-poa_data        <- pplr_get_data(poa_metadata) # option 1
-poa_data_09     <- pplr_get_data(poa_metadata, duration_years > 10) # option 2
-parasite_data   <- pplr_get_data(proj_metadata_key == 25) # option 3
+poa_data        <- pplr_get_data(poa_metadata) 
+# option 2
+poa_data_11     <- pplr_get_data(poa_metadata, duration_years > 10) 
+# option 3
+parasite_data   <- pplr_get_data(proj_metadata_key == 25) 
 
 ```
 
-Here, we emphasize two important characteristics of `pplr_get_data()`. First, similarly to `pplr_browse()`, the function selects datasets based on the variables described in `pplr_dictionary()`. Second, `pplr_get_data()` will download entire datasets that satisfy user-defined conditions. Hence, for example, in the example above where `genus == "Poa" & species == "fendleriana"`, the function will download three datasets which will include data on _Poa fendleriana_, along with the many other taxa that happen to co-occur with _Poa fendleriana_ in those datasets. 
-In case you are using a slow internet connection, datasets may take some time to download. Therefore, `popler` provides two utility functions for saving downloaded data locally and efficiently. They are thin wrappers around `saveRDS` and `readRDS` that allow you to store large data sets in highly compressed formats. `.rds` files also have the advantage of rapid read and write times from R, making them optimal for saving data sets for later usage. Note that you should *not* specify the file type when specifying the path.
+Here, we emphasize two important characteristics of `pplr_get_data()`. First, similarly to `pplr_browse()`, the function selects datasets based on the variables described in `pplr_dictionary()`. Second, `pplr_get_data()` will download entire datasets that satisfy user-defined conditions. Hence, for example, in the example above where `genus == "Poa" & species == "fendleriana"`, the function will download three datasets which will include data on _Poa fendleriana_, along with the many other taxa that happen to co-occur with _Poa fendleriana_ in those datasets.
+
+
+In case you are using a slow internet connection, datasets may take some time to download. Therefore, `popler` provides two utility functions for saving downloaded data locally and efficiently. They are thin wrappers around `saveRDS` and `readRDS` that allow you to store large data sets in highly compressed formats. `.rds` files also have the advantage of rapid read and write times from R, making them optimal for saving data sets for later usage. Note from the examples below: you should *not* specify the file type when specifying the path.
 
 ```{r eval = FALSE}
 
@@ -128,7 +133,7 @@ stopifnot(identical(poa_data, poa_data_reloaded))
 
 ### Carefully vet the methods of downloaded data sets.
 
-We urge the user to carefully read the documentation of each project before using it for research purposes. Data sets downloaded with `popler` share data structure, but each project has its peculiarities. To show the *metadata* of the downloaded data sets, use `pplr_report_metadata` on the data object produced by `pplr_get_data()`. To read the *methods* of each project, click on  the 'metadata link' hyperlink provided in the html page.
+We urge the user to carefully read the documentation of each project before using it for research purposes. Data sets downloaded with `popler` share the same data structure, but each project has its peculiarities. To show the *metadata* of the downloaded data sets, use `pplr_report_metadata` on the data object produced by `pplr_get_data()`. To read the *methods* of each project, click on  the 'metadata link' hyperlink provided in the html page.
 
 ```{r eval = FALSE}
 pplr_report_metadata(poa_data)
@@ -137,21 +142,26 @@ pplr_report_metadata(poa_data)
 
 ### Data structure
 
-In `popler`, datasets are objects produced by `pplr_get_data()` have the same structure. The user should understand how spatial replicates and taxonomic information are stored in the database.
+In `popler`, datasets are objects produced by `pplr_get_data()` which have the same structure. This structure is documented formally in `vignette('popler-database-structure', package = 'popler')`. Here, we provide a brief description on how spatial replicates and taxonomic information are stored in the database.
 
-Spatial replicates are identified using variables that match the patterns  `spatial_replication_level_X` and `spatial_replication_level_X_label`. Here `X` is a number referring to one of the *nested* levels of spatial replication. This can vary from 1 to 5, with 1 referring to the largest spatial replication level - the one within which are nested all smaller spatial replicates. So for example, `spatial_replication_level_1` can represent a site, and `spatial_replication_level_2` represents a plot. In this specific case, `spatial_replication_level_1_label` will contain the string 'site', and `spatial_replication_level_2_label` will contain the string 'plot'.
+Spatial replicates are identified using variables that match the patterns  `spatial_replication_level_X` and `spatial_replication_level_X_label`. Here `X` is a number referring to one of maximum 5 *nested* levels of spatial replication. `X` can vary from 1 to 5, with 1 referring to the largest spatial replication level - the one within which are nested all smaller spatial replicates. So for example, `spatial_replication_level_1` can represent a site, and `spatial_replication_level_2` represents a plot. In this specific case, `spatial_replication_level_1_label` will contain the string 'site', and `spatial_replication_level_2_label` will contain the string 'plot'.
 
 Taxonomic units are identified through species codes in the `sppcode` variable, or through the `genus` and `species` variables. The `sppcode` variable usually contains alphanumeric codes. The `genus` and `species` variables are Latin binomial name. Occasionally, some datasets will contain higher taxonomic classifications (such as `family`, `class`, etc.).
 
 ### Spatio-temporal replication
 
-Users can explore the level of temporal replication at each nested level of spatial replication using the `pplr_site_rep_plot()` and `pplr_site_rep()`  functions. `pplr_site_rep_plot()` produces a scatterplot that shows which sites (`spatial_replication_level_1`) were sampled in a given year.
-`pplr_site_rep()` allows the user to subset `pplr_get_data()` based on a specific level of spatial replication, and the frequency and duration of temporal replication. `pplr_site_rep()` returns a logical vectors to subset the `pplr_get_data()` object. For additional examples on how to explore and vet `popler` data, see `vignette('vetting-popler', package = 'popler')`.
+Users can explore the level of temporal replication at each nested level of spatial replication using the `pplr_site_rep_plot()` and `pplr_site_rep()`  functions. 
+
+`pplr_site_rep_plot()` produces a scatterplot that shows which sites (`spatial_replication_level_1`) were sampled in a given year.
+
+`pplr_site_rep()` allows the user to subset datasets downloaded by `pplr_get_data()` based on the _frequency_ and _number of yearly replicates_ contained at a specific level of spatial replication. For example, this function allows to identify the replicates of the second level of spatial replication (e.g. plots within sites) which contain two samples per years (their frequency), for 10 years (the number of yearly replicates).
+`pplr_site_rep()` returns a logical vector to subset the `pplr_get_data()` object. For additional examples on how to explore and vet `popler` data, see `vignette('vetting-popler', package = 'popler')`.
 
 ## Extra covariates
 
 Most data sets provided by the USA LTER network contain more variables than those accommodated by the schema of `popler`. In order not to loose the original data, `popler` stores all extra information in a character variable named `covariates`. The `popler` package provides two ways to format these covariates into a data frame: the `cov_unpack` argument in `pplr_get data()`, and the `pplr_cov_unpack()` function in `popler`.
-Setting the `cov_unpack` argument to TRUE returns a data frame that combines the variables of a default query to popler, and the covariates contained in each particular study downloaded through popler.
+
+Setting the `cov_unpack` argument to `TRUE` returns a data frame that combines the variables of a default query to popler, and the covariates contained in each particular study downloaded through popler:
 
 ``` {r}
 d_47_cov <- pplr_get_data(proj_metadata_key == 47, cov_unpack = TRUE)
