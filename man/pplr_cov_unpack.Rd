@@ -2,7 +2,8 @@
 % Please edit documentation in R/cov_unpack.R
 \name{pplr_cov_unpack}
 \alias{pplr_cov_unpack}
-\title{Unpack the covariates contained in downloaded data sets}
+\title{Unpack the covariates contained in the dataset downloaded via 
+\code{pplr_get_data()}}
 \usage{
 pplr_cov_unpack(input)
 }
@@ -10,11 +11,14 @@ pplr_cov_unpack(input)
 \item{input}{An object of class \code{get_data}.}
 }
 \value{
-A data frame whose columns represent the covariates of the data set.
+A data frame whose columns represent the covariates of the dataset
+downloaded via \code{pplr_get_data()}. Note that these covariates are 
+contained in the \code{covariates} column datasets downloaded using
+\code{pplr_get_data()}.
 }
 \description{
 Create a data frame by "extracting" the \code{covariates} column
-contained in an object downloaded with \code{pplr_get_data()}.
+contained in an dataset downloaded with \code{pplr_get_data()}.
 }
 \examples{
 \dontrun{

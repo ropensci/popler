@@ -8,20 +8,24 @@ pplr_browse(..., full_tbl = FALSE, vars = NULL, view = FALSE,
   keyword = NULL, report = FALSE)
 }
 \arguments{
-\item{...}{A logical expression to subset popler's main table}
+\item{...}{A logical expression to subset the table containing the metadata of 
+datasets contained in popler}
 
-\item{full_tbl}{Should the function return the standard 
-columns, or the full main table?}
+\item{full_tbl}{logical; Should the function returns the standard 
+columns, or the full main table? Default is \code{FALSE}.}
 
-\item{vars}{A vector of characters: which variables 
-of popler's main table should be selected?}
+\item{vars}{A vector of characters in case the user want to select 
+which variables of popler's main table should be selected?}
 
 \item{view}{If TRUE, opens up a spreadsheet-style data viewer.}
 
-\item{keyword}{A string that selects}
+\item{keyword}{A string used to select individual datasets based on
+pattern matching. The string is matched to every string element in the 
+variables of the metadata table in popler.}
 
-\item{report}{If TRUE, function produces a markdown 
-report about each study's metadata, and opens it as a html page.}
+\item{report}{logical; If \code{TRUE}, function produces a markdown 
+report about each study's metadata, and opens it as a html page. 
+Default is \code{FALSE}.}
 }
 \value{
 A data frame combining the metadata of each project 
@@ -32,7 +36,7 @@ This data frame is of class \code{popler}, \code{data.frame},
 }
 \description{
 pplr_browse() reports the metadata of LTER studies contained in the popler database. 
-The user can subset what data, and which variables to visualize.
+The user can subset which datasets, and which metadata variables to visualize.
 }
 \examples{
 

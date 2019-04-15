@@ -2,21 +2,22 @@
 % Please edit documentation in R/popler_citation.R
 \name{pplr_citation}
 \alias{pplr_citation}
-\title{Provide citations for a popler browse or get_data object.}
+\title{Provide citations for a popler object returned by \code{pplr_browse} or
+\code{pplr_get_data} object.}
 \usage{
 pplr_citation(input, bibtex_path = NULL)
 }
 \arguments{
-\item{input}{An object  of class \code{browse} or \code{get_data}.}
+\item{input}{An object of class \code{browse} or \code{get_data}.}
 
 \item{bibtex_path}{Specify the filename and location for 
-the generated markdown file (optional)}
+the generated markdown file (optional).}
 }
 \value{
 A list of references from \code{input}.
 }
 \description{
-Returns a bibliography, Bibtex citations, and acknowledgement template.
+Returns a bibliography, Bibtex citations, and acknowledgment template.
 }
 \examples{
 \dontrun{

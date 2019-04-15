@@ -160,7 +160,7 @@ pop_summary <- function(limit = 10, offset = 0, ...) {
 #' search 
 #' 
 #' @export
-#' @param proj_metadata_key project metadat key
+#' @param proj_metadata_key project metadata key
 #' @param limit number of records to return, default: 10
 #' @param offset record number to start at, default: first record
 #' @param ... curl options passed on to [crul::HttpClient]

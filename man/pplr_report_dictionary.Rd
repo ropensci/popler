@@ -8,8 +8,9 @@ pplr_report_dictionary(full_tbl = FALSE, md_file = NULL,
   html_file = NULL)
 }
 \arguments{
-\item{full_tbl}{Should the function return the standard 
-columns, or the full main table?}
+\item{full_tbl}{logical; if \code{TRUE} function returns the variables 
+contained in the full main table. If \code{FALSE}, functions returns only the
+standard variables. Default is \code{FALSE}.}
 
 \item{md_file}{Specify the filename and location for 
 the generated markdown file (optional)}
@@ -22,8 +23,8 @@ This function is called for its side effects and does not
 return an R object.
 }
 \description{
-Provides information on the columns of metadata contained 
-in the popler database, and the kind of data contained in those columns.
+Provides information on the variables of metadata contained in the popler 
+database, and the kind of data contained in those variables.
 }
 \examples{
 \dontrun{

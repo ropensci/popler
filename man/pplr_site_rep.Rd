@@ -11,34 +11,37 @@ pplr_site_rep(input, freq = 1, duration = 10, rep_level = 1,
 pplr_site_rep_plot(input, return_plot = FALSE)
 }
 \arguments{
-\item{input}{An object of class \code{get_data}. Note that this is not an 
-output from \code{browse}, as the raw data is required to calculate
-the amount of replication.}
+\item{input}{An object of produced by \code{pplr_get_data}. Note that this
+is not an output from \code{pplr_browse}, as the raw data is required to 
+calculate the amount of replication.}
 
 \item{freq}{A number corresponding to the desired annual frequency of 
-temporal replication. Studies that are 
-replicated more frequently will be included in the counts and those that 
-replicated less frequently will be excluded. If \code{return_logical = TRUE},
-rows included in sites that are replicated at the desired frequency will have
-a \code{TRUE} value, and rows that are not will have \code{FALSE} value. Values
-greater than 1 correspond to sampling multiple times per year. For example, 
-\code{freq = 2} indicates a desired sampling frequency of every 6 months. 
-Values less than 1 indicate sampling intervals of greater than 1 year. For
-example, \code{freq = 0.5} indicates a desired sampling frequency of once
-every 2 years.}
+replicates. Studies that are replicated more frequently will be 
+included in the counts and those that replicated less frequently will be 
+excluded. 
+If \code{return_logical = TRUE}, rows that contain information from sites 
+that are replicated at the desired frequency will have a \code{TRUE} value, 
+and rows that are not will have a \code{FALSE} value. 
+Values greater than 1 will select sampling done multiple times per year. 
+For example, \code{freq = 2} indicates a desired sampling frequency of 6
+months. Conversely, \code{freq = 0.5} indicates a desired sampling done 
+once every 2 years.}
 
-\item{duration}{An integer corresponding to the desired duration of temporal
-replication. Rows corresponding to sites with more replication will be 
-included, while those with less will be excluded.}
+\item{duration}{An integer corresponding to the desired number of yearly
+replicates. Rows containing site information from sites with more 
+replication will be included, while those with less will be excluded.}
 
-\item{rep_level}{An integer corresponding to the level of spatial replication
-desired. Values between 1 and 5 are possible (though higher levels may not be
-present for some datasets). Higher values correspond to higher levels of 
-spatial nestedness. The default value of \code{rep_level = 1} corresponds to 
-entire sites.}
+\item{rep_level}{An integer corresponding to the level of spatial 
+replication over which verify yearly temporal replication. Values between 1 and 5 
+are possible (though higher levels may not be present for some datasets). 
+Higher values correspond to higher levels of spatial nestedness. 
+The default value of \code{rep_level = 1} corresponds to sites.}
 
-\item{return_logical}{Indicates whether to return a summary table of class
-\code{tbl} or a logical vector. The default is \code{TRUE}.}
+\item{return_logical}{logical; if \code{TRUE}, the function returns a logical
+vector. This vector can be used to subset the dataset. If \code{FALSE}, the 
+function returns a summary table of class \code{tbl}. This table shows, in 
+variable \code{number_of_samples}, how many temporal replicates per year 
+are contained by each spatial replicate. Default is \code{TRUE}.}
 
 \item{return_plot}{A logical indicating whether to return a copy of the 
 \code{input} data or the \code{ggplot} object created by the function. Use
@@ -54,11 +57,12 @@ Use \code{FALSE} to return an invisible copy of the \code{input} object
 \code{dim(input)[1]}. Use \code{return_logical} to control.
 }
 \description{
-Functions to examine the number of temporal replicates contained in each 
-spatial replication level of a dataset. 
-\code{pplr_site_rep_plot} plots the temporal replicates available for each site.
-\code{pplr_site_rep} produces logical vectors that identify the spatial replicates 
-with enough temporal replication, or summary tables.
+Functions to examine the number of temporal replicates 
+contained within each spatial replication level of a dataset. 
+\code{pplr_site_rep_plot} plots the temporal replicates available for 
+each site.
+\code{pplr_site_rep} produces logical vectors that identify the spatial 
+replicates with enough temporal replication, or summary tables.
 }
 \details{
 \code{pplr_site_rep_plot} produces a scatterplot showing the sites 

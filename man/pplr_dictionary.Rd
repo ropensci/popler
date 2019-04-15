@@ -2,7 +2,7 @@
 % Please edit documentation in R/dictionary.R
 \name{pplr_dictionary}
 \alias{pplr_dictionary}
-\title{Dictionary of the popler metadata}
+\title{Dictionary of the popler metadata variables}
 \usage{
 pplr_dictionary(..., full_tbl = FALSE)
 }
@@ -11,13 +11,14 @@ pplr_dictionary(..., full_tbl = FALSE)
 or more variables of popler's main table for which dictionary 
 information is needed}
 
-\item{full_tbl}{Should the function return the standard columns,
-or the full main table?}
+\item{full_tbl}{logical; If \code{TRUE}, the function
+returns a table describing the variables of the full main table.
+If \code{FALSE}, the function returns a table describing the standard 
+variables. Default is \code{FALSE}.}
 }
 \description{
-Provides information on the metadata variables contained
-in the popler database, and the kind of data contained in 
-those variables.
+Describes the metadata variables contained
+in the popler database, and shows their content.
 }
 \examples{
 \dontrun{

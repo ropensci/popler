@@ -35,7 +35,7 @@ knitr::opts_chunk$set(message=FALSE, warning=FALSE)
 ```
 
 ## Popler Overview
-Popler is a database of population and individual-level data gathered throughout the Long Term Ecological Resarch (LTER) stations funded by the USA National Science Foundation.
+Popler is a database of population and individual-level data gathered throughout the Long Term Ecological Research (LTER) stations funded by the USA National Science Foundation.
 
 We define _population data_ datasets as time series on the size or density of a population of a taxonomic unit. The size of a population can be quantified as a count, biomass, or cover class. These measures are always repeated temporally, and they are often repeated spatially as well.
 
@@ -64,7 +64,7 @@ indicate smaller areas of sampling extent.
 Similarly to temporal replication, **never do we aggregate data by levels of spatial replication prior to storing them in Popler.**
 
 #### Spatial Replication Level 1
-The first level of spatial replication is also the highest, or coarsest, level of nested spatial replication. We call this level 1 'site'. LTER stations contain permanent 'sites' which are reused across studies. Therefore, ‘site’ lables allow querying data collected at a particular site regardless of the original study a dataset was derived from.
+The first level of spatial replication is also the highest, or coarsest, level of nested spatial replication. We call this level 1 'site'. LTER stations contain permanent 'sites' which are reused across studies. Therefore, "site" labels allow querying data collected at a particular site regardless of the original study a dataset was derived from.
 
 Whenever available in the source metadata, these 'sites' are associated with latitude and longitude coordinates are also recorded if available; `-99999` values exist within these fields for studies that do not record geographic location for their 'site' label. 
 
@@ -91,7 +91,7 @@ knitr::kable(lter, booktabs = TRUE)
 
 ## 2. Study Site Table
 
-This table contains the labels that identify ‘sites’ (spatial replication level 1) used across research projects. Different datasets can use the same ‘site’ label if data were collected at the same sampling location.
+This table contains the labels that identify "sites" (spatial replication level 1) used across research projects. Different datasets can use the same "site" label if data were collected at the same sampling location.
 
 ```{r, out.width = "600px", echo=FALSE}
 knitr::include_graphics("img/study-site-table.png")
@@ -203,7 +203,7 @@ lter <- read_excel("data/metadata.xlsx", sheet='percent_cover')
 knitr::kable(lter, booktabs = TRUE)
 ```
 
-## 11. Indiviual Table
+## 11. Individual Table
 Individual-level data. The `structure_type` columns refer to the attributes of individuals (e.g. size, age, sex, etc.)
 
 

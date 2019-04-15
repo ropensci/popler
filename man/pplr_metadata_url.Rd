@@ -7,13 +7,14 @@
 pplr_metadata_url(input)
 }
 \arguments{
-\item{input}{An object produced by the function \code{pplr_get_data()}}
+\item{input}{An object produced by the function \code{pplr_get_data()}.}
 }
 \description{
-Load the webpage containing the metadata of the data sets downloaded through 
-get_data(). If you downloaded data from multiple projects, 
-this function opens multiple webpages. 
-This is a wrapper of function browseURL in base.
+Load the webpage containing the metadata of the data sets 
+contained in objects produced by \code{pplr_browse} or downloaded through 
+\code{pplr_get_data()}. If you downloaded data from multiple projects, 
+this function will open multiple webpages. This is a wrapper of function 
+\code{browseURL} in \code{base}.
 }
 \examples{
 

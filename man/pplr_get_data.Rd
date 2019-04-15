@@ -4,32 +4,23 @@
 \alias{pplr_get_data}
 \title{Download data from the popler database}
 \usage{
-pplr_get_data(..., add_vars = NULL, subtract_vars = NULL,
-  cov_unpack = FALSE)
+pplr_get_data(..., cov_unpack = FALSE)
 }
 \arguments{
-\item{...}{An object produced by browse, a logical expression, or both. This
-can only accept one of each at a time currently.}
+\item{...}{An object produced by \code{pplr_browse} or a logical expression.}
 
-\item{add_vars}{A string to specify which variables the user wants to 
-add to the default variables used in a query. See \code{Details} for list of
-default variables.}
-
-\item{subtract_vars}{A string to specify which, among the default 
-variables, the user wishes to discard in queries to the database. See 
-\code{Details} for list of default variables.}
-
-\item{cov_unpack}{Should covariates be unpacked? This argument uses
-function `cov_unpack` to extract the variables contained in the 
-variable `covariates`, and combine the new columns with the default output.}
+\item{cov_unpack}{logical; if \code{TRUE}, function \code{pplr_cov_unpack} 
+is applied to the variable \code{covariates} of the downloaded dataset in 
+order to extract the variables contained in therein and combine the new
+columns with the default output. Default is \code{FALSE}.}
 }
 \value{
 This data fame is of class \code{get_data}, and \code{data.frame}.
 }
 \description{
-This function downloads LTER studies contained in the popler database.
-The user can download data directly, using a logical expression, or using 
-objects created by `browse`.
+This function downloads datasets contained in the popler database. 
+The user can download data directly, using a logical expression, or indirectly, 
+using objects created by \code{pplr_browse}.
 }
 \details{
 . By default, the following variables are included when a user calls
@@ -72,16 +63,12 @@ objects created by `browse`.
 parasite = pplr_browse(proj_metadata_key == 25)
 gh_data = pplr_get_data(parasite)
 
-# further subset this data set, based on year
-gh_data_96_99 = pplr_get_data(parasite, year > 1995 & year < 2000)
-
 # insect data sets from the SEV lter site
 insect_sev = pplr_browse(class == "Insecta" & lterid == "SEV")
-insect_25_yrs96_99 = pplr_get_data(insect_sev, year > 1995 & year < 2000)
+insect_25_yrs96_99 = pplr_get_data(insect_sev)
 
-insect_21_25 = pplr_get_data((proj_metadata_key == 43 | 
-                              proj_metadata_key == 25) & 
-                              year < 1995 )
+insect_21_25 = pplr_get_data( (proj_metadata_key == 43 | 
+                               proj_metadata_key == 25) )
 }
 
 }

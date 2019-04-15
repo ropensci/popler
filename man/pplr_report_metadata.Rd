@@ -8,7 +8,7 @@ pplr_report_metadata(input, md_file = "./browse.Rmd",
   html_file = "./browse.html")
 }
 \arguments{
-\item{input}{A popler object returned from \code{pplr_browse()} or 
+\item{input}{A popler object returned by \code{pplr_browse()} or 
 \code{pplr_get_data()}}
 
 \item{md_file}{Specify the filename and location for the generated markdown
@@ -21,10 +21,10 @@ the generated html file (optional)}
 An invisible copy of \code{input}.
 }
 \description{
-Generates a readable report of the metadata describing data sets contained in
-popler. The report contains citations, the links to the original URL of each 
-data set, and example code to obtain the metadata and data of the projects
-represented in the html page.
+Generates a readable report of the metadata describing data sets 
+contained in popler. The report contains citations, the links to the original 
+URL of each data set, and example code to obtain the metadata and data of the
+projects represented in the html page.
 }
 \examples{
 \dontrun{
