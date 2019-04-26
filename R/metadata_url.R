@@ -19,6 +19,7 @@
 #' @export
 
 pplr_metadata_url <- function(input){
+  
   # study id(s)
   proj_ids  <- attributes(input)$unique_projects
   # load summary_table
@@ -46,7 +47,7 @@ pplr_metadata_url <- function(input){
                                 length(ids),
                                 " different projects. Do you want 
 to open a browser for each one of them? 
-Print 'N' if you want to refine the search(Y/N):") )
+Return 'N' if you want to refine the search(Y/N):") )
     n <- tolower(n)
   } else {
     n <- "y"
@@ -58,12 +59,12 @@ Print 'N' if you want to refine the search(Y/N):") )
       
       # store doi link (if present)
       link <- dplyr::filter(main_t, 
-                                .data$proj_metadata_key == ids[i]) %>% 
+                            .data$proj_metadata_key == ids[i]) %>% 
                 # grab DOI - or url if DOI not present 
                 links_get
       
       # apply recusrively in case of multiple links
-      sapply(link,browseURL)
+      sapply(link, browseURL)
       
       # # use url only if you don't have doi
       # if( doi_link == 'NA'){
