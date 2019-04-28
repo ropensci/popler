@@ -108,7 +108,7 @@ more_raw_data <- pplr_get_data((proj_metadata_key == 43 |
 
 ------------------------------------------------------------------------
 
-We prodive three ancillary functions to facilitate the use of the objects downloaded through `pplr_get_data()`. First, `pplr_metadata_url()` opens up a webpage containing study details. Before doing scientific analyses, we urge the users to review the peculiarities of each dataset by vetting their online documentation. Second, `pplr_cov_unpack()` transforms the data contained in the `covariates` column of each downloaded dataset into separate columns. This can or cannot be useful depending on the objectives of the user. Note: you can also transform covariates into a data frame directly through `pplr_get_data()` by providing the function with argument `cov_unpack = TRUE`. Third, `pplr_citation()` produces a citation for each downloaded dataset.
+We provide three ancillary functions to facilitate the use of the objects downloaded through `pplr_get_data()`. First, `pplr_metadata_url()` opens up a webpage containing study details. Before doing scientific analyses, we urge the users to review the peculiarities of each dataset by vetting their online documentation. Second, `pplr_cov_unpack()` transforms the data contained in the `covariates` column of each downloaded dataset into separate columns. This can or cannot be useful depending on the objectives of the user. Note: you can also transform covariates into a data frame directly through `pplr_get_data()` by providing the function with argument `cov_unpack = TRUE`. Third, `pplr_citation()` produces a citation for each downloaded dataset.
 
 ### Data validation
 
