@@ -128,7 +128,9 @@ factor_to_character <- function(x, full_tbl = FALSE){
 popler_base <- "https://popler.space"
 cc          <- function(l) Filter(Negate(is.null), l)
 
-#' @importFrom crul jsonlite tibble
+#' @importFrom crul HttpClient
+#' @importFrom jsonlite fromJSON
+#' @importFrom tibble as_tibble
 #' @noRd
 # get actual data from the API
 pop_GET <- function(path, args, ...) {
