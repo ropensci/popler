@@ -59,7 +59,7 @@
 #'                                proj_metadata_key == 25) )
 #'}
 #'
-#' @importFrom dplyr %>% select
+#' @importFrom dplyr %>% select bind_rows
 #' @importFrom rlang .data
 #' @export
 
@@ -281,7 +281,7 @@ pplr_query <- function( proj_id ){
                     1:length(query_in$limit_v) )
   
   # put it all in one  together
-  out_data <- Reduce( function(...) bind_rows(...), df_l ) %>% 
+  out_data <- Reduce( function(...) dplyr::bind_rows(...), df_l ) %>% 
                 as.data.frame %>% 
                 .[,-grep('count_table_key',names(.))]
 
