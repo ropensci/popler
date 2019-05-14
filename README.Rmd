@@ -9,9 +9,16 @@ output: github_document
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/AldoCompagnoni/popler?branch=master&svg=true)](https://ci.appveyor.com/project/AldoCompagnoni/popler)
 [![Coverage status](https://codecov.io/gh/AldoCompagnoni/popler/branch/master/graph/badge.svg)](https://codecov.io/github/AldoCompagnoni/popler?branch=master)
 
-## Popler
+# Popler
 
 `popler` is the R package to browse and query the `popler` data base. `popler` is a PostgreSQL data base that contains population-level datasets from the US long term ecological research (LTER) network. This package is currently only available on GitHub, but our ultimate goal is to submit it to CRAN.
+A more detailed explanation on the structure of the `popler` online database is contained in the [dratf of the manuscript presenting popler ](https://github.com/texmiller/popler-ms/blob/master/popler_ms.pdf) and in the [dedicated vignette](https://github.com/AldoCompagnoni/popler/blob/master/vignettes/popler-database-structure.Rmd).
+
+The package `popler` aims to facilitate finding, retrieving, and using time-series data of population abundance associated with the US LTER network.
+To _find datasets_, the functions in `popler` aid in understanding and browsing the metadata information referring to each dataset.
+To _retrieve_ data, the function `pplr_get_data()` downloads single datasets or groups of datasets. These downloads share the same data structure.
+To _use_ downloaded data, the package provides ancillary functions to consult and cite the original data sources, examine the temporal replication of each data set, and methods for a couple of `dplyr` verbs to assist with data manipulation.
+
 
 ### Installation
 
@@ -32,10 +39,11 @@ devtools::install_github('AldoCompagnoni/popler')
 
 ```
 
-
-### Dictionary of variables
+# Finding datasets
 
 ------
+
+##### Dictionary of variables
 
 All exported functions in the `popler` R package use the `pplr_` prefix and lazy and/or tidy evaluation, meaning you do not need to manually quote most inputs. We suggest to start exploring the variables in the data base using `pplr_dictionary()`. This function explores the metadata variables used to describe the datasets contained in `popler`. `pplr_dictionary()` works with and without inputs. Without inputs, the function returns a data frame showing a description of each metadata variable. The input of `pplr_dictionary()` is supposed to be the name of one of the metadata variables. When `pplr_dictionary()` is provided with the name of a metadata variable, it returns the possible unique values of the variable.
 Additionally, the `pplr_report_dictionary()` function generates an `Rmd` file and renders it into html. This html contains both the meaning of variables, and their unique values.
@@ -49,9 +57,7 @@ pplr_dictionary()
 ```
 
 
-### Browsing `popler`
-
-------
+##### Browsing `popler`
 
 Once you are familiar with the meaning and content of `popler`'s metadata variables, `pplr_browse()` provides the metadata of the studies contained in `popler`. `pplr_browse()` also works with and without an input. Without input, the function produces a data frame including the metadata variables describing every study currently contained in the `popler` database. Note that this data frame is a `tbl` that inherits from the `browse` class. Inputs to `pplr_browse()` allow users to subset this data frame (e.g. `duration_years > 5`). When subsetting, the unique values provided by `pplr_dictionary()` are particularly useful. For more nuanced subsetting of available datasets, the `keyword` argument allows to subset variables using partial matching. Note that `keyword` will act primarily on information contained in the title of studies.
 
@@ -80,9 +86,7 @@ all_studies_and_vars <- pplr_browse(full_tbl = TRUE)
 ```
 
 
-### Reporting metadata
-
------
+##### Reporting metadata
 
 You can generate a human-readable report on metadata variables of the projects you subset using `pplr_browse` by providing the function with the argument `report = TRUE` . This argument uses `rmarkdown` to render the metadata into an html file, and opens it into your default browser.
 Alternatively, you can perform the same action described above by providing the `browse` object produced calling `pplr_browse` to the function `pplr_report_metadata()`.
@@ -104,7 +108,7 @@ pplr_report_metadata(parasite_studies)
 ```
 
 
-### Downloading data
+# Retrieving data
 
 -----
 
@@ -128,7 +132,7 @@ more_raw_data <- pplr_get_data((proj_metadata_key == 43 |
 
 ```
 
-### Ancillary functions
+# Using data
 
 -----
 
@@ -141,9 +145,7 @@ Second, `pplr_cov_unpack()` transforms the data contained in the `covariates` co
 Third, `pplr_citation()` produces a citation for each downloaded dataset.
 
 
-### Spatio-temporal replication
-
------
+##### Spatio-temporal replication
 
 The datasets contained in `popler` present many heterogeneities, especially in terms of their spatio-temporal replication. Most studies present at least a few spatial replicates which were not sampled every year. Note that most datasets in `popler` present at least one additional  replication level. These spatial replicates are denoted with numbered variables of the form `spatial_replication_level_X`, where `X` refers to the replication level which can go fro 1 to 5. The names of these replication levels (e.g. plot, subplot, etc.) are contained in variable `spatial_replication_level_x_label`.
 
@@ -186,9 +188,7 @@ pplr_site_rep_plot(long_SEV_studies, return_plot = TRUE) +
 ```
 
 
-### Data manipulation
-
-------
+##### Data manipulation
 
 `popler` supplies methods for a couple of `dplyr` verbs to assist with data manipulation. `filter` and `mutate` methods are available for objects of `browse` and `get_data` classes. Other `dplyr` verbs change the structure
 of the object too much for those classes to retain their meaning so they are not included in the package, but one can still use them for their own purposes.
@@ -206,8 +206,14 @@ class(penguins_98_true)
 ```
 
 
-### Further information
+# Further information
 
 ------
 
-`popler` contains three vignettes with additional information. In case these vignettes do not cover your particular use case, you still have questions, or you discover a bug, please don't hesitate to create an [issue](https://github.com/AldoCompagnoni/popler/issues).
+Additional information on `popler` is contained in a manuscript, and in the  vignettes associated with the R package.
+
+The [manuscript, currently in  draft form](https://github.com/texmiller/popler-ms/blob/master/popler_ms.pdf), presents the `popler` database, the R package, and our recommendations on how to use them.
+
+The R package contains three vignettes: one vignette [illustrates the structure of the popler database](https://github.com/AldoCompagnoni/popler/blob/master/vignettes/popler-database-structure.Rmd), and two vignettes provide [an introduction](https://github.com/AldoCompagnoni/popler/blob/master/vignettes/introduction-to-popler.Rmd) and [a more detailed look](https://github.com/AldoCompagnoni/popler/blob/master/vignettes/vetting-popler.Rmd) at the intended workflow of the popler package.
+
+In case these vignettes do not cover your particular use case, you still have questions, or you discover a bug, please don't hesitate to create an [issue](https://github.com/AldoCompagnoni/popler/issues).
