@@ -342,6 +342,8 @@ pplr_summary_table_update <- function(){
   out <- Reduce( function(...) rbind(...), out_l ) %>% 
             as.data.frame
 
+  # formatting -----------------------------------------------------------
+  
   # Select project-specific information 
   proj_info             <- out[,c(proj_cols,lter_cols)]
   
@@ -388,6 +390,10 @@ pplr_summary_table_update <- function(){
   summary_table$doi_citation <- gsub('%', 
                                      'percent', 
                                      summary_table$doi_citation)
+  
+  # these variables need be numeric
+  summary_table$lat_lter     <- summary_table$lat_lter %>% as.numeric
+  summary_table$lng_lter     <- summary_table$lng_lter %>% as.numeric
   
   # store main data table--------------------------------------------------
   st_file <- paste0(system.file("extdata", package = "popler"),"/summary_table.rda")
@@ -466,7 +472,7 @@ links_get = function( sum_tab_df ){
   if( length(id_smcol) > 0 ){
     
     # split links string into separate links
-    split_links <- function(x) strsplit(x, '; ') %>% unlist(recursive = F)
+    split_links <- function(x) strsplit(x, '; ') %>% unlist(recursive = FALSE)
 
     links_out   <- split_links(links)
 
