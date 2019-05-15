@@ -384,6 +384,11 @@ pplr_summary_table_update <- function(){
   summary_table <- colname_change("clss", "class", summary_table)
   summary_table <- colname_change("ordr", "order", summary_table)
   
+  # remove symbol "%" from doi_citation, because problematic when creating citation
+  summary_table$doi_citation <- gsub('%', 
+                                     'percent', 
+                                     summary_table$doi_citation)
+  
   # store main data table--------------------------------------------------
   st_file <- paste0(system.file("extdata", package = "popler"),"/summary_table.rda")
   save(summary_table, file = st_file)
