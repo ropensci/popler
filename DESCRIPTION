@@ -40,7 +40,8 @@ Suggests:
     maps (>= 3.3.0),
     mapproj (>= 1.2.6),
     testthat(>= 2.0.0),
-    covr (>= 3.1.0)
+    covr (>= 3.1.0),
+    stubthat (>= 1.2.1)
 LazyData: true
 RoxygenNote: 6.1.1
 VignetteBuilder: knitr
