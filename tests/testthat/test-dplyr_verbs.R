@@ -7,7 +7,7 @@ browse_obj <- pplr_browse()
 # "mock" download of data object using a stub ---------------------------
 
 # Invoke the stub function with the function that needs to be mocked
-pplr_query_stub <- stubthat::stub( popler::pplr_query )
+pplr_query_stub <- stubthat::stub( popler:::pplr_query )
 
 # Define the behavior of the stub
 pplr_query_stub$withArgs( proj_id = 1 )$returns( int.data$data_1 )
