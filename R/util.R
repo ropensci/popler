@@ -320,7 +320,7 @@ pplr_summary_table_update <- function(){
   query_in <- offset_limit_summary( )
   
   # set up progress bar
-  total    <- query_in$limit_v %>% length
+  total    <- length( query_in$limit_v )
   prog_bar <- txtProgressBar(min = 0, max = total, style = 3)
   
   # actually download summary table
@@ -339,15 +339,30 @@ pplr_summary_table_update <- function(){
   message("Download complete, just a few moments to format the summary table!")
   
   # put it all together
-  out <- Reduce( function(...) rbind(...), out_l ) %>% 
-            as.data.frame
+  out <- Reduce( function(...) rbind(...), out_l ) %>% as.data.frame 
 
   # formatting -----------------------------------------------------------
   
   # Select project-specific information 
   proj_info             <- out[,c(proj_cols,lter_cols)]
   
-  # Discard replicated information
+  # Substitute "NA" for NAs introduced by rbind
+  replace_na            <- function(x) replace(x, is.na(x), 'NA')
+  
+  # introduce "NA" only in character columns
+  chr_cols              <- Filter(function(x) x == 'character',
+                                  sapply(proj_info, class)) %>% names
+  chr_ids               <- which( c(proj_cols,lter_cols) %in% chr_cols )
+
+  # ugly loop to change one column at a time (if needed)
+  for(ii in 1:length(chr_ids) ){
+
+    if( sum( is.na(proj_info[,chr_ids[ii]]) ) > 0 ){
+      proj_info[,chr_ids[ii]] = replace_na( proj_info[,chr_ids[ii]] )
+    }
+
+  }
+  
   out_proj              <- unique(proj_info)
   
   # strings for spatial_replication_level_X_number_of_unique_reps
@@ -357,7 +372,7 @@ pplr_summary_table_update <- function(){
   out_proj[,sr_colnames][out_proj[,sr_colnames] == -99999] <- NA
   
   # add column for total spatial replicates
-  out_proj$tot_spat_rep <- apply(out_proj[sr_colnames], 1, prod, na.rm=TRUE)
+  out_proj$tot_spat_rep <- apply(out_proj[,sr_colnames], 1, prod, na.rm=TRUE)
   
   # add column for number of spatial levels 
   out_proj$n_spat_levs  <- apply(!is.na(out_proj[sr_colnames]), 1, sum) 
@@ -387,11 +402,11 @@ pplr_summary_table_update <- function(){
   summary_table <- colname_change("ordr", "order", summary_table)
   
   # remove symbol "%" from doi_citation, because problematic when creating citation
-  summary_table$doi_citation <- gsub('%', 
-                                     'percent', 
+  summary_table$doi_citation <- gsub('%',
+                                     'percent',
                                      summary_table$doi_citation)
-  
-  # these variables need be numeric
+
+  # variables that need be numeric
   summary_table$lat_lter     <- summary_table$lat_lter %>% as.numeric
   summary_table$lng_lter     <- summary_table$lng_lter %>% as.numeric
   
@@ -401,6 +416,7 @@ pplr_summary_table_update <- function(){
   
   message("Finished.")
 }
+
 
 
 #' @noRd
@@ -439,6 +455,7 @@ colname_change = function(from, to, x){
 # https://stackoverflow.com/questions/30357330/r-cmd-check-no-visible-binding-for-global-variable-mypkgdata
 #' @noRd
 pplr_summary_table_import <- function() {
+  
   # create empty environment for loading
   pkgEnv <- new.env(parent = emptyenv())
   
