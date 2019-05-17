@@ -4,7 +4,7 @@
 #' @importFrom stringr str_extract_all 
 #' @noRd
 
-call_update = function(query){
+call_update <- function(query){
   
   # query is some user's input (i.e. a query) to the pplr_browse() function
   
@@ -237,7 +237,7 @@ offset_limit_search <- function( proj_id ){
 #'  but can also be accessed directly by calling \code{pplr_summary_table_import()}. 
 #' 
 #' @export
-#' 
+#' @importFrom utils txtProgressBar setTxtProgressBar
 
 pplr_summary_table_update <- function(){
   
@@ -321,11 +321,11 @@ pplr_summary_table_update <- function(){
   
   # set up progress bar
   total    <- length( query_in$limit_v )
-  prog_bar <- txtProgressBar(min = 0, max = total, style = 3)
+  prog_bar <- utils::txtProgressBar(min = 0, max = total, style = 3)
   
   # actually download summary table
   downld_summary <- function(lim,off,i){
-                      setTxtProgressBar(prog_bar, i)
+                      utils::setTxtProgressBar(prog_bar, i)
                       pop_summary( limit = lim, offset = off )$data
                     }
   
