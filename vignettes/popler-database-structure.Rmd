@@ -9,31 +9,6 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-```{r, include=FALSE, message=FALSE}
-#### Setting up packages and data #####
-##############################################################################
-#------- Install any required packages that are not currently installed -----
-##############################################################################
-adm.req <-c("readxl")
-
-# Load currently installed, required packages
-tmp <- lapply(adm.req, require, character.only = T)
-
-# Find the required packages that still need to be installed
-adm.need <- adm.req[!(paste0("package:",adm.req) %in% search())]
-
-# Install required packages that are not currently installed
-if(length(adm.need)>0){ install.packages(adm.need,dependencies=T) }
-
-# Now, make sure all packages are loaded
-tmp <- lapply(adm.req, require, character.only = T)
-
-# print tmp if you want a print out of which packages loaded successfully
-tmp
-
-knitr::opts_chunk$set(message=FALSE, warning=FALSE)
-```
-
 ## Popler Overview
 Popler is a database of population and individual-level data gathered throughout the Long Term Ecological Research (LTER) stations funded by the USA National Science Foundation.
 
