@@ -123,9 +123,20 @@ pplr_get_data <- function(..., cov_unpack = FALSE){
   
   # substitute
   num_repl                <- sapply(output_data, 
-                                    is.numeric) %>% as.vector()
-  output_data[,num_repl]  <- plyr::colwise(replace_99)(as.data.frame(output_data[,num_repl]))
+                                    is.numeric) %>% 
+                                as.vector() %>% 
+                                which
+  
+  out_data_loop <- output_data
+  out_data_plyr <- output_data
+  
+  # substitute -99999 with NA
+  for(ii in 1:length(num_repl) ){
 
+      out_data_loop[,num_repl[ii]] = replace_99( out_data_loop[,num_repl[ii]] )
+
+  }
+  
   # remove variables that whose content is just "NA"
   output_data <- base::Filter(function(x) !all(x == "NA"), output_data)
   
