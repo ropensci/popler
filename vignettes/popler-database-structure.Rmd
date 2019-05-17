@@ -85,7 +85,8 @@ knitr::include_graphics("img/lter-table.png")
 ```
 
 ```{r, echo=FALSE}
-lter <- read_excel("data/metadata.xlsx", sheet='lter')
+# lter <- read_excel("data/metadata.xlsx", sheet='lter')
+lter <- read.csv("data/lter.csv")
 knitr::kable(lter, booktabs = TRUE)
 ```
 
@@ -98,7 +99,8 @@ knitr::include_graphics("img/study-site-table.png")
 ```
 
 ```{r, echo=FALSE}
-lter <- read_excel("data/metadata.xlsx", sheet='study_site')
+# lter <- read_excel("data/metadata.xlsx", sheet='study_site')
+lter <- read.csv("data/study_site.csv")
 knitr::kable(lter, booktabs = TRUE)
 ```
 
@@ -111,7 +113,8 @@ knitr::include_graphics("img/project-table.png")
 ```
 
 ```{r, echo=FALSE}
-lter <- read_excel("data/metadata.xlsx", sheet='project')
+# lter <- read_excel("data/metadata.xlsx", sheet='project')
+lter <- read.csv("data/project.csv")
 knitr::kable(lter, booktabs = TRUE)
 ```
 
@@ -124,7 +127,8 @@ knitr::include_graphics("img/site-in-project-table.png")
 ```
 
 ```{r, echo=FALSE}
-lter <- read_excel("data/metadata.xlsx", sheet='site_in_project')
+# lter <- read_excel("data/metadata.xlsx", sheet='site_in_project')
+lter <- read.csv("data/site_in_project.csv")
 knitr::kable(lter, booktabs = TRUE)
 ```
 
@@ -136,7 +140,8 @@ knitr::include_graphics("img/taxa-table.png")
 ```
 
 ```{r, echo=FALSE}
-lter <- read_excel("data/metadata.xlsx", sheet='taxa')
+# lter <- read_excel("data/metadata.xlsx", sheet='taxa')
+lter <- read.csv("data/taxa.csv")
 knitr::kable(lter, booktabs = TRUE)
 ```
 
@@ -148,7 +153,8 @@ knitr::include_graphics("img/taxa-accepted-table.png")
 ```
 
 ```{r, echo=FALSE}
-lter <- read_excel("data/metadata.xlsx", sheet='accepted_taxa')
+# lter <- read_excel("data/metadata.xlsx", sheet='accepted_taxa')
+lter <- read.csv("data/accepted_taxa.csv")
 knitr::kable(lter, booktabs = TRUE)
 ```
 
@@ -160,7 +166,8 @@ knitr::include_graphics("img/count-table.png")
 ```
 
 ```{r, echo=FALSE}
-lter <- read_excel("data/metadata.xlsx", sheet='count')
+# lter <- read_excel("data/metadata.xlsx", sheet='count')
+lter <- read.csv("data/count.csv")
 knitr::kable(lter, booktabs = TRUE)
 ```
 
@@ -173,7 +180,8 @@ knitr::include_graphics("img/biomass-table.png")
 ```
 
 ```{r, echo=FALSE}
-lter <- read_excel("data/metadata.xlsx", sheet='biomass')
+# lter <- read_excel("data/metadata.xlsx", sheet='biomass')
+lter <- read.csv("data/biomass.csv")
 knitr::kable(lter, booktabs = TRUE)
 ```
 
@@ -186,7 +194,8 @@ knitr::include_graphics("img/density-table.png")
 ```
 
 ```{r, echo=FALSE}
-lter <- read_excel("data/metadata.xlsx", sheet='density')
+# lter <- read_excel("data/metadata.xlsx", sheet='density')
+lter <- read.csv("data/density.csv")
 knitr::kable(lter, booktabs = TRUE)
 ```
 
@@ -199,7 +208,8 @@ knitr::include_graphics("img/percent-cover-table.png")
 ```
 
 ```{r, echo=FALSE}
-lter <- read_excel("data/metadata.xlsx", sheet='percent_cover')
+# lter <- read_excel("data/metadata.xlsx", sheet='percent_cover')
+lter <- read.csv("data/percent_cover.csv")
 knitr::kable(lter, booktabs = TRUE)
 ```
 
@@ -212,6 +222,7 @@ knitr::include_graphics("img/individual-table.png")
 ```
 
 ```{r, echo=FALSE}
-lter <- read_excel("data/metadata.xlsx", sheet='individual')
+# lter <- read_excel("data/metadata.xlsx", sheet='individual')
+lter <- read.csv("data/individual.csv")
 knitr::kable(lter, booktabs = TRUE)
 ```

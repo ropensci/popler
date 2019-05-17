@@ -1,0 +1,8 @@
+"Column Name","Column Type","Definition"
+"site_in_project_key (primary key)","integer","Autoincremented integer key to identify study site labels within a project"
+"study_site_table_fkey (foreign key)","varying character (200)","site level label used in a resarch project"
+"project_table_fkey (foreign key)","integer","integer key to identify resarch projects that collect population data"
+"sitestartyr","numeric","start year of data generation at a site level  (generated from the raw data)"
+"siteendyr","numeric","end year of data generation at a site level  (generated from the raw data)"
+"totalobs","numeric","count of data records at a site level (generated from the raw data)"
+"uniquetaxaunits","numeric","count of unique taxonomic units at a site level (generated from raw data)"
