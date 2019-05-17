@@ -59,8 +59,10 @@
 #'                                proj_metadata_key == 25) )
 #'}
 #'
-#' @importFrom dplyr %>% select bind_rows
+#' @importFrom dplyr select bind_rows
+#' @importFrom magrittr %>% 
 #' @importFrom rlang .data
+#' @importFrom utils globalVariables
 #' @export
 
 # Function that connects and gathers the information from the database
@@ -78,7 +80,9 @@ pplr_get_data <- function(..., cov_unpack = FALSE){
   # "structure" or "treatment"
   updated_calls <- call_update(c_calls)
   
-
+  # declare '.' for checks
+  . <- 'shut up' #utils::globalVariables(c("."))
+  
   # query -----------------------------------------------------------------
   
   summary_table <- pplr_summary_table_import()
@@ -101,10 +105,12 @@ pplr_get_data <- function(..., cov_unpack = FALSE){
   # format output ---------------------------------------------------------
   
   # set to numeric DATE information
-  output_data <- output_data %>% 
-                    mutate( year  = as.numeric(year),
-                            month = as.numeric(month),
-                            day   = as.numeric(day) )
+  output_data$year  <- as.numeric( output_data$year )
+  output_data$month <- as.numeric( output_data$month )
+  output_data$day   <- as.numeric( output_data$day )
+                    # mutate( year  = as.numeric(year),
+                    #         month = as.numeric(month),
+                    #         day   = as.numeric(day) )
   
   # set to numeric the observation variable
   obs_id      <- grep('observation', names(output_data) )
@@ -238,6 +244,8 @@ concatenate_queries <- function(...){
 
 
 # query popler
+#' @importFrom utils txtProgressBar setTxtProgressBar
+#' @importFrom utils globalVariables
 #' @noRd
 pplr_query <- function( proj_id ){
   
@@ -245,6 +253,9 @@ pplr_query <- function( proj_id ){
     stop("No logical expression specified. Please specify what ",
          "data you wish to download from popler" )
   }
+  
+  # Officially declare '.' for checks
+  . <- 'shut up' #utils::globalVariables(c(".")) 
   
   # set in limits and offsets
   query_l   <- lapply(proj_id, offset_limit_search)
