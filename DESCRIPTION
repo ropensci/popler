@@ -26,7 +26,6 @@ Imports:
     purrr (>= 0.2.5),
     rlang (>= 0.2.1),
     rmarkdown (>= 1.2),
-    RPostgreSQL (>= 0.4.1),
     stats (>= 3.3.0),
     stringr (>= 1.2.0),
     tibble (>= 1.4.2),
