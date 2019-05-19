@@ -5,7 +5,20 @@
 Popler
 ======
 
-`popler` is the R package to browse and query the `popler` data base. `popler` is a PostgreSQL data base that contains population-level datasets from the US long term ecological research (LTER) network. This package is currently only available on GitHub, but our ultimate goal is to submit it to CRAN. A more detailed explanation on the structure of the `popler` online database is contained in the [dratf of the manuscript presenting popler](https://github.com/texmiller/popler-ms/blob/master/popler_ms.pdf) and in the [dedicated vignette](https://github.com/AldoCompagnoni/popler/blob/master/vignettes/popler-database-structure.Rmd).
+`popler` is the R package to browse and query the `popler` data base. `popler` is a PostgreSQL data base that contains population-level datasets from the US long term ecological research (LTER) network. This package is currently only available on GitHub, but our ultimate goal is to submit it to CRAN. A detailed explanation on the structure of the `popler` online database is contained in the [dratf of the manuscript presenting popler](https://github.com/texmiller/popler-ms/blob/master/popler_ms.pdf) and in the [dedicated vignette](https://github.com/AldoCompagnoni/popler/blob/master/vignettes/popler-database-structure.Rmd). The `popler` database is organized around four types of tables:
+
+A. The tables containing information on population abundance. Population abundance can be of five types: count, biomass, cover, density, and at the individual-level.
+
+B. A table containg to link each abundance value to the taxonomic units it refers to. In `popler`, "taxonomic unit" generally refers to a species.
+
+C. The location of each "site". With "site" we refers to the largest spatial replicate available for a dataset. Many datasets provide abundance data from more than one site.
+
+D. Metadata information referring to each separate dataset.
+
+![](vignettes/img/schema.png)
+
+Popler rationale
+================
 
 The package `popler` aims to facilitate finding, retrieving, and using time-series data of population abundance associated with the US LTER network. To *find datasets*, the functions in `popler` aid in understanding and browsing the metadata information referring to each dataset. To *retrieve* data, the function `pplr_get_data()` downloads single datasets or groups of datasets. These downloads share the same data structure. To *use* downloaded data, the package provides ancillary functions to consult and cite the original data sources, examine the temporal replication of each data set, and methods for a couple of `dplyr` verbs to assist with data manipulation.
 
@@ -26,6 +39,8 @@ if(!require(devtools, quietly = TRUE)) {
 devtools::install_github('AldoCompagnoni/popler')
 ```
 
+All exported functions in the `popler` R package use the `pplr_` prefix. Moreover, the functions use lazy and/or tidy evaluation, meaning you do not need to manually quote most inputs.
+
 Finding datasets
 ================
 
@@ -33,13 +48,70 @@ Finding datasets
 
 ##### Dictionary of variables
 
-All exported functions in the `popler` R package use the `pplr_` prefix and lazy and/or tidy evaluation, meaning you do not need to manually quote most inputs. We suggest to start exploring the variables in the data base using `pplr_dictionary()`. This function explores the metadata variables used to describe the datasets contained in `popler`. `pplr_dictionary()` works with and without inputs. Without inputs, the function returns a data frame showing a description of each metadata variable. The input of `pplr_dictionary()` is supposed to be the name of one of the metadata variables. When `pplr_dictionary()` is provided with the name of a metadata variable, it returns the possible unique values of the variable. Additionally, the `pplr_report_dictionary()` function generates an `Rmd` file and renders it into html. This html contains both the meaning of variables, and their unique values.
+We suggest to start exploring the metadata variables describing each dataset in popler using `pplr_dictionary()`. This function works in two ways:
+
+1.  It provides a general description of each metadata variable. This happens when this function is called without arguments; for example, when calling `pplr_dictionary()`.
+2.  It provides the possible values of its unquoted arguments. For example, when calling `pplr_dictionary( proj_metadata_key )`.
+
+The output of `pplr_dictionary()` is a data frame showing a description of each metadata variable.
 
 ``` r
 library(popler)
-
 pplr_dictionary()
 ```
+
+    ##             variable
+    ## 1              title
+    ## 2  proj_metadata_key
+    ## 3             lterid
+    ## 4           datatype
+    ## 5    structured_data
+    ## 6          studytype
+    ## 7     duration_years
+    ## 8          community
+    ## 9          structure
+    ## 10         treatment
+    ## 11          lat_lter
+    ## 12          lng_lter
+    ## 13           species
+    ## 14           kingdom
+    ## 15            phylum
+    ## 16             class
+    ## 17             order
+    ## 18            family
+    ## 19             genus
+    ##                                                description
+    ## 1                                         title of project
+    ## 2                                        unique project id
+    ## 3                                                lter name
+    ## 4              type of abundance data (e.g. count,biomass)
+    ## 5  are abundance observations grouped (e.g. based on age)?
+    ## 6                     experimental or observational study?
+    ## 7                             duration of project in years
+    ## 8                     does data set contain multiple taxa?
+    ## 9                            types of indidivual structure
+    ## 10                                      types of treatment
+    ## 11                                      lter site latitude
+    ## 12                                     lter site longitude
+    ## 13                    specific epithet of a taxonomic unit
+    ## 14                                                 kingdom
+    ## 15                                                  phylum
+    ## 16                                                   class
+    ## 17                                                   order
+    ## 18                                                  family
+    ## 19                                                   genus
+
+However, this function is more powerful when used with an argument. When `pplr_dictionary()` is provided with the name of a metadata variable, it returns the possible unique values of the variable. For example, providing `datatype` shows that popler contains five types of abundance data:
+
+``` r
+pplr_dictionary( datatype )
+```
+
+    ## $`datatype (NA)`
+    ## [1] "individual"  "count"       "cover"       "biomass"     "density"    
+    ## [6] "basal_cover"
+
+Additionally, the `pplr_report_dictionary()` function generates an `Rmd` file and renders it into html. This html contains both the meaning of variables, and their unique values.
 
 ##### Browsing `popler`
 
@@ -121,9 +193,17 @@ Third, `pplr_citation()` produces a citation for each downloaded dataset.
 
 ##### Spatio-temporal replication
 
-The datasets contained in `popler` present many heterogeneities, especially in terms of their spatio-temporal replication. Most studies present at least a few spatial replicates which were not sampled every year. Note that most datasets in `popler` present at least one additional replication level. These spatial replicates are denoted with numbered variables of the form `spatial_replication_level_X`, where `X` refers to the replication level which can go fro 1 to 5. The names of these replication levels (e.g. plot, subplot, etc.) are contained in variable `spatial_replication_level_x_label`.
+The datasets contained in `popler` present many heterogeneities, especially in terms of their spatio-temporal replication. Most studies present at least a few spatial replicates which were not sampled every year. Note that most datasets in `popler` present at least one additional replication level. These spatial replicates are denoted with numbered variables of the form `spatial_replication_level_X`, where `X` refers to the replication level which can go from 1 to 5. The names of these replication levels (e.g. plot, subplot, etc.) are contained in variable `spatial_replication_level_x_label`.
 
 Once you download a dataset, you can examine the temporal replication of the largest spatial replicate (the site, or `spatial_replication_level_1`) using function `pplr_site_rep_plot()`. This function produces a plot showing whether or not a given site was sampled in a year.
+
+``` r
+# download and plot yearly spatial replication for dataset 1
+kelp_df      <- pplr_get_data( proj_metadata_key == 1)
+pplr_site_rep_plot( kelp_df )
+```
+
+![](README_files/figure-markdown_github/spatial_rep_plot-1.png)
 
 Additionally, `pplr_site_rep()` produces either a logical vector for subsetting an existing `get_data` object or a summary table of temporal replication for a given spatial resolution. You can control the minimum frequency of sampling and the minimum duration of sampling using the `freq` and `duration` arguments, respectively. Additionally, you can choose the level of spatial replication to filter providing an integer between 1 and 5 to the `rep_level` argument. `return_logical` allows you to control what is returned by the function. `TRUE` returns a logical vector corresponding to rows of the `get_data` that correspond to spatial replicates that meet the criteria of replication specified in the function. `FALSE` returns a summary table describing the number of samples per year at the selected spatial resolution.
 
