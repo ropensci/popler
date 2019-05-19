@@ -22,7 +22,6 @@ Imports:
     lazyeval (>= 0.2.0),
     lubridate (>= 1.7.4),
     magrittr (>= 1.5.0),
-    plyr (>= 1.8.4),
     purrr (>= 0.2.5),
     rlang (>= 0.2.1),
     rmarkdown (>= 1.2),
