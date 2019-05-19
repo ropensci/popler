@@ -40,7 +40,8 @@ Suggests:
     testthat(>= 2.0.0),
     covr (>= 3.1.0),
     stubthat (>= 1.2.1),
-    mockr (>= 0.1)
+    mockr (>= 0.1),
+    curl (>= 3.3)
 LazyData: true
 RoxygenNote: 6.1.1
 VignetteBuilder: knitr
