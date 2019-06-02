@@ -213,10 +213,18 @@ offset_limit_search <- function( proj_id ){
   rest        <- count_summ %% 1000
   
   # "offsets" and "limits"
-  download_v  <- 1000 * c(0:n_download )
-  limit_v     <- rep(1000, length(download_v) )
+  download_v  <- as.integer( 1000 * c(0:n_download ) )
+  limit_v     <- rep(1000L, length(download_v) ) 
 
+  # update limit
   if( rest != 0 ) limit_v[length(download_v)] <- rest
+  
+  # IMPORTANT: if rest == 0, then # rows is perfectly round.
+  if( rest == 0 ){
+    true_length <- length(download_v) - 1
+    download_v  <- download_v[1:true_length]
+    limit_v     <- limit_v[1:true_length]
+  } 
   
   list(offset_v   = download_v,
        limit_v    = limit_v )
