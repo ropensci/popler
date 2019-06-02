@@ -292,7 +292,7 @@ pplr_query <- function( proj_id ){
   # actually download summary table
   downld_dataset <- function(lim,off,id,i){
                       setTxtProgressBar(prog_bar, i)
-                      pop_search( id, limit = lim, offset = off )$data
+                      pplr_search( id, limit = lim, offset = off )$data
                     }
   
   # download dataset piecewise; with progress bar!

@@ -151,10 +151,10 @@ pop_GET <- function(path, args, ...) {
 #' @param ... curl options passed on to [crul::HttpClient]
 #' @examples
 #' # basic example
-#' pop_summary()
+#' pplr_summary()
 #' # pass in curl options for debugging, seeing http request details
-#' pop_summary(verbose = TRUE)
-pop_summary <- function(limit = 10, offset = 0, ...) {
+#' pplr_summary(verbose = TRUE)
+pplr_summary <- function(limit = 10, offset = 0, ...) {
   args <- list(limit = limit, offset = offset)
   pop_GET("summary", args, ...)
 }
@@ -168,10 +168,10 @@ pop_summary <- function(limit = 10, offset = 0, ...) {
 #' @param ... curl options passed on to [crul::HttpClient]
 #' @examples
 #' # basic example
-#' pop_search(proj_metadata_key = 13)
+#' pplr_search(proj_metadata_key = 13)
 #' # pass in curl options for debugging, seeing http request details
-#' pop_search(proj_metadata_key = 13, verbose = TRUE)
-pop_search <- function(proj_metadata_key, limit = 10, offset = 0, ...) {
+#' pplr_search(proj_metadata_key = 13, verbose = TRUE)
+pplr_search <- function(proj_metadata_key, limit = 10, offset = 0, ...) {
   args <- list(proj_metadata_key = proj_metadata_key, 
     limit = limit, offset = offset)
   pop_GET("search", args, ...)
@@ -183,7 +183,7 @@ pop_search <- function(proj_metadata_key, limit = 10, offset = 0, ...) {
 offset_limit_summary <- function( ){
 
   # count the number of rows in the dataset
-  count_summ  <- pop_summary( limit = 10, offset = 0 )$count  
+  count_summ  <- pplr_summary( limit = 10, offset = 0 )$count  
     
   # total number of "offsets" and "limits"
   n_download  <- count_summ %/% 1000
@@ -206,7 +206,7 @@ offset_limit_summary <- function( ){
 offset_limit_search <- function( proj_id ){
 
   # count the number of rows in the dataset
-  count_summ  <- pop_search( proj_id, limit = 10, offset = 0 )$count  
+  count_summ  <- pplr_search( proj_id, limit = 10, offset = 0 )$count  
     
   # total number of "offsets" and "limits"
   n_download  <- count_summ %/% 1000
@@ -326,7 +326,7 @@ pplr_summary_table_update <- function(){
   # actually download summary table
   downld_summary <- function(lim,off,i){
                       utils::setTxtProgressBar(prog_bar, i)
-                      pop_summary( limit = lim, offset = off )$data
+                      pplr_summary( limit = lim, offset = off )$data
                     }
   
   # read summary table piecewise
