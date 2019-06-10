@@ -100,7 +100,6 @@
 #' @importFrom dplyr bind_cols group_by summarise n ungroup
 #' @importFrom magrittr %>%
 #' @importFrom rlang quo syms .data !! !!! 
-#' @importFrom lubridate ydm 
 #' @importFrom stringr str_split
 #' 
 #' @export
@@ -191,7 +190,7 @@ pplr_site_rep <- function(input,
                                                 dates,
                                                 sample_date))
   
-  new_data$sample_date <- suppressWarnings(lubridate::ydm(new_data$sample_date))
+  new_data$sample_date <- suppressWarnings(as.Date(new_data$sample_date,"%Y-%d-%m"))
   
   sample_date <- rlang::quo(sample_date)
   
