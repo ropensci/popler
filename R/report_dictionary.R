@@ -145,10 +145,14 @@ _ENTRY_
   
   # make markdown file
   sink(md_file)
-    cat(header, defs_new, end_defs, ents_new)
+    # cat(header, defs_new, end_defs, ents_new)
+    cat( iconv(header,   to="UTF-8"), 
+         iconv(defs_new, to="UTF-8"), 
+         iconv(end_defs, to="UTF-8"), 
+         iconv(ents_new, to="UTF-8") )
   sink()
   
   # launch browser window
-  rmarkdown::render(md_file, quiet=TRUE)
+  rmarkdown::render(md_file, quiet=TRUE, encoding = "UTF-8")
   browseURL(html_file)
 }
