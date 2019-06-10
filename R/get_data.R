@@ -273,8 +273,8 @@ pplr_query <- function( proj_id ){
   
   # collapse in a single lits (if needed)
   if( length(query_l) > 1 ){
-    ids_vec  <- purrr::map2(proj_id, query_l, 
-                            function(x,y) rep(x,length(y$limit_v)) )
+    ids_vec  <- Map( function(x,y) rep(x,length(y$limit_v)),
+                     proj_id, query_l )
     query_in <- list( limit_v  = lapply(query_l, function(x) x$limit_v)  %>% 
                                     Reduce(function(...) c(...), .),
                       offset_v = lapply(query_l, function(x) x$offset_v) %>% 
