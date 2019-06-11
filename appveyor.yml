@@ -15,7 +15,6 @@ cache:
 
 # Adapt as necessary starting from here
 environment:
-  USE_RTOOLS: true
   matrix:
     - R_VERSION: release
       R_ARCH: x64
@@ -35,10 +34,12 @@ environment:
 #      R_ARCH: i386
 
     - R_VERSION: oldrel
+      USE_RTOOLS: true
       R_ARCH: x64
       PKGTYPE: source
 
     - R_VERSION: oldrel
+      USE_RTOOLS: true
       R_ARCH: i386
       PKGTYPE: source
 
