@@ -20,7 +20,8 @@
       "@type": "Person",
       "givenName": "Compagnoni",
       "familyName": "Aldo",
-      "email": "aldo.compagnoni@aggiemail.usu.edu"
+      "email": "aldo.compagnoni@aggiemail.usu.edu",
+      "@id": "https://orcid.org/0000-0001-8302-7492"
     },
     {
       "@type": "Person",
