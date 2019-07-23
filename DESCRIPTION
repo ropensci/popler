@@ -1,6 +1,6 @@
 Package: popler
 Title: Popler R Package
-Version: 0.0.0.9001
+Version: 0.2.0
 Authors@R: c(
   person("Compagnoni", "Aldo", email = "aldo.compagnoni@aggiemail.usu.edu",
   role = c("cre","aut")),
