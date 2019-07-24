@@ -36,7 +36,7 @@ if(!require(devtools, quietly = TRUE)) {
   install.packages(devtools)
 }
 
-devtools::install_github('AldoCompagnoni/popler')
+devtools::install_github('ropensci/popler')
 ```
 
 All exported functions in the `popler` R package use the `pplr_` prefix. Moreover, the functions use lazy and/or tidy evaluation, meaning you do not need to manually quote most inputs.
