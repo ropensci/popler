@@ -1,6 +1,6 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-[![Build Status](https://travis-ci.org/AldoCompagnoni/popler.svg?branch=master)](https://travis-ci.org/AldoCompagnoni/popler) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/AldoCompagnoni/popler?branch=master&svg=true)](https://ci.appveyor.com/project/AldoCompagnoni/popler) [![Coverage status](https://codecov.io/gh/AldoCompagnoni/popler/branch/master/graph/badge.svg)](https://codecov.io/github/AldoCompagnoni/popler?branch=master)
+[![](https://badges.ropensci.org/254_status.svg)](https://github.com/ropensci/onboarding/issues/254) [![Build Status](https://travis-ci.org/ropensci/popler.svg?branch=master)](https://travis-ci.org/ropensci/popler) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/ropensci/popler?branch=master&svg=true)](https://ci.appveyor.com/project/AldoCompagnoni/popler) [![codecov.io](https://codecov.io/github/ropensci/popler/coverage.svg?branch=master)](https://codecov.io/github/ropensci/popler?branch=master)
 
 Popler
 ======
@@ -15,7 +15,7 @@ C. The location of each "site". With "site" we refers to the largest spatial rep
 
 D. Metadata information referring to each separate dataset.
 
-![](vignettes/img/schema.png)
+<img src="vignettes/img/schema.png" width="1280" />
 
 Popler rationale
 ================
@@ -261,3 +261,5 @@ The [manuscript, currently in draft form](https://github.com/texmiller/popler-ms
 The R package contains three vignettes: one vignette [illustrates the structure of the popler database](https://github.com/AldoCompagnoni/popler/blob/master/vignettes/popler-database-structure.Rmd), and two vignettes provide [an introduction](https://github.com/AldoCompagnoni/popler/blob/master/vignettes/introduction-to-popler.Rmd) and [a more detailed look](https://github.com/AldoCompagnoni/popler/blob/master/vignettes/vetting-popler.Rmd) at the intended workflow of the popler package.
 
 In case these vignettes do not cover your particular use case, you still have questions, or you discover a bug, please don't hesitate to create an [issue](https://github.com/AldoCompagnoni/popler/issues).
+
+[![ropensci\_footer](https://ropensci.org/public_images/ropensci_footer.png)](https://ropensci.org)
