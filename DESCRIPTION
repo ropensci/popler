@@ -9,7 +9,9 @@ Authors@R: c(
   person("Levin", "Sam", email = "sam.levin@idiv.de", role = c("aut")),
   person("Miller", "Tom", email = "tom.miller@rice.edu", role= c("aut")),
   person("Benjamin", "Bond-Lamberty", role = "rev",
-          comment = "Ben reviewed the package for ropensci, see <https://github.com/ropensci/software-review/issues/254>")
+          comment = "Ben reviewed the package for ropensci, see <https://github.com/ropensci/software-review/issues/254>"),
+  person("Corinna", "Gries", role = "rev",
+          comment = "Corinna reviewed the package for ropensci, see <https://github.com/ropensci/software-review/issues/254>")
           )
 Description: Browse and query the popler database.
 URL: https://github.com/ropensci/popler
