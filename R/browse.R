@@ -287,9 +287,6 @@ taxa_nest <- function(x, full_tbl){
   # Names of taxonomic lists
   names(out$taxas)  <- paste0("taxa_project_", out$proj_metadata_key)
   
-  
->>>>>>> 3f1939095085aa921d4a03dcda510420de1a950e
-  
   return(out)
   
 }
