@@ -231,7 +231,7 @@ vars_spell <- function(select_columns, columns_full_tab, possibleargs){
 # expand table (to nest/unnest taxonomic info) 
 
 #' @importFrom dplyr group_by %>% 
-#' @importFrom tidyr nest
+#' @importFrom tidyr nest one_of
 #' @noRd
 taxa_nest <- function(x, full_tbl){
   
@@ -255,30 +255,15 @@ taxa_nest <- function(x, full_tbl){
   if(!any(names(x) %in% taxas)) out <- unique(summary_table[ ,names(x),
                                                              drop = FALSE])
   
-  # if only ONE of the taxonomic variables is provided
-  if(sum(names(x) %in% taxas) == 1){
-
-    
-    nested_var <- taxas[which(taxas %in% names(x))]
-    out  <- x %>% 
-      dplyr::group_by(.dots = setdiff(names(x), taxas)) %>%
-      tidyr::nest(key_col = nested_var, nest_cols = nested_var)
-    # Names of taxonomic lists
-    names(out)[2] <- nested_var 
-  }
   
-  # if more than ONE of the taxonomic variables is provided,
-  # then these multiple taxonomic variables are group under "taxas"
-  if(sum(names(x) %in% taxas) > 1){
-    
-    # nest data set
-    out  <- x %>% 
-      dplyr::group_by(.dots = setdiff(names(x),taxas)) %>%
-      tidyr::nest(.key = taxas)
-    # Names of taxonomic lists
-    names(out$taxas)  <- paste0("taxa_project_#_", out$proj_metadata_key)
-    
-  }
+  # nest data set
+  out  <- x %>% 
+    dplyr::group_by(.dots = setdiff(names(x),taxas)) %>%
+    tidyr::nest(taxas = tidyr::one_of(taxas))
+  # Names of taxonomic lists
+  names(out$taxas)  <- paste0("taxa_project_", out$proj_metadata_key)
+  
+  
   
   return(out)
   
