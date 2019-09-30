@@ -231,7 +231,7 @@ vars_spell <- function(select_columns, columns_full_tab, possibleargs){
 # expand table (to nest/unnest taxonomic info) 
 
 #' @importFrom dplyr group_by %>% 
-#' @importFrom tidyr nest
+#' @importFrom tidyr nest one_of
 #' @noRd
 taxa_nest <- function(x, full_tbl){
   
@@ -261,8 +261,8 @@ taxa_nest <- function(x, full_tbl){
     
     nested_var <- taxas[which(taxas %in% names(x))]
     out  <- x %>% 
-      dplyr::group_by(.dots = setdiff(names(x), taxas)) %>%
-      tidyr::nest(key_col = nested_var, nest_cols = nested_var)
+      dplyr::group_by(.dots = setdiff(names(x), taxas))  %>%
+      tidyr::nest(taxas = tidyr::one_of(taxas))
     # Names of taxonomic lists
     names(out)[2] <- nested_var 
   }
@@ -274,9 +274,9 @@ taxa_nest <- function(x, full_tbl){
     # nest data set
     out  <- x %>% 
       dplyr::group_by(.dots = setdiff(names(x),taxas)) %>%
-      tidyr::nest(.key = taxas)
+      tidyr::nest(taxas = tidyr::one_of(taxas))
     # Names of taxonomic lists
-    names(out$taxas)  <- paste0("taxa_project_#_", out$proj_metadata_key)
+    names(out$taxas)  <- paste0("taxa_project_", out$proj_metadata_key)
     
   }
   
