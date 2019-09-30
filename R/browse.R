@@ -280,13 +280,6 @@ taxa_nest <- function(x, full_tbl){
     
   }
 
-  # nest data set
-  out  <- x %>% 
-    dplyr::group_by(.dots = setdiff(names(x),taxas)) %>%
-    tidyr::nest(taxas = tidyr::one_of(taxas))
-  # Names of taxonomic lists
-  names(out$taxas)  <- paste0("taxa_project_", out$proj_metadata_key)
-  
   return(out)
   
 }
