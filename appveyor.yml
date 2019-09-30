@@ -15,24 +15,34 @@ cache:
 
 # Adapt as necessary starting from here
 environment:
+  
+  USE_RTOOLS: true
+  
   matrix:
     - R_VERSION: release
       R_ARCH: x64
 
     - R_VERSION: release
       R_ARCH: i386
+      
 
-    - R_VERSION: devel
-      R_ARCH: x64
+# R-devel failing for windows builds right now. appears to be a timeout issue,
+# really not sure why this is. It doesn't appear to be related to the package
+# itself though.
 
-    - R_VERSION: devel
-      R_ARCH: i386
+#    - R_VERSION: devel
+#      R_ARCH: x64
+
+#    - R_VERSION: devel
+#      R_ARCH: i386
 
     - R_VERSION: oldrel
       R_ARCH: x64
+      PKGTYPE: source
 
     - R_VERSION: oldrel
       R_ARCH: i386
+      PKGTYPE: source
 
 build_script:
   - travis-tool.sh install_deps

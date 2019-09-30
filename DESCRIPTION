@@ -1,35 +1,50 @@
 Package: popler
-Title: popler package
-Version: 0.0.0.9001
+Title: Popler R Package
+Version: 0.2.0
 Authors@R: c(
   person("Compagnoni", "Aldo", email = "aldo.compagnoni@aggiemail.usu.edu",
   role = c("cre","aut")),
   person("Bibian", "Andrew", email = "ajbibian@rice.edu", role= c("aut")),
   person("Ochocki", "Brad", email = "brad.ochocki@rice.edu", role= c("aut")),
-  person("Miller", "Tom", email = "tom.miller@rice.edu", role= c("aut")))
-Description: This package allows to browse and query the popler database.
-URL: https://github.com/AldoCompagnoni/popler
-BugReports: https://github.com/AldoCompagnoni/popler/issues
-Depends: R (>= 3.0.0)
+  person("Levin", "Sam", email = "sam.levin@idiv.de", role = c("aut")),
+  person("Miller", "Tom", email = "tom.miller@rice.edu", role= c("aut")),
+  person("Benjamin", "Bond-Lamberty", role = "rev",
+          comment = "Ben reviewed the package for ropensci, see <https://github.com/ropensci/software-review/issues/254>"),
+  person("Corinna", "Gries", role = "rev",
+          comment = "Corinna reviewed the package for ropensci, see <https://github.com/ropensci/software-review/issues/254>")
+          )
+Description: Browse and query the popler database.
+URL: https://github.com/ropensci/popler
+BugReports: https://github.com/ropensci/popler/issues
+Depends: R (>= 3.5.0)
 Imports:
+    crul (>= 0.7.4),
     dbplyr (>= 1.1.0), 
     dplyr (>= 0.5.0), 
-    ggplot2 (>= 2.2.1),
+    ggplot2 (>= 3.0.0),
     grid (>= 3.3.0),
+    jsonlite (>= 1.5),
     lazyeval (>= 0.2.0),
-    rlang,
+    magrittr (>= 1.5.0),
+    purrr (>= 0.2.5),
+    rlang (>= 0.2.1),
     rmarkdown (>= 1.2),
-    RPostgreSQL (>= 0.4.1),
     stats (>= 3.3.0),
     stringr (>= 1.2.0),
-    tidyr (>= 0.6.1),  
+    tibble (>= 1.4.2),
+    tidyr (>= 0.6.1),
     utils (>= 3.3.0)
 License: MIT + file LICENSE
 Encoding: UTF-8
-Suggests: 
+Suggests:
+    fs (>= 1.2.2),
     knitr (>= 1.15.1),
-    testthat,
-    covr
+    maps (>= 3.3.0),
+    mapproj (>= 1.2.6),
+    testthat(>= 2.0.0),
+    covr (>= 3.1.0),
+    stubthat (>= 1.2.1),
+    mockr (>= 0.1)
 LazyData: true
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1
 VignetteBuilder: knitr

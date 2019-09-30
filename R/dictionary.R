@@ -1,34 +1,35 @@
-#' Dictionary of the popler metadata
+#' Dictionary of the popler metadata variables
 #'
-#' Provides information on the metadata variables contained
-#' in the popler database, and the kind of data contained in 
-#' those variables.
+#' @description Describes the metadata variables contained
+#' in the popler database, and shows their content.
 #' 
 #' @param ... A sequence of (unquoted) variables specifying one
 #' or more variables of popler's main table for which dictionary 
 #' information is needed
-#' @param full_tbl Should the function return the standard columns,
-#' or the full main table?
+#' @param full_tbl logical; If \code{TRUE}, the function
+#' returns a table describing the variables of the full main table.
+#' If \code{FALSE}, the function returns a table describing the standard 
+#' variables. Default is \code{FALSE}.
 #' 
 #' @export
 #' @examples
 #' \dontrun{
 #' # Column names
-#' column_names <- dictionary(full_tbl = FALSE)
+#' column_names <- pplr_dictionary(full_tbl = FALSE)
 #' 
 #' # Dictionary information
-#' dictionary_lter <- dictionary(lterid, full_tbl = FALSE)
+#' dictionary_lter <- pplr_dictionary(lterid, full_tbl = FALSE)
 #' 
 #' # multiple columns
-#' dictionary_lter_lat <- dictionary(lterid,lat_lter, full_tbl = FALSE)
+#' dictionary_lter_lat <- pplr_dictionary(lterid,lat_lter, full_tbl = FALSE)
 #' }
+
 pplr_dictionary <- function(..., full_tbl = FALSE){
   # summary table ------------------------------------------------------------
   # load summary table
-  summary_table <- summary_table_import()
+  summary_table <- pplr_summary_table_import()
   # variables ------------------------------------------------
-  # variables of default (full_tbl=FALSE) main table
-  possible_vars <- default_vars()
+
   # variables of which user defined wishes to know the content
   vars <- vars_dict(...)
   
@@ -40,7 +41,9 @@ pplr_dictionary <- function(..., full_tbl = FALSE){
     tmp <- if(full_tbl){
       summary_table
     } else {
-      summary_table[ ,default_vars]
+      
+      # variables of default (full_tbl=FALSE) main table
+      summary_table[ ,default_vars()]
     }
     out <- dictionary_explain(tmp)
   # if colums specified.
@@ -88,6 +91,18 @@ verify_vars <- function(sel_col){
   
 }
 
+
+unique_or_summary <- function(col) {
+  if(is.numeric(col) | 
+     is.integer(col)) {
+    
+    summary(col)
+    
+  } else {
+    
+    unique(col)
+  }
+}
 # produce the lists of unique dictionary values
 #' @importFrom stats setNames
 #' @noRd
@@ -100,23 +115,25 @@ dict_list <- function(x, select_columns){
   # index "special" and "normal"
   i_spec <- which(select_columns %in% c("structure",
                                         "treatment",
-                                        "species"))
+                                        "species",
+                                        "proj_metadata_key"))
   i_norm <- setdiff(c(1:length(select_columns)), i_spec)
-  spec_cols <- select_columns[i_spec]
   norm_cols <- select_columns[i_norm]
   
   # get unique values of "normal" variables -------------------------------------------
-  if(length(norm_cols) > 1){
-    out_norm <- lapply(x[ ,norm_cols], unique)
-  } else {
-    out_norm <- lapply(x[ ,norm_cols, drop = FALSE], unique)
-  }
+  
+  out_norm <- lapply(x[ ,norm_cols, drop = FALSE],
+                     function(y) unique_or_summary(y))
+  
   
   # get unique values of "special" variables ------------------------------------------
   out_spc <- list()
   
   if(any("species" == select_columns)){
     out_spc$species <- unique(x[ ,c("genus", "species")])
+  }
+  if(any("proj_metadata_key" == select_columns)) {
+    out_spc$proj_metadata_key <- unique(x[ ,'proj_metadata_key'])
   }
   if( any("structure" == select_columns) ){
     # stash all structure data in a single vector
@@ -133,7 +150,8 @@ dict_list <- function(x, select_columns){
   # Special variables
   descr_spec  <- c("species (species name)",
                    "structure (types of indidivual structure)",
-                   "treatment (type of treatment)")
+                   "treatment (type of treatment)",
+                   "proj_metadata_key")
   if(length(out_spc) > 0){
     d_s_ind <- sapply(names(out_spc), function(x) grep(x, descr_spec))
     descr_spc <- descr_spec[d_s_ind]
@@ -167,7 +185,7 @@ dict_list <- function(x, select_columns){
   
 }
 
-
+#' @noRd
 # explain meaning of dictionary variables 
 dictionary_explain <- function(x){
   

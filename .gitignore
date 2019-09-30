@@ -1,12 +1,14 @@
+tests/testthat/Rplots.pdf
 .Rbuildignore
 .Rhistory
 .Rproj.user
 browse.html
 browse.Rmd
-inst/doc
+#inst/doc
 .RData
 
 dictionary\.html
 dictionary\.Rmd
 MS/
 browse_files
+inst/doc

@@ -1,56 +1,75 @@
-#' Download data from the popler database
+#' @title Download data from the popler database
 #'
-#' This function downloads LTER studies contained in the popler database.
-#' The user can download data directly, using a logical expression, or using 
-#' objects created by `browse`.
-#' @param ... A list of one or two objects: an object produced by browse,
-#'  a logical expression, or both.
-#' @param add_vars A string to specify which variables the user wants to 
-#' add to the default variables used in a query. 
-#' @param subtract_vars A string to specify which, among the default 
-#' variables, the user wishes to discard in queries to the database 
-#' @param cov_unpack Should covariates be unpacked? This argument uses
-#'  function `cov_unpack` to extract the variables contained in the 
-#'  variable `covariates`, and combine the new columns with the default output.
-#' @return A data frame of the selected data. 
-#' @return This data fame is of class "popler", "get_data", and "data.frame". 
-#' @importFrom dplyr %>% select
-#' @importFrom rlang .data
-#' @export
-#' @examples
+#' @description This function downloads datasets contained in the popler database. 
+#' The user can download data directly, using a logical expression, or indirectly, 
+#' using objects created by \code{pplr_browse}.
+#' @param ... An object produced by \code{pplr_browse} or a logical expression.
+#' @param cov_unpack logical; if \code{TRUE}, function \code{pplr_cov_unpack} 
+#' is applied to the variable \code{covariates} of the downloaded dataset in 
+#' order to extract the variables contained in therein and combine the new
+#' columns with the default output. Default is \code{FALSE}.
+#'  
+#' @return This data fame is of class \code{get_data}, and \code{data.frame}.
 #' 
+#' 
+#' @details. By default, the following variables are included when a user calls
+#' \code{pplr_get_data()}.
+#' 
+#' \itemize{
+#'   \item{\code{authors}}
+#'   \item{\code{authors_contact}} 
+#'   \item{\code{year}} 
+#'   \item{\code{day}} 
+#'   \item{\code{month}}
+#'   \item{\code{sppcode}} 
+#'   \item{\code{genus}}
+#'   \item{\code{species}}
+#'   \item{\code{datatype}}
+#'   \item{\code{spatial_replication_level_1_label}}
+#'   \item{\code{spatial_replication_level_1}}
+#'   \item{\code{spatial_replication_level_2_label}}
+#'   \item{\code{spatial_replication_level_2}}
+#'   \item{\code{spatial_replication_level_3_label}}
+#'   \item{\code{spatial_replication_level_3}}
+#'   \item{\code{spatial_replication_level_4_label}}
+#'   \item{\code{spatial_replication_level_4}}
+#'   \item{\code{spatial_replication_level_5_label}}
+#'   \item{\code{spatial_replication_level_5}}
+#'   \item{\code{proj_metadata_key}}
+#'   \item{\code{structure_type_1}}
+#'   \item{\code{structure_type_2}}
+#'   \item{\code{structure_type_3}}
+#'   \item{\code{structure_type_4}}
+#'   \item{\code{treatment_type_1}}
+#'   \item{\code{treatment_type_2}}
+#'   \item{\code{treatment_type_3}}
+#'   \item{\code{covariates}}
+#' }
+#' @examples
 #' \dontrun{
 #' # browse a study, then get the data associated with it
-#' parasite = browse(proj_metadata_key == 25)
-#' gh_data = get_data(parasite)
-#' 
-#' # further subset this data set, based on year
-#' gh_data_96_99 = get_data(parasite, year > 1995 & year < 2000)
+#' parasite = pplr_browse(proj_metadata_key == 25)
+#' gh_data = pplr_get_data(parasite)
 #' 
 #' # insect data sets from the SEV lter site
-#' insect_sev = browse(class == "Insecta" & lterid == "SEV")
-#' insect_25_yrs96_99 = get_data(insect_sev, year > 1995 & year < 2000 & proj_metadata_key == 25)
+#' insect_sev = pplr_browse(class == "Insecta" & lterid == "SEV")
+#' insect_25_yrs96_99 = pplr_get_data(insect_sev)
 #' 
-#' insect_21_25 = get_data((proj_metadata_key == 43 | proj_metadata_key == 25) & year < 1995 )
+#' insect_21_25 = pplr_get_data( (proj_metadata_key == 43 | 
+#'                                proj_metadata_key == 25) )
 #'}
+#'
+#' @importFrom dplyr select bind_rows
+#' @importFrom magrittr %>% 
+#' @importFrom rlang .data
+#' @importFrom utils globalVariables
+#' @export
 
 # Function that connects and gathers the information from the database
 
-pplr_get_data <- function(..., add_vars = NULL, subtract_vars = NULL,
-                     cov_unpack = FALSE){
-  # open connection to database
-  conn <- db_open()
+pplr_get_data <- function(..., cov_unpack = FALSE){
+
   # define possible variables ------------------------------------------
-  
-  # possible variables 
-  possible_vars  <- vars_query(conn)
-  # all potential variables in a query
-  all_vars       <- possible_vars$all_vars
-  # default variables 
-  default_vars   <- possible_vars$default_vars
-  # selected variables -------------------------------------------------
-  # extract the variables contained in the logical expressions specified 
-  # in '...'
   
   # concatenate logical expressions specified in the '...' argument
   # expressions can be specified explicitly, implicitly (through an 
@@ -61,40 +80,65 @@ pplr_get_data <- function(..., add_vars = NULL, subtract_vars = NULL,
   # "structure" or "treatment"
   updated_calls <- call_update(c_calls)
   
-  # extract the variables specified in the calls' expressions
-  # this is done to include `expr_vars` in the query, if some
-  # of `expr_vars` do not match `default_vars`.
-  expr_vars <- expr_vars_get(all_vars, updated_calls)
-  
-  # variables that appear either as default, added manually, or inherited
-  # from a logical operation
-  subset_vars <- unique(c(default_vars, add_vars, expr_vars))
-  # 'subset_vars' minus variables subtracted manually via argument
-  # 'subtract_vars' 
-  vars_select <- paste( setdiff(subset_vars, subtract_vars), collapse = ", ")
-  
-  
-  # translate R logical expressions in '...' into SQL ---------------------
-  sql_condition <- parse_to_sql_search(updated_calls)
-  
+  # declare '.' for checks
+  . <- 'shut up' #utils::globalVariables(c("."))
   
   # query -----------------------------------------------------------------
   
-  # query popler online
-  output_data <- pplr_query(conn, vars_select, sql_condition)
+  summary_table <- pplr_summary_table_import()
   
+  # get id of studies
+  id_vec        <- summary_table %>% 
+                      subset( eval(updated_calls) ) %>% 
+                      .$proj_metadata_key %>% 
+                      unique
+  
+  # Check if you actually found a dataset
+  if( length(id_vec) == 0 ){
+    stop('No data found. Check to make sure query is correct',
+         call. = FALSE)
+  }
+
+  # query popler online
+  output_data <- pplr_query( id_vec )
+
   # format output ---------------------------------------------------------
   
+  # set to numeric DATE information
+  output_data$year  <- as.numeric( output_data$year )
+  output_data$month <- as.numeric( output_data$month )
+  output_data$day   <- as.numeric( output_data$day )
+                    # mutate( year  = as.numeric(year),
+                    #         month = as.numeric(month),
+                    #         day   = as.numeric(day) )
+  
+  # set to numeric the observation variable
+  obs_id      <- grep('observation', names(output_data) )
+  output_data[,obs_id] <- output_data[,obs_id] %>% as.numeric
+  
   # replace -99999, but only for numeric variables
-  num_repl <- sapply(output_data, is.numeric) %>% as.vector()
-  output_data[,num_repl] <- lapply(output_data[ ,num_repl],
-                                    function(x) {
-                                      replace(x, x == -99999, NA)
-                                    }
-                                   ) %>% as.data.frame()
+  
+  # function 
+  replace_99              <- function(x) replace(x, x == -99999, NA)
+  
+  # substitute
+  num_repl                <- sapply(output_data, 
+                                    is.numeric) %>% 
+                                as.vector() %>% 
+                                which
+  
+  out_data_loop <- output_data
+  out_data_plyr <- output_data
+  
+  # substitute -99999 with NA
+  for(ii in 1:length(num_repl) ){
+
+      out_data_loop[,num_repl[ii]] = replace_99( out_data_loop[,num_repl[ii]] )
+
+  }
   
   # remove variables that whose content is just "NA"
-  output_data <- Filter(function(x) !all(x == "NA"), output_data)
+  output_data <- base::Filter(function(x) !all(x == "NA"), output_data)
   
   # Change "ordr" and "clss" to "order" and "class"
   output_data <- colname_change("clss", "class", output_data)
@@ -107,7 +151,7 @@ pplr_get_data <- function(..., add_vars = NULL, subtract_vars = NULL,
     
     output_data <- output_data %>%
       dplyr::select(-.data$covariates) %>%
-      cbind(cov_unpack(output_data))
+      cbind(pplr_cov_unpack(output_data))
   }
   
   # outputs -----------------------------------------------------------------
@@ -118,89 +162,13 @@ pplr_get_data <- function(..., add_vars = NULL, subtract_vars = NULL,
                 unique_authors  = unique(output_data[ ,c("proj_metadata_key",
                                                          "authors",
                                                          "authors_contact")]),
-                class = c("popler", "get_data", class(output_data)) 
+                class = c("get_data", class(output_data)) 
   )
   
   # Informational message
   data_message(output_data)
   
-  db_close(conn)
-  
   return(output_data)
-  
-}
-
-
-#' @noRd
-# obtain all potential columns 
-vars_query <- function(conn){
-  
-  proj_sql <- paste0("SELECT column_name ",
-                     "FROM information_schema.columns ",
-                     "WHERE table_name = 'project_table'")
-  lter_sql <-  paste0("SELECT column_name ",
-                      "FROM information_schema.columns ",
-                      "WHERE table_name = 'lter_table'")
-  site_sql <- paste0("SELECT column_name ",
-                     "FROM information_schema.columns ",
-                     "WHERE table_name = 'study_site_table'")
-  s_i_p_sql <- paste0("SELECT column_name ",
-                      "FROM information_schema.columns ",
-                      "WHERE table_name = 'site_in_project_table'")
-  taxa_sql <- paste0("SELECT column_name ",
-                     "FROM information_schema.columns ",
-                     "WHERE table_name = 'taxa_table'")
-  abund_sql <- paste0("SELECT column_name ",
-                      "FROM information_schema.columns ",
-                      "WHERE table_name = 'count_table'")
-  #list variables from the 6 tables relevant to standard popler queries  
-  proj_vars <- query_get(conn,
-                         proj_sql)[ ,1]
-  lter_vars <- query_get(conn, 
-                         lter_sql)[ ,1]
-  site_vars <- query_get(conn, 
-                         site_sql)[ ,1]
-  s_i_p_vars <- query_get(conn, 
-                          s_i_p_sql)[ ,1]
-  taxa_vars <- query_get(conn, 
-                         taxa_sql)[ ,1]
-  abund_vars <- query_get(conn, 
-                          abund_sql)[ ,1]
-  
-  # a vector containing all variables
-  all_vars <- c(proj_vars, lter_vars,
-                site_vars, s_i_p_vars,
-                taxa_vars, abund_vars)
-  
-  # remove some variables that are in the database but we don't want to return
-  # this is a temporary fix until we remove those columns from the database.
-  all_vars <- all_vars[!all_vars %in% c("currently_funded",
-                                        "homepage",
-                                        "current_principle_investigator")]
-  
-  # a vector of "default" variables
-  default_vars  <- c("authors", "authors_contact",
-                     "year", "day", "month",
-                     "sppcode", "genus", "species", "datatype",
-                     "spatial_replication_level_1_label",
-                     "spatial_replication_level_1",
-                     "spatial_replication_level_2_label",
-                     "spatial_replication_level_2",
-                     "spatial_replication_level_3_label",
-                     "spatial_replication_level_3",
-                     "spatial_replication_level_4_label",
-                     "spatial_replication_level_4",
-                     "spatial_replication_level_5_label",
-                     "spatial_replication_level_5",
-                     "proj_metadata_key",
-                     "structure_type_1", "structure_type_2",
-                     "structure_type_3", "structure_type_4",
-                     "treatment_type_1", "treatment_type_2",
-                     "treatment_type_3",
-                     "covariates" 
-  )
-  
-  return(list(all_vars = all_vars, default_vars = default_vars))
   
 }
 
@@ -235,7 +203,7 @@ concatenate_queries <- function(...){
       tmp <- eval(Q[[i]]$expr)
       
       # if this variable isn't a popler object, throw an error
-      if(class(tmp)[1] != "popler"){
+      if(class(tmp)[1] != "browse"){
         stop(paste0("Error using the following argument:\n\n      ", 
                     Q[[i]]$expr,
                     "\n\n  Only logical expressions or outputs from the ",
@@ -285,134 +253,61 @@ concatenate_queries <- function(...){
   
 }
 
-#' @noRd
-# Identify which "search_expr" belong to "all_vars"
-expr_vars_get <- function(all_cols, inherit_logical){
-  inherit_elem <- as.character(inherit_logical)
-  
-  # change column names 
-  inherit_elem <- colname_change("clss", "class", inherit_elem)
-  inherit_elem <- colname_change("ordr", "order", inherit_elem)
-  
-  inds <- NULL
-  for(i in seq_len(length(all_cols))){
-    if(any(grepl(all_cols[i], inherit_elem))){
-      inds <- c(inds, i)  
-    }
-  }
-  return(unique(all_cols[inds]))
-}
-
 
 # query popler
+#' @importFrom utils txtProgressBar setTxtProgressBar
+#' @importFrom utils globalVariables
 #' @noRd
-pplr_query <- function(conn, vars_select, sql_condition){
+pplr_query <- function( proj_id ){
   
-  if(length(sql_condition) == 0) {
+  if( !('proj_id' %in% ls()) ) {
     stop("No logical expression specified. Please specify what ",
          "data you wish to download from popler" )
   }
-  # table specific variables
-  vars <- list()
-  vars$count_table <- gsub("treatment_type_", 
-                           "count_table.treatment_type_",
-                           vars_select)
-  vars$biomass_table <- gsub("treatment_type_", 
-                             "biomass_table.treatment_type_",
-                             vars_select)
-  vars$percent_cover_table <- gsub("treatment_type_", 
-                                   "percent_cover_table.treatment_type_",
-                                   vars_select)
-  vars$density_table <- gsub("treatment_type_", 
-                             "density_table.treatment_type_",
-                             vars_select)
-  vars$individual_table <- gsub("treatment_type_",
-                                "individual_table.treatment_type_",
-                                vars_select)
   
-  output_data <- query_get(conn, paste(
-    # Count data
-    "SELECT",vars$count_table,", count_observation",
-    "FROM count_table",
-    "JOIN taxa_table ",
-    "ON count_table.taxa_count_fkey = taxa_table.taxa_table_key",
-    "JOIN site_in_project_table ON taxa_table.site_in_project_taxa_key =",
-    "site_in_project_table.site_in_project_key",
-    "JOIN project_table ON site_in_project_table.project_table_fkey =",
-    "project_table.proj_metadata_key",
-    "JOIN study_site_table ON site_in_project_table.study_site_table_fkey =",
-    "study_site_table.study_site_key",
-    "JOIN lter_table ON study_site_table.lter_table_fkey =",
-    "lter_table.lterid",
-    "WHERE", sql_condition,
-    
-    "UNION ALL",
-    # Biomass data
-    "SELECT",vars$biomass_table,", biomass_observation",
-    "FROM biomass_table",
-    "JOIN taxa_table ",
-    "ON biomass_table.taxa_biomass_fkey = taxa_table.taxa_table_key",
-    "JOIN site_in_project_table ON taxa_table.site_in_project_taxa_key =",
-    "site_in_project_table.site_in_project_key",
-    "JOIN project_table ON site_in_project_table.project_table_fkey =",
-    "project_table.proj_metadata_key",
-    "JOIN study_site_table ON site_in_project_table.study_site_table_fkey =",
-    "study_site_table.study_site_key",
-    "JOIN lter_table ON study_site_table.lter_table_fkey =",
-    "lter_table.lterid",
-    "WHERE", sql_condition,
-    
-    "UNION ALL",
-    # percent cover data
-    "SELECT",vars$percent_cover_table,", percent_cover_observation",
-    "FROM percent_cover_table",
-    "JOIN taxa_table ",
-    "ON percent_cover_table.taxa_percent_cover_fkey ",
-    "= taxa_table.taxa_table_key",
-    "JOIN site_in_project_table ON taxa_table.site_in_project_taxa_key =",
-    "site_in_project_table.site_in_project_key",
-    "JOIN project_table ON site_in_project_table.project_table_fkey =",
-    "project_table.proj_metadata_key",
-    "JOIN study_site_table ON site_in_project_table.study_site_table_fkey =",
-    "study_site_table.study_site_key",
-    "JOIN lter_table ON study_site_table.lter_table_fkey =",
-    "lter_table.lterid",
-    "WHERE", sql_condition,
-    
-    "UNION ALL",
-    # individual data
-    "SELECT",vars$individual_table,", individual_observation",
-    "FROM individual_table",
-    "JOIN taxa_table ",
-    "ON individual_table.taxa_individual_fkey = taxa_table.taxa_table_key",
-    "JOIN site_in_project_table ON taxa_table.site_in_project_taxa_key =",
-    "site_in_project_table.site_in_project_key",
-    "JOIN project_table ON site_in_project_table.project_table_fkey =",
-    "project_table.proj_metadata_key",
-    "JOIN study_site_table ON site_in_project_table.study_site_table_fkey =",
-    "study_site_table.study_site_key",
-    "JOIN lter_table ON study_site_table.lter_table_fkey =",
-    "lter_table.lterid",
-    "WHERE", sql_condition,
-    
-    "UNION ALL",
-    # density data
-    "SELECT",vars$density_table,", density_observation",
-    "FROM density_table",
-    "JOIN taxa_table ",
-    "ON density_table.taxa_density_fkey = taxa_table.taxa_table_key",
-    "JOIN site_in_project_table ON taxa_table.site_in_project_taxa_key =",
-    "site_in_project_table.site_in_project_key",
-    "JOIN project_table ON site_in_project_table.project_table_fkey =",
-    "project_table.proj_metadata_key",
-    "JOIN study_site_table ON site_in_project_table.study_site_table_fkey =",
-    "study_site_table.study_site_key",
-    "JOIN lter_table ON study_site_table.lter_table_fkey =",
-    "lter_table.lterid",
-    "WHERE", sql_condition
-  ))
+  # Officially declare '.' for checks
+  . <- 'shut up' #utils::globalVariables(c(".")) 
   
-  return(output_data)
+  # set in limits and offsets
+  query_l   <- lapply(proj_id, offset_limit_search)
+  
+  # collapse in a single lits (if needed)
+  if( length(query_l) > 1 ){
+    ids_vec  <- Map( function(x,y) rep(x,length(y$limit_v)),
+                     proj_id, query_l )
+    query_in <- list( limit_v  = lapply(query_l, function(x) x$limit_v)  %>% 
+                                    Reduce(function(...) c(...), .),
+                      offset_v = lapply(query_l, function(x) x$offset_v) %>% 
+                                    Reduce(function(...) c(...), .),
+                      proj_id  = ids_vec %>% unlist)
+  }else{
+    query_in          <- query_l[[1]]
+    query_in$proj_id  <- rep(proj_id, length(query_in$limit_v) )
+  }
+  
+  # set up progress bar
+  total     <- query_in$limit_v %>% length
+  prog_bar  <- txtProgressBar(min = 0, max = total, style = 3)
+  
+  # actually download summary table
+  downld_dataset <- function(lim,off,id,i){
+                      setTxtProgressBar(prog_bar, i)
+                      pplr_search( id, limit = lim, offset = off )$data
+                    }
+  
+  # download dataset piecewise; with progress bar!
+  df_l      <- Map( downld_dataset,
+                    query_in$limit_v,
+                    query_in$offset_v,
+                    query_in$proj_id,
+                    1:length(query_in$limit_v) )
+  
+  # put it all in one  together
+  out_data <- Reduce( function(...) dplyr::bind_rows(...), df_l ) %>% 
+                as.data.frame %>% 
+                .[,-grep('count_table_key',names(.))]
+
+  return(out_data)
   
 }
 
@@ -425,32 +320,24 @@ data_message <- function(x){
     message(paste0("You have downloaded data from ",
                    length(unique(x$proj_metadata_key)),
                    " project.\nThe identification number of this project is:",
-                   paste0(" ", unique(x$proj_metadata_key),
+                   paste0(" ", 
+                          unique(x$proj_metadata_key),
                           collapse=", "),
-                   "."),"\n
-            IMPORTANT NOTICE:\nIf you are about to use this data in a ",
-            "formal publication as courtesy, please:
-            1) Contact the investigators of each project. 
-            Do this by using function authors() on this object. 
-            2) Acknowledge funding sources, if these are provided ",
-            "in the metadata.   
-            Access metadata by using function metadata_url() on this ", 
-            "object. \n")
+                   "."),
+            "\n
+To learn more about study design, use metadata_url()
+To cite the study, use pplr_citation().\n")
   
   else {
-    message("\n",paste0("You have downloaded data from ",
-                        length(unique(x$proj_metadata_key)),
-                        " projects. \nThe identification numbers of these projects are: ",
-                        paste0(unique(x$proj_metadata_key),
-                               collapse=", "),"."),"\n
-            IMPORTANT NOTICE:\nIf you are about to use this data in a ",
-            "formal publication as courtesy, please:
-            1) Contact the investigators of each project. 
-            Do this by using function authors() on this object. 
-            2) Acknowledge funding sources, if these are provided ",
-            "in the metadata.   
-            Access metadata by using function metadata_url() on this ", 
-            "object. \n")
+    message("\n", paste0("You have downloaded data from ",
+                         length(unique(x$proj_metadata_key)),
+                         " projects. \nThe identification numbers of these projects are: ",
+                         paste0(unique(x$proj_metadata_key),
+                               collapse = ", "),
+                         "."),
+"\n
+To learn more about study designs, use metadata_url()
+To cite the study, use pplr_citation().\n")
   }
   
 }

@@ -1,34 +1,40 @@
 #' A user-friendly dictionary of the popler metadata
 #'
-#' Provides information on the columns of metadata contained 
-#' in the popler database, and the kind of data contained in those columns.
+#' Provides information on the variables of metadata contained in the popler 
+#' database, and the kind of data contained in those variables.
 #' 
-#' @param full_tbl Should the function return the standard 
-#' columns, or the full main table?
+#' @param full_tbl logical; if \code{TRUE} function returns the variables 
+#' contained in the full main table. If \code{FALSE}, functions returns only the
+#' standard variables. Default is \code{FALSE}.
 #' @param md_file Specify the filename and location for 
 #' the generated markdown file (optional)
 #' @param html_file Specify the filename and location for the 
 #' generated html file (optional)
+#' 
+#' @return This function is called for its side effects and does not 
+#' return an R object.
+#' 
 #' @importFrom rmarkdown render
 #' @importFrom utils browseURL
 #' @export
+#' 
 #' @examples
 #' \dontrun{
 #' # Full dictionary
-#' report_dictionary(full_tbl = TRUE)
+#' pplr_report_dictionary(full_tbl = TRUE)
 #' 
 #' # "Abridged" version
-#' report_dictionary()
+#' pplr_report_dictionary()
 #' }
 #' 
-report_dictionary <- function(full_tbl=FALSE, md_file=NULL, html_file=NULL){
+pplr_report_dictionary <- function(full_tbl=FALSE, md_file=NULL, html_file=NULL){
   
   # store explanations as table of contents
   if(full_tbl){
     TOC <- int.data$explanations
     
     # remove contents that do not work
-    TOC <- TOC[-76, ]
+    TOC <- TOC[-77, ]
     
   } else {
     TOC <- int.data$explain_short
@@ -56,7 +62,7 @@ report_dictionary <- function(full_tbl=FALSE, md_file=NULL, html_file=NULL){
             "duration_years")
   
   # store entries
-  entries <- eval(parse(text=paste0("dictionary(",
+  entries <- eval(parse(text=paste0("pplr_dictionary(",
                                     paste0(TOC[,1] , 
                                            collapse=" , "),
                                     ")")))
@@ -139,10 +145,14 @@ _ENTRY_
   
   # make markdown file
   sink(md_file)
-    cat(header, defs_new, end_defs, ents_new)
+    # cat(header, defs_new, end_defs, ents_new)
+    cat( iconv(header,   to="UTF-8"), 
+         iconv(defs_new, to="UTF-8"), 
+         iconv(end_defs, to="UTF-8"), 
+         iconv(ents_new, to="UTF-8") )
   sink()
   
   # launch browser window
-  rmarkdown::render(md_file, quiet=TRUE)
+  rmarkdown::render(md_file, quiet=TRUE, encoding = "UTF-8")
   browseURL(html_file)
 }
