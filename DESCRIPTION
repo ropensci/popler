@@ -32,7 +32,7 @@ Imports:
     stats (>= 3.3.0),
     stringr (>= 1.2.0),
     tibble (>= 1.4.2),
-    tidyr (>= 0.6.1),
+    tidyr (>= 1.0.0),
     utils (>= 3.3.0)
 License: MIT + file LICENSE
 Encoding: UTF-8
