@@ -173,8 +173,19 @@ pplr_summary <- function(limit = 10, offset = 0, ...) {
 #' pplr_search(proj_metadata_key = 13, verbose = TRUE)
 pplr_search <- function(proj_metadata_key, limit = 10, offset = 0, ...) {
   args <- list(proj_metadata_key = proj_metadata_key, 
-    limit = limit, offset = offset)
-  pop_GET("search", args, ...)
+               limit = limit, offset = offset)
+  
+  # get the data
+  ds_out <- pop_GET("search", args, ...)
+  
+  # format structure_type_ columns
+  ds_out$data$structure_type_1 <- as.character(ds_out$data$structure_type_1)
+  ds_out$data$structure_type_2 <- as.character(ds_out$data$structure_type_2)
+  ds_out$data$structure_type_3 <- as.character(ds_out$data$structure_type_3)
+  ds_out$data$structure_type_4 <- as.character(ds_out$data$structure_type_4)
+  
+  ds_out
+  
 }
 
 #' @noRd
