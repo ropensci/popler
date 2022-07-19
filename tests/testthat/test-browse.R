@@ -184,8 +184,7 @@ test_that("browse() function ", {
   # functioning of keywords
   parasites <- pplr_browse(keyword = 'parasite')
   
-  expect_true(inherits(parasites,
-                       'tbl_df'))
+  expect_s3_class(parasites, 'tbl_df')
 
   expect_equal(dim(parasites)[2], 20) # 18 columns of data + 1 for taxonomic
   

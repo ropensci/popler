@@ -19,7 +19,7 @@
 #' @return A data frame combining the metadata of each project 
 #' and the taxonomic units associated with each project.
 #' @return This data frame is of class \code{popler}, \code{data.frame},
-#' \code{tbl_df}, and \code{tbl}. 
+#' \code{tibble}, and \code{tbl}. 
 #' @importFrom utils View 
 #' @export
 #' @examples
@@ -159,7 +159,7 @@ keyword_subset <- function(x, keyword){
 
 
 # function to subset dataframe by criteria and do error checking
-#' @importFrom dplyr tbl_df
+#' @importFrom tibble as_tibble
 #' @noRd
 select_by_criteria <- function(x, criteria){
   
@@ -180,7 +180,7 @@ select_by_criteria <- function(x, criteria){
          "variable(s) you specified")
   }
   
-  return(dplyr::tbl_df(out))
+  return(tibble::as_tibble(out))
 }
 
 
