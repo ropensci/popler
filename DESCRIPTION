@@ -46,7 +46,7 @@ Suggests:
     stubthat (>= 1.2.1),
     mockr (>= 0.1)
 LazyData: true
-RoxygenNote: 6.1.1
+RoxygenNote: 7.2.0.9000
 VignetteBuilder: knitr
 Remotes:
     sainathadapa/stubthat
